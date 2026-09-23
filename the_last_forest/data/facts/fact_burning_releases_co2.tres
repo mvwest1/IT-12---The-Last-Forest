@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ClimateFact" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://the_last_forest/data/climate_fact.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"fact_burning_releases_co2"
+title_key = "FACT_BURNING_TITLE"
+body_key = "FACT_BURNING_BODY"
+stage = 1
+source_note = "IPCC AR6 (land-use change emissions). Verify with science teacher."

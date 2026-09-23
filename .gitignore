@@ -1,0 +1,5 @@
+.godot/
+*.tmp
+addons/ziva_agent/bin/
+addons/ziva_agent/bin-deps/
+addons/ziva_agent/zivacode/

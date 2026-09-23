@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://doxtgy206ofqb"
+
+[deps]
+
+files=["res://the_last_forest/data/translations/facts.en.translation", "res://the_last_forest/data/translations/facts.fil.translation"]
+
+source_file="res://the_last_forest/data/translations/facts.csv"
+dest_files=["res://the_last_forest/data/translations/facts.en.translation", "res://the_last_forest/data/translations/facts.fil.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

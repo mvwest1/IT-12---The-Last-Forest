@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ClimateFact" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://the_last_forest/data/climate_fact.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"fact_care_after_planting"
+title_key = "FACT_CARE_TITLE"
+body_key = "FACT_CARE_BODY"
+stage = 2
+source_note = "Seedling survival is a known challenge in reforestation programs. Verify with science teacher."

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="StageData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://the_last_forest/stage/stage_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stage_id = &"stage_1"
+objective_key = "OBJ_STAGE_1"
+tree_goal = 5
+starting_seeds = 0
+base_restoration = 0.0
+intro_fact_ids = Array[StringName]([&"fact_trees_store_carbon"])
+milestone_fact_ids = Array[StringName]([&"", &"fact_burning_releases_co2", &"", &"fact_roots_hold_soil"])
+outro_fact_id = &""
+require_all_arid_zones = false
+next_scene = "res://stages/stage_2_pest_control.tscn"

@@ -1,0 +1,28 @@
+keys,en,fil
+PROMPT_HOLD_E,Hold E to plant,Pindutin nang matagal ang E para magtanim
+PROMPT_REVIVE,Hold E to help the tree,Pindutin nang matagal ang E para tulungan ang puno
+PROMPT_WATER,Hold E to water,Pindutin nang matagal ang E para diligan
+DENY_NO_SEEDS,You need a seed! Look for glowing seeds.,Kailangan mo ng binhi! Hanapin ang kumikinang na binhi.
+DENY_OCCUPIED,A tree is already growing here.,May tumutubo nang puno rito.
+DENY_NO_WATER,Collect water drops first!,Mangolekta muna ng patak ng tubig!
+TIP_WATER_FULL,Your water can is full. Water the dry land!,Puno na ang iyong lalagyan. Diligan ang tuyong lupa!
+UI_GOT_IT,Got it!,Sige!
+UI_LISTEN,Listen,Pakinggan
+OBJ_STAGE_1,Collect seeds and grow 5 trees in the burnt soil.,Mangolekta ng binhi at magpalaki ng 5 puno sa sunog na lupa.
+OBJ_STAGE_2,Keep the young trees safe from pests until they grow big!,Ingatan ang mga batang puno laban sa peste hanggang lumaki sila!
+OBJ_STAGE_3,Bring water to the dry land so the trees can grow.,Magdala ng tubig sa tuyong lupa para lumaki ang mga puno.
+OBJ_STAGE_4,Explore the forest you brought back to life!,Libutin ang gubat na muli mong binuhay!
+FACT_CARBON_TITLE,Trees Clean the Air,Nililinis ng Puno ang Hangin
+FACT_CARBON_BODY,"Trees take in carbon dioxide (CO2) from the air. They keep the carbon in their trunks, branches, and roots.","Kinukuha ng mga puno ang carbon dioxide (CO2) mula sa hangin. Iniimbak nila ang carbon sa kanilang katawan, sanga, at ugat."
+FACT_BURNING_TITLE,Burning Forests Warm the Earth,Ang Nasusunog na Gubat ay Nagpapainit sa Mundo
+FACT_BURNING_BODY,"When forests are cut or burned, their carbon goes back into the air as CO2. More CO2 makes our planet warmer.","Kapag pinutol o sinunog ang gubat, bumabalik sa hangin ang carbon bilang CO2. Mas maraming CO2, mas umiinit ang ating mundo."
+FACT_ROOTS_TITLE,Roots Hold the Soil,Hinahawakan ng Ugat ang Lupa
+FACT_ROOTS_BODY,"Tree roots hold the soil together. Without trees, heavy rain can wash the soil away and cause floods and landslides.","Hinahawakan ng ugat ng puno ang lupa. Kapag walang puno, maaaring tangayin ng malakas na ulan ang lupa at magdulot ng baha at pagguho ng lupa."
+FACT_HELPERS_TITLE,Nature's Helpers,Mga Katulong ng Kalikasan
+FACT_HELPERS_BODY,Ladybugs and birds eat insect pests. A healthy forest has many helpers that keep pests in balance.,Kinakain ng mga ladybug at ibon ang mga pesteng insekto. Maraming katulong ang malusog na gubat para manatiling balanse ang peste.
+FACT_CARE_TITLE,Planting Is Just the Start,Simula Pa Lang ang Pagtatanim
+FACT_CARE_BODY,Young trees need water and protection to survive. Taking care of them is as important as planting them.,Kailangan ng mga batang puno ng tubig at proteksyon para mabuhay. Kasinghalaga ng pagtatanim ang pag-aalaga sa kanila.
+FACT_RAIN_TITLE,Trees Help Make Rain,Tumutulong ang Puno sa Pagbuo ng Ulan
+FACT_RAIN_BODY,Trees pull water up from the ground and let it out through their leaves. This water helps form clouds and rain.,Sumisipsip ang mga puno ng tubig mula sa lupa at inilalabas ito sa kanilang mga dahon. Nakatutulong ang tubig na ito sa pagbuo ng ulap at ulan.
+FACT_HOME_TITLE,A Home for Wildlife,Tahanan ng mga Hayop
+FACT_HOME_BODY,"Forests are home to many animals, like the Philippine eagle. When forests grow back, animals can come home too.","Tahanan ng maraming hayop ang gubat, gaya ng Philippine eagle. Kapag muling tumubo ang gubat, makababalik din ang mga hayop."

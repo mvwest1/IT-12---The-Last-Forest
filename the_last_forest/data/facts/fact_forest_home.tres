@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ClimateFact" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://the_last_forest/data/climate_fact.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"fact_forest_home"
+title_key = "FACT_HOME_TITLE"
+body_key = "FACT_HOME_BODY"
+stage = 4
+source_note = "Philippine eagle habitat: forest (DENR-BMB / Philippine Eagle Foundation). Verify with science teacher."

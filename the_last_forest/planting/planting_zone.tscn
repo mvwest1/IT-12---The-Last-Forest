@@ -1,0 +1,45 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://the_last_forest/planting/planting_zone.gd" id="1"]
+[ext_resource type="PackedScene" path="res://the_last_forest/planting/sapling.tscn" id="2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_soil"]
+size = Vector2(52, 28)
+
+[node name="PlantingZone" type="Area2D"]
+collision_layer = 32
+collision_mask = 0
+script = ExtResource("1")
+sapling_scene = ExtResource("2")
+hold_time = 1.5
+prompt_key = "PROMPT_HOLD_TO_PLANT"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -5)
+shape = SubResource("RectangleShape2D_soil")
+
+[node name="Soil" type="Polygon2D" parent="."]
+position = Vector2(0, -4)
+polygon = PackedVector2Array(-26, -7, 26, -7, 32, 6, -32, 6)
+color = Color(0.26, 0.16, 0.1, 1)
+
+[node name="SaplingAnchor" type="Marker2D" parent="."]
+position = Vector2(0, -8)
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+offset_left = -28.0
+offset_top = -43.0
+offset_right = 28.0
+offset_bottom = -34.0
+show_percentage = false
+max_value = 100.0
+mouse_filter = 2
+
+[node name="Prompt" type="Label" parent="."]
+offset_left = -66.0
+offset_top = -64.0
+offset_right = 66.0
+offset_bottom = -44.0
+text = "Hold E to plant"
+horizontal_alignment = 1
+

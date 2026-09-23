@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="StageData" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://the_last_forest/stage/stage_data.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stage_id = &"stage_3"
+objective_key = "OBJ_STAGE_3"
+tree_goal = 4
+starting_seeds = 2
+base_restoration = 0.5
+intro_fact_ids = Array[StringName]([&"fact_trees_make_rain"])
+milestone_fact_ids = Array[StringName]([&"", &"", &"", &""])
+outro_fact_id = &""
+require_all_arid_zones = true
+next_scene = "res://stages/stage_4_sanctuary.tscn"
