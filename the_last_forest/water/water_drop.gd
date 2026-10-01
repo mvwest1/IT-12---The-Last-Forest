@@ -18,7 +18,7 @@ const LAYER: int = 1 << 7   # physics layer 8 "water"
 
 func _ready() -> void:
 	collision_layer = LAYER
-	collision_mask = (1 << 3) | (1 << 4)
+	collision_mask = (1 << 3) | (1 << 4) | (1 << 8)  # platforms, ground, water_guides
 	add_to_group(&"water_drops")
 	var tween := create_tween()
 	tween.tween_interval(maxf(lifetime - 0.5, 0.0))

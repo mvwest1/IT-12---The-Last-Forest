@@ -107,3 +107,20 @@ Q4_3,What should we do after planting a tree?,Ano ang dapat gawin pagkatapos mag
 Q4_3_A,Take care of it,Alagaan ito
 Q4_3_B,Forget about it,Kalimutan ito
 Q4_3_C,Cut it down,Putulin ito
+SIGN_PRESS_E,Press E,Pindutin ang E
+SIGN_1_TITLE,Move and Collect,Gumalaw at Mangolekta
+SIGN_1_BODY,Use the arrow keys or A and D to walk. Press Space or W to jump. Pick up the seeds!,Gamitin ang arrow keys o A at D para lumakad. Pindutin ang Space o W para tumalon. Pulutin ang mga binhi!
+SIGN_2_TITLE,Plant a Seed,Magtanim ng Binhi
+SIGN_2_BODY,Stand on the burnt soil. Hold E until the bar is full to plant a seed.,Tumayo sa sunog na lupa. Pindutin nang matagal ang E hanggang mapuno ang bar para magtanim.
+SIGN_3_TITLE,Wait and Watch,Maghintay at Magbantay
+SIGN_3_BODY,Young trees need time to grow. Watch them grow bigger and bigger!,Kailangan ng oras ng mga batang puno para lumaki. Panoorin silang lumaki nang lumaki!
+SIGN_4_TITLE,The Forest Gate,Ang Tarangkahan ng Gubat
+SIGN_4_BODY,"When all your trees are grown, the gate turns green. Walk in to finish!","Kapag lumaki na ang lahat ng puno mo, magiging berde ang tarangkahan. Pumasok para matapos!"
+GATE_NOT_READY,Not yet! %d more tree(s) need to grow.,Hindi pa! %d pang puno ang kailangang lumaki.
+GATE_NOT_READY_HEALTH,A young tree needs help! Find the wilted tree and hold E.,May batang punong nangangailangan ng tulong! Hanapin ang nalantang puno at pindutin nang matagal ang E.
+QUIZ_CONTINUE,Continue,Magpatuloy
+QUIZ_DONE,All done!,Tapos na!
+QUIZ_PRE_DONE,Thank you! Now let's help the forest.,Salamat! Tulungan na natin ang gubat.
+QUIZ_POST_DONE,Great job learning about the forest!,Magaling! Marami kang natutunan tungkol sa gubat!
+QUIZ_SCORE,Score: %d / %d,Puntos: %d / %d
+TIP_DIVERTER,Turn the lever so the water flows onto the dry land!,Iikot ang pingga para dumaloy ang tubig sa tuyong lupa!

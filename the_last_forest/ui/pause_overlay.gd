@@ -23,7 +23,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not event.is_action_pressed(&"toggle_pause"):
 		return
 	# A fact card or quiz owns the screen: the pause menu waits.
-	if LearningDirector.is_showing() or GameState.is_paused_by(&"quiz"):
+	if LearningDirector.is_showing() or GameState.is_paused_by(&"quiz") or GameState.is_paused_by(&"climate_tip"):
 		return
 	if visible:
 		close()

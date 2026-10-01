@@ -25,7 +25,7 @@ const SCHEMA_VERSION: int = 1
 const STORE_IDENTIFIERS_IN_CLEAR: bool = false
 ## Change before the pilot; identical on every lab PC so the same LRN maps to
 ## the same student_id across machines.
-const LRN_SALT: String = "CHANGE-ME-santa-rosa-central-2-2026"
+const LRN_SALT: String = "tlf-befe96895bd3b57b0507d00ad4cb6435"
 
 # ------------------------------------------------------------------ DDL
 const DDL: Array[String] = [
@@ -110,17 +110,22 @@ func _notification(what: int) -> void:
 
 # ================================================================== Core API
 func init_db() -> void:
+	init_db_at(DB_PATH)
+
+
+## Opens (or creates) the database at `path`. Tests use a throwaway file.
+func init_db_at(path: String) -> void:
 	if _ready_ok:
 		return
 	_db = backend_override if backend_override != null else _create_backend()
 	if _db == null:
 		push_warning("DatabaseManager: godot-sqlite not installed — using JSONL fallback at " + FALLBACK_PATH)
 		return
-	_db.path = DB_PATH
+	_db.path = path
 	_db.foreign_keys = true
 	_db.verbosity_level = 0  # QUIET
 	if not _db.open_db():
-		push_error("DatabaseManager: could not open " + DB_PATH + " — " + str(_db.error_message))
+		push_error("DatabaseManager: could not open " + path + " — " + str(_db.error_message))
 		_db = null
 		return
 	_exec("PRAGMA journal_mode = WAL;")   # safer if the PC is switched off mid-write

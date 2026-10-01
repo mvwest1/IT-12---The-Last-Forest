@@ -52,7 +52,7 @@ func present(quiz: QuizSet, phase: StringName) -> void:
 	for button: Button in _buttons:
 		button.show()
 	_header.text = tr("QUIZ_PRE_HEADER" if phase == &"pre" else "QUIZ_POST_HEADER")
-	_next_button.text = "Continue" if phase == &"pre" else "Next Stage"
+	_next_button.text = tr("QUIZ_CONTINUE")
 	show()
 	_show_question()
 
@@ -117,14 +117,16 @@ func _unhandled_input(_event: InputEvent) -> void:
 
 
 func _show_score() -> void:
-	_progress.text = "Assessment complete"
-	_prompt.text = "Your answers help track what you learned about this ecosystem."
+	_progress.text = tr("QUIZ_DONE")
+	# Pre-test: no score shown (it would cue the answers / discourage).
+	# Post-test: show the score as positive feedback.
+	_prompt.text = tr("QUIZ_PRE_DONE") if _phase == &"pre" else tr("QUIZ_POST_DONE")
 	_image.hide()
 	_feedback.text = ""
 	for button: Button in _buttons:
 		button.hide()
-	_score_tally.text = "Score: %d / %d" % [_score, _quiz.questions.size()]
-	_score_tally.show()
+	_score_tally.text = tr("QUIZ_SCORE") % [_score, _quiz.questions.size()]
+	_score_tally.visible = _phase == &"post"
 	_next_button.show()
 	_next_button.grab_focus()
 	_awaiting_continue = true

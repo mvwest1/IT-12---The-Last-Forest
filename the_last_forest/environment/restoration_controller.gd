@@ -14,14 +14,30 @@ extends Node
 ##    (milestone 1 = 25 %, 2 = 50 %, 3 = 75 %, 4 = 100 % of the stage goal)
 
 const PARAM: StringName = &"restoration"
+const RESTORATION_SHADER: Shader = preload("res://the_last_forest/environment/restoration.gdshader")
+const RESTORATION_WIND_SHADER: Shader = preload("res://the_last_forest/environment/restoration_wind.gdshader")
 
 @export var tween_duration: float = 1.5
+## 3. Auto-apply: every CanvasItem under these top-level nodes (by name) gets
+##    the burnt->green shader, so level art needs no manual wiring. Props that
+##    use the demo wind_sway material keep their sway (restoration_wind shader).
+##    Gameplay nodes (Player, saplings, pickups, HUD) are never touched.
+@export var auto_apply: bool = true
+@export var decor_root_names: PackedStringArray = [
+	"TileMapLayer", "ParallaxBackground", "Grass", "Flowers", "Trees", "Bushes",
+	"Rocks", "Props", "Vines", "Ferns", "Platforms", "Decor",
+]
+
+var _plain_material: ShaderMaterial = null
+var _wind_materials: Dictionary = {}  # original Material -> converted ShaderMaterial
 
 var _current: float = 0.0
 var _tween: Tween = null
 
 
 func _ready() -> void:
+	if auto_apply:
+		_apply_materials()
 	EventBus.restoration_changed.connect(_on_restoration_changed)
 	EventBus.restoration_milestone_reached.connect(_on_milestone)
 	_set_value(GameState.restoration_ratio())
@@ -68,3 +84,46 @@ func _on_milestone(index: int) -> void:
 			(node as GPUParticles2D).restart()
 		elif node is CPUParticles2D:
 			(node as CPUParticles2D).restart()
+
+
+# ------------------------------------------------------------------ Auto-apply
+func _apply_materials() -> void:
+	var stage_root: Node = owner if owner != null else get_parent()
+	if stage_root == null:
+		return
+	_plain_material = ShaderMaterial.new()
+	_plain_material.shader = RESTORATION_SHADER
+	for root_name: String in decor_root_names:
+		var node: Node = stage_root.get_node_or_null(NodePath(root_name))
+		if node != null:
+			_apply_recursive(node)
+
+
+func _apply_recursive(node: Node) -> void:
+	if node is CanvasItem:
+		var item := node as CanvasItem
+		var mat: Material = item.material
+		if mat == null:
+			item.material = _plain_material
+		elif mat is ShaderMaterial and (mat as ShaderMaterial).shader != null \
+				and (mat as ShaderMaterial).shader != RESTORATION_SHADER \
+				and (mat as ShaderMaterial).shader != RESTORATION_WIND_SHADER:
+			item.material = _converted_wind(mat as ShaderMaterial)
+	for child: Node in node.get_children():
+		_apply_recursive(child)
+
+
+## Converts the demo's wind_sway material to the wind+restoration shader,
+## keeping its sway parameters. Converted once per source material.
+func _converted_wind(source: ShaderMaterial) -> ShaderMaterial:
+	if _wind_materials.has(source):
+		return _wind_materials[source]
+	var out := ShaderMaterial.new()
+	out.shader = RESTORATION_WIND_SHADER
+	for param: Dictionary in RESTORATION_WIND_SHADER.get_shader_uniform_list():
+		var pname: String = param["name"]
+		var value: Variant = source.get_shader_parameter(pname)
+		if value != null:
+			out.set_shader_parameter(pname, value)
+	_wind_materials[source] = out
+	return out

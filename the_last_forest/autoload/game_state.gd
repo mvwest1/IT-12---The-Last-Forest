@@ -45,7 +45,6 @@ func _ready() -> void:
 	EventBus.tree_planted.connect(_on_tree_planted)
 	EventBus.sapling_matured.connect(_on_sapling_matured)
 	EventBus.fact_card_opened.connect(_on_learning_shown.unbind(1))
-	EventBus.climate_tip_triggered.connect(_on_learning_shown.unbind(1))
 	EventBus.tip_requested.connect(_on_tip_requested)
 
 
@@ -76,15 +75,14 @@ func register_preplanted_saplings(amount: int) -> void:
 ## Exit gates call this at the moment the player reaches them. A tree is only
 ## complete once it is mature, alive, and at full health.
 func can_clear_stage() -> bool:
-	if trees_planted < tree_goal or trees_matured != tree_goal:
+	# Goal reached when enough trees MATURED (>= so planting extra trees can
+	# never lock the exit). A wilted sapling anywhere still blocks the exit:
+	# the child can always revive it (hold E), so this can't deadlock.
+	if trees_matured < tree_goal:
 		return false
 	for node: Node in get_tree().get_nodes_in_group(&"saplings"):
-		if not is_instance_valid(node):
-			continue
-		if node is Sapling:
-			var sapling: Sapling = node
-			if sapling.wilted or sapling.stage != Sapling.Stage.TREE or sapling.health < sapling.max_health:
-				return false
+		if node is Sapling and is_instance_valid(node) and (node as Sapling).wilted:
+			return false
 	return true
 
 

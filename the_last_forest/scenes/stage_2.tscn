@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=4]
+[gd_scene load_steps=36 format=4]
 
 [ext_resource type="TileSet" uid="uid://bc2x0sp26cvxb" path="res://level/tileset.tres" id="1"]
 [ext_resource type="PackedScene" uid="uid://cp1iwt1wdglve" path="res://level/platforms/platform.tscn" id="3"]
@@ -33,6 +33,7 @@
 [ext_resource type="PackedScene" path="res://level/platforms/platform.tscn" id="33"]
 
 [ext_resource type="PackedScene" path="res://the_last_forest/scenes/stage_exit_gate.tscn" id="34"]
+[ext_resource type="Script" path="res://the_last_forest/environment/restoration_controller.gd" id="lf_resctl"]
 
 [sub_resource type="RectangleShape2D" id="StageMilestoneShape"]
 size = Vector2(56, 112)
@@ -1725,7 +1726,7 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("17")
 
 
-[node name="StageController" type="Node" parent="."]
+[node name="StageController" type="Node" parent="." node_paths=PackedStringArray("player", "spawn_point", "exit_gate")]
 script = ExtResource("23")
 data = ExtResource("24")
 quiz = ExtResource("25")
@@ -1752,7 +1753,7 @@ position = Vector2(352, 650)
 position = Vector2(544, 650)
 
 [node name="Zone4" parent="PlantingZones" instance=ExtResource("28")]
-position = Vector2(512, 379)
+position = Vector2(640, 650)
 
 [node name="Seeds" type="Node2D" parent="."]
 
@@ -1772,7 +1773,7 @@ position = Vector2(480, 630)
 position = Vector2(736, 630)
 
 [node name="MilestoneTrigger" type="Area2D" parent="."]
-position = Vector2(860, 580)
+position = Vector2(760, 600)
 collision_layer = 0
 collision_mask = 1
 script = ExtResource("26")
@@ -1788,7 +1789,7 @@ position = Vector2(896, 304)
 position = Vector2(1088, 208)
 
 [node name="ExitGate" parent="." instance=ExtResource("34")]
-position = Vector2(920, 650)
+position = Vector2(800, 650)
 
 [node name="HUDLayer" type="CanvasLayer" parent="."]
 layer = 100
@@ -1796,10 +1797,10 @@ layer = 100
 [node name="HUD" parent="HUDLayer" instance=ExtResource("30")]
 
 [node name="CanopySapling1" parent="." instance=ExtResource("32")]
-position = Vector2(432, 379)
+position = Vector2(448, 650)
 
 [node name="CanopySapling2" parent="." instance=ExtResource("32")]
-position = Vector2(800, 650)
+position = Vector2(736, 650)
 
 [node name="Pest1" parent="." instance=ExtResource("31")]
 position = Vector2(460, 350)
@@ -1815,3 +1816,6 @@ patrol_range = 42.0
 
 [node name="CanopyLedge" parent="." instance=ExtResource("33")]
 position = Vector2(480, 400)
+
+[node name="RestorationController" type="Node" parent="."]
+script = ExtResource("lf_resctl")

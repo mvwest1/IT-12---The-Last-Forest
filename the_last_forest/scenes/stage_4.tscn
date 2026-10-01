@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=4]
+[gd_scene load_steps=33 format=4]
 
 [ext_resource type="TileSet" uid="uid://bc2x0sp26cvxb" path="res://level/tileset.tres" id="1"]
 [ext_resource type="PackedScene" uid="uid://cp1iwt1wdglve" path="res://level/platforms/platform.tscn" id="3"]
@@ -28,6 +28,7 @@
 [ext_resource type="PackedScene" path="res://the_last_forest/ui/hud.tscn" id="30"]
 
 [ext_resource type="PackedScene" path="res://the_last_forest/scenes/stage_exit_gate.tscn" id="31"]
+[ext_resource type="Script" path="res://the_last_forest/environment/restoration_controller.gd" id="lf_resctl"]
 
 [sub_resource type="RectangleShape2D" id="StageMilestoneShape"]
 size = Vector2(56, 112)
@@ -1720,7 +1721,7 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("17")
 
 
-[node name="StageController" type="Node" parent="."]
+[node name="StageController" type="Node" parent="." node_paths=PackedStringArray("player", "spawn_point", "exit_gate")]
 script = ExtResource("23")
 data = ExtResource("24")
 quiz = ExtResource("25")
@@ -1758,7 +1759,7 @@ position = Vector2(480, 630)
 position = Vector2(736, 630)
 
 [node name="MilestoneTrigger" type="Area2D" parent="."]
-position = Vector2(860, 580)
+position = Vector2(760, 600)
 collision_layer = 0
 collision_mask = 1
 script = ExtResource("26")
@@ -1780,9 +1781,12 @@ position = Vector2(820, 480)
 position = Vector2(1000, 320)
 
 [node name="ExitGate" parent="." instance=ExtResource("31")]
-position = Vector2(920, 650)
+position = Vector2(800, 650)
 
 [node name="HUDLayer" type="CanvasLayer" parent="."]
 layer = 100
 
 [node name="HUD" parent="HUDLayer" instance=ExtResource("30")]
+
+[node name="RestorationController" type="Node" parent="."]
+script = ExtResource("lf_resctl")

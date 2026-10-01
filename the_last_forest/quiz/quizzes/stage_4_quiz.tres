@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="QuizSet" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="QuizSet" load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://the_last_forest/quiz/quiz_question.gd" id="1"]
 [ext_resource type="Script" path="res://the_last_forest/quiz/quiz_set.gd" id="2"]
@@ -15,7 +15,13 @@ prompt_key = "Q4_2"
 choice_keys = Array[String](["Q4_2_A", "Q4_2_B", "Q4_2_C"])
 correct_index = 0
 
+[sub_resource type="Resource" id="QuizQuestion_3"]
+script = ExtResource("1")
+prompt_key = "Q4_3"
+choice_keys = Array[String](["Q4_3_A", "Q4_3_B", "Q4_3_C"])
+correct_index = 0
+
 [resource]
 script = ExtResource("2")
 stage_index = 4
-questions = Array[ExtResource("1")]([SubResource("QuizQuestion_1"), SubResource("QuizQuestion_2")])
+questions = Array[ExtResource("1")]([SubResource("QuizQuestion_1"), SubResource("QuizQuestion_2"), SubResource("QuizQuestion_3")])

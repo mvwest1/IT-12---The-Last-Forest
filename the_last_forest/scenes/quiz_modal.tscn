@@ -90,5 +90,5 @@ theme_override_font_sizes/font_size = 24
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(240, 48)
-text = "Next Stage"
+text = "QUIZ_CONTINUE"
 size_flags_horizontal = 4

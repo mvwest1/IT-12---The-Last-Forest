@@ -141,6 +141,9 @@ func _process(_delta: float) -> void:
 
 
 func _is_good_moment(priority: int) -> bool:
+	# Never stack on top of a tutorial hint card.
+	if GameState.is_paused_by(&"climate_tip"):
+		return false
 	var now: int = Time.get_ticks_msec()
 	if priority < Priority.HIGH and now - _last_closed_msec < COOLDOWN_MSEC:
 		return false

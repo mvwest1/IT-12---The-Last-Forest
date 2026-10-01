@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=4]
+[gd_scene load_steps=34 format=4]
 
 [ext_resource type="TileSet" uid="uid://bc2x0sp26cvxb" path="res://level/tileset.tres" id="1"]
 [ext_resource type="PackedScene" uid="uid://cp1iwt1wdglve" path="res://level/platforms/platform.tscn" id="3"]
@@ -28,6 +28,7 @@
 [ext_resource type="PackedScene" path="res://the_last_forest/ui/hud.tscn" id="30"]
 [ext_resource type="PackedScene" path="res://the_last_forest/scenes/tutorial_sign.tscn" id="31"]
 [ext_resource type="PackedScene" path="res://the_last_forest/scenes/stage_exit_gate.tscn" id="32"]
+[ext_resource type="Script" path="res://the_last_forest/environment/restoration_controller.gd" id="lf_resctl"]
 
 [sub_resource type="RectangleShape2D" id="StageMilestoneShape"]
 size = Vector2(56, 112)
@@ -1731,7 +1732,7 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("17")
 
 
-[node name="StageController" type="Node" parent="."]
+[node name="StageController" type="Node" parent="." node_paths=PackedStringArray("player", "spawn_point", "exit_gate")]
 script = ExtResource("23")
 data = ExtResource("24")
 quiz = ExtResource("25")
@@ -1760,7 +1761,7 @@ position = Vector2(176, 630)
 position = Vector2(240, 630)
 
 [node name="MilestoneTrigger" type="Area2D" parent="."]
-position = Vector2(860, 580)
+position = Vector2(760, 600)
 collision_layer = 0
 collision_mask = 1
 script = ExtResource("26")
@@ -1773,28 +1774,43 @@ shape = SubResource("StageMilestoneShape")
 
 [node name="Marker1" parent="TutorialSigns" instance=ExtResource("31")]
 position = Vector2(112, 580)
-prompt_title = "Movement & Collecting"
-prompt_message = "Use Arrow Keys/WASD to move and Space to jump. Collect seeds scattered in the grove!"
+prompt_title = "SIGN_1_TITLE"
+prompt_message = "SIGN_1_BODY"
 
 [node name="Marker2" parent="TutorialSigns" instance=ExtResource("31")]
 position = Vector2(288, 600)
-prompt_title = "Planting Basics"
-prompt_message = "Stand over scorched soil and Hold E to plant a seed into a sapling."
+prompt_title = "SIGN_2_TITLE"
+prompt_message = "SIGN_2_BODY"
 
 [node name="Marker3" parent="TutorialSigns" instance=ExtResource("31")]
 position = Vector2(576, 600)
-prompt_title = "Nurturing & Waiting"
-prompt_message = "Saplings need time to root and mature into full trees. Protect them until they flourish!"
+prompt_title = "SIGN_3_TITLE"
+prompt_message = "SIGN_3_BODY"
 
 [node name="Marker4" parent="TutorialSigns" instance=ExtResource("31")]
-position = Vector2(800, 600)
-prompt_title = "Milestone & Exit Portal"
-prompt_message = "Once all required trees reach maturity, the stage boundary opens!"
+position = Vector2(720, 600)
+prompt_title = "SIGN_4_TITLE"
+prompt_message = "SIGN_4_BODY"
 
 [node name="ExitGate" parent="." instance=ExtResource("32")]
-position = Vector2(920, 650)
+position = Vector2(800, 650)
 
 [node name="HUDLayer" type="CanvasLayer" parent="."]
 layer = 100
 
 [node name="HUD" parent="HUDLayer" instance=ExtResource("30")]
+
+[node name="RestorationController" type="Node" parent="."]
+script = ExtResource("lf_resctl")
+
+[node name="Zone2" parent="PlantingZones" instance=ExtResource("28")]
+position = Vector2(240, 650)
+
+[node name="Zone3" parent="PlantingZones" instance=ExtResource("28")]
+position = Vector2(520, 650)
+
+[node name="Seed3" parent="Seeds" instance=ExtResource("29")]
+position = Vector2(460, 630)
+
+[node name="Seed4" parent="Seeds" instance=ExtResource("29")]
+position = Vector2(660, 630)

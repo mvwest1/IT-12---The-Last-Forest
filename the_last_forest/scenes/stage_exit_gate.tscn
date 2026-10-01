@@ -19,6 +19,6 @@ offset_left = -180.0
 offset_top = -164.0
 offset_right = 180.0
 offset_bottom = -112.0
-text = "The forest is not fully restored yet! Wait for your saplings to grow."
+text = ""
 autowrap_mode = 3
 horizontal_alignment = 1

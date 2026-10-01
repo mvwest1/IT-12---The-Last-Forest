@@ -6,7 +6,7 @@
 [sub_resource type="RectangleShape2D" id="a"]
 size = Vector2(360, 60)
 
-[node name="AridZone" type="Area2D"]
+[node name="AridZone" type="Area2D" node_paths=PackedStringArray("visual")]
 script = ExtResource("1")
 visual = NodePath("Ground")
 

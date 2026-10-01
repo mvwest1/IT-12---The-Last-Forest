@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://the_last_forest/stage/tutorial_sign.gd" id="1"]
 [ext_resource type="Texture2D" path="res://the_last_forest/assets/placeholders/question_mark.png" id="2"]
 
-[sub_resource type="CircleShape2D" id="sign_area"]
-radius = 28.0
+[sub_resource type="RectangleShape2D" id="sign_area"]
+size = Vector2(80, 170)
 
 [node name="TutorialSign" type="Area2D"]
 collision_layer = 32
@@ -16,7 +16,7 @@ position = Vector2(0, -26)
 texture = ExtResource("2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -24)
+position = Vector2(0, 15)
 shape = SubResource("sign_area")
 
 [node name="Indicator" type="Label" parent="."]
@@ -24,5 +24,5 @@ offset_left = -40.0
 offset_top = -62.0
 offset_right = 40.0
 offset_bottom = -42.0
-text = "Press E"
+text = "SIGN_PRESS_E"
 horizontal_alignment = 1

@@ -27,6 +27,13 @@ var _pre_score: int = -1
 
 
 func _ready() -> void:
+	# Fallbacks: scenes saved without node_paths leave these exports empty.
+	if player == null:
+		player = get_node_or_null(^"../Player") as CharacterBody2D
+	if spawn_point == null:
+		spawn_point = get_node_or_null(^"../SpawnPoint") as Marker2D
+	if exit_gate == null:
+		exit_gate = get_node_or_null(^"../ExitGate") as Node2D
 	GameState.start_stage(data)
 	if AppFlow.current_stage_index == 0:
 		AppFlow.current_stage_index = data.stage_index  # launched directly (F6)
@@ -139,8 +146,12 @@ func request_stage_clear() -> void:
 	if data.outro_fact_id != &"":
 		LearningDirector.request_fact(data.outro_fact_id, LearningDirector.Priority.HIGH, true)
 	# Let the final milestone fact / outro card finish before the post-test.
-	while not LearningDirector.is_idle():
+	# Safety: never wait more than 20 s (e.g. a card that can't be shown).
+	var waited_ms: int = 0
+	while not LearningDirector.is_idle() and waited_ms < 20000:
 		await get_tree().process_frame
+		waited_ms += int(get_process_delta_time() * 1000.0) + 1
+	LearningDirector.clear_queue()
 	var post_score: int = await LearningDirector.run_quiz(quiz, &"post")
 	AppFlow.finish_stage({
 		"stage_index": data.stage_index,

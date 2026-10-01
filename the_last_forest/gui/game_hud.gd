@@ -138,8 +138,18 @@ func show_tip(text_key: String) -> void:
 		_tip_panel.hide()
 
 
-## Pausing climate card. Accepts a translation key String or a Dictionary with
-## `text_key` (preferred) or `text` fields. GameState owns pause arbitration.
+## Pausing tutorial / climate hint card (used by TutorialSign).
+## Accepts a translation key String or a Dictionary with "title"/"text"
+## (translation keys or plain text). It never opens on top of a fact card or
+## quiz, never auto-closes (children read at different speeds), and can only
+## be closed after CLIMATE_MIN_READ_SEC so button-mashing can't skip it.
+## These are INSTRUCTIONS, so they are not counted in tips_viewed.
+const CLIMATE_MIN_READ_SEC: float = 1.2
+
+var _climate_can_close: bool = false
+var _climate_armed: bool = false
+
+
 func show_climate_tip(tip_data: Variant) -> void:
 	_climate_tip_serial += 1
 	var my_serial: int = _climate_tip_serial
@@ -148,25 +158,48 @@ func show_climate_tip(tip_data: Variant) -> void:
 	if tip_data is String:
 		message = tr(tip_data)
 	elif tip_data is Dictionary:
-		title = str(tip_data.get("title", title))
-		if tip_data.has("text_key"):
-			message = tr(str(tip_data["text_key"]))
-		else:
-			message = str(tip_data.get("text", ""))
+		title = tr(str(tip_data.get("title", "CLIMATE_TIP_TITLE")))
+		message = tr(str(tip_data.get("text_key", tip_data.get("text", ""))))
+	# Wait for any fact card / quiz to finish first.
+	while LearningDirector.is_showing() or GameState.is_paused_by(&"quiz"):
+		await get_tree().process_frame
+	if my_serial != _climate_tip_serial:
+		return
 	_climate_title.text = title
 	_climate_label.text = message
+	_climate_can_close = false
+	_climate_armed = false
+	_climate_dismiss.disabled = true
 	_climate_modal.show()
 	GameState.request_pause(CLIMATE_TIP_PAUSE_OWNER)
-	await get_tree().create_timer(TIP_SECONDS, true).timeout
-	if my_serial == _climate_tip_serial:
-		_climate_modal.hide()
-		GameState.release_pause(CLIMATE_TIP_PAUSE_OWNER)
+	await get_tree().create_timer(CLIMATE_MIN_READ_SEC, true).timeout
+	if my_serial == _climate_tip_serial and _climate_modal.visible:
+		_climate_can_close = true
+		_climate_dismiss.disabled = false
+		_climate_dismiss.grab_focus()
+
+
+func is_climate_tip_open() -> bool:
+	return _climate_modal.visible
 
 
 func _dismiss_climate_tip() -> void:
+	if not _climate_can_close:
+		return
 	_climate_tip_serial += 1
+	_climate_can_close = false
 	_climate_modal.hide()
 	GameState.release_pause(CLIMATE_TIP_PAUSE_OWNER)
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not _climate_modal.visible:
+		return
+	if _climate_can_close and event.is_action_pressed(&"interact"):
+		_climate_armed = true
+	elif _climate_armed and event.is_action_released(&"interact"):
+		_dismiss_climate_tip()
+	get_viewport().set_input_as_handled()
 
 
 func _on_interaction_started(_target: Node2D) -> void:
