@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://byyrkgansnd2x"
-path="res://.godot/imported/sapling_sprout.png-62143db4e900154a721650c311619127.ctex"
+uid="uid://bwuge2kd4ftce"
+path="res://.godot/imported/star_full.png-704e6415429e321750164771cd9b4f23.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://the_last_forest/assets/placeholders/sapling_sprout.png"
-dest_files=["res://.godot/imported/sapling_sprout.png-62143db4e900154a721650c311619127.ctex"]
+source_file="res://the_last_forest/art/star_full.png"
+dest_files=["res://.godot/imported/star_full.png-704e6415429e321750164771cd9b4f23.ctex"]
 
 [params]
 

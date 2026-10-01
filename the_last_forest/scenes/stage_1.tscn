@@ -1773,22 +1773,22 @@ shape = SubResource("StageMilestoneShape")
 [node name="TutorialSigns" type="Node2D" parent="."]
 
 [node name="Marker1" parent="TutorialSigns" instance=ExtResource("31")]
-position = Vector2(112, 580)
+position = Vector2(112, 650)
 prompt_title = "SIGN_1_TITLE"
 prompt_message = "SIGN_1_BODY"
 
 [node name="Marker2" parent="TutorialSigns" instance=ExtResource("31")]
-position = Vector2(288, 600)
+position = Vector2(288, 650)
 prompt_title = "SIGN_2_TITLE"
 prompt_message = "SIGN_2_BODY"
 
 [node name="Marker3" parent="TutorialSigns" instance=ExtResource("31")]
-position = Vector2(576, 600)
+position = Vector2(576, 650)
 prompt_title = "SIGN_3_TITLE"
 prompt_message = "SIGN_3_BODY"
 
 [node name="Marker4" parent="TutorialSigns" instance=ExtResource("31")]
-position = Vector2(720, 600)
+position = Vector2(720, 650)
 prompt_title = "SIGN_4_TITLE"
 prompt_message = "SIGN_4_BODY"
 

@@ -80,6 +80,8 @@ func _physics_process(delta: float) -> void:
 		State.FLEEING:
 			pass
 	global_position += _velocity * delta
+	if _sprite is Node2D:  # wing-flap squash
+		(_sprite as Node2D).scale.y = 1.4 + sin(_wobble * 3.0) * 0.12
 	if _sprite is Node2D and absf(_velocity.x) > 1.0:
 		(_sprite as Node2D).scale.x = signf(_velocity.x) * absf((_sprite as Node2D).scale.x)
 

@@ -73,6 +73,12 @@ func _advance_stage() -> void:
 	_apply_stage_visual(true)
 	EventBus.sapling_stage_changed.emit(self, stage)
 	if stage == Stage.TREE:
+		var burst := get_node_or_null(^"LeafBurst") as CPUParticles2D
+		if burst != null:
+			burst.position = Vector2(0, -_sprite.texture.get_height() * 0.6) if _sprite.texture else burst.position
+			burst.restart()
+		if _guard_visual != null:
+			_guard_visual.hide()  # a grown tree no longer needs its fence
 		EventBus.sapling_matured.emit(self)
 
 
@@ -135,7 +141,8 @@ func complete_interaction(_interactor: Node) -> void:
 
 # ------------------------------------------------------------------ Visuals
 func _apply_stage_visual(animate: bool) -> void:
-	var target_scale: Vector2 = Vector2([0.75, 1.0, 0.5, 0.85][stage], [0.75, 1.0, 0.5, 0.85][stage])
+	# Pixel-art stage textures are drawn at their final size -> scale 1.
+	var target_scale: Vector2 = Vector2.ONE
 	if stage_textures.size() > int(stage):
 		_sprite.texture = stage_textures[stage]
 	else:

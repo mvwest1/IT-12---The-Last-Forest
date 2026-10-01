@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="ClimateFact" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ClimateFact" load_steps=3 format=3]
 
+[ext_resource type="Texture2D" path="res://the_last_forest/art/fact_roots_hold_soil.png" id="img"]
 [ext_resource type="Script" path="res://the_last_forest/data/climate_fact.gd" id="1"]
 
 [resource]
 script = ExtResource("1")
 id = &"fact_roots_hold_soil"
 title_key = "FACT_ROOTS_TITLE"
+image = ExtResource("img")
 body_key = "FACT_ROOTS_BODY"
 stage = 1
 source_note = "FAO / DENR materials on soil erosion. Verify with science teacher."

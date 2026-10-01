@@ -125,6 +125,11 @@ func is_idle() -> bool:
 func clear_queue() -> void:
 	_queue.clear()
 	_waiting_since = -1
+	# A card that was open when the scene changed can never be closed by its
+	# (now freed) popup: forget it so the next stage starts clean.
+	if _showing != &"":
+		_showing = &""
+		GameState.release_pause(PAUSE_OWNER)
 
 
 # ------------------------------------------------------------------ Scheduling

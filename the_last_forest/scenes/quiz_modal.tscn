@@ -23,7 +23,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.05, 0.1, 0.05, 0.85)
+color = Color(0.02, 0.06, 0.03, 0.88)
 
 [node name="Card" type="PanelContainer" parent="QuizModal"]
 anchors_preset = 8
@@ -31,25 +31,30 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -310.0
-offset_top = -230.0
-offset_right = 310.0
-offset_bottom = 230.0
+offset_left = -320.0
+offset_top = -200.0
+offset_right = 320.0
+offset_bottom = 200.0
 grow_horizontal = 2
 grow_vertical = 2
 
 [node name="VBox" type="VBoxContainer" parent="QuizModal/Card"]
 theme_override_constants/separation = 8
+alignment = 1
 
 [node name="QuizHeader" type="Label" parent="QuizModal/Card/VBox"]
 unique_name_in_owner = true
+text = ""
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 24
+theme_type_variation = "HeaderLabel"
+theme_override_font_sizes/font_size = 28
 
 [node name="QuizProgress" type="Label" parent="QuizModal/Card/VBox"]
 unique_name_in_owner = true
+text = ""
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 14
+theme_type_variation = "SubtleLabel"
+theme_override_font_sizes/font_size = 15
 
 [node name="QuizImage" type="TextureRect" parent="QuizModal/Card/VBox"]
 unique_name_in_owner = true
@@ -59,36 +64,42 @@ stretch_mode = 5
 
 [node name="QuizPrompt" type="Label" parent="QuizModal/Card/VBox"]
 unique_name_in_owner = true
+text = ""
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 24
 autowrap_mode = 3
 
 [node name="Choice1" type="Button" parent="QuizModal/Card/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(560, 46)
+custom_minimum_size = Vector2(580, 50)
+text = ""
 
 [node name="Choice2" type="Button" parent="QuizModal/Card/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(560, 46)
+custom_minimum_size = Vector2(580, 50)
+text = ""
 
 [node name="Choice3" type="Button" parent="QuizModal/Card/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(560, 46)
+custom_minimum_size = Vector2(580, 50)
+text = ""
 
 [node name="QuizFeedback" type="Label" parent="QuizModal/Card/VBox"]
 unique_name_in_owner = true
+text = ""
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 20
 
 [node name="ScoreTally" type="Label" parent="QuizModal/Card/VBox"]
 unique_name_in_owner = true
-visible = false
+text = ""
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 24
+theme_type_variation = "HeaderLabel"
+theme_override_font_sizes/font_size = 34
 
 [node name="QuizNextButton" type="Button" parent="QuizModal/Card/VBox"]
 unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(240, 48)
+custom_minimum_size = Vector2(240, 50)
 text = "QUIZ_CONTINUE"
+theme_type_variation = "BigButton"
 size_flags_horizontal = 4

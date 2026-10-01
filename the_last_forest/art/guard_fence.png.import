@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d1yqtb2ijt24g"
-path="res://.godot/imported/seed.png-f6a04e1354da2b253bb4d6e61a82e369.ctex"
+uid="uid://qya3v3fxmu7e"
+path="res://.godot/imported/guard_fence.png-16ac182cdc9e19826d00a64fadc5bf91.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://the_last_forest/assets/placeholders/seed.png"
-dest_files=["res://.godot/imported/seed.png-f6a04e1354da2b253bb4d6e61a82e369.ctex"]
+source_file="res://the_last_forest/art/guard_fence.png"
+dest_files=["res://.godot/imported/guard_fence.png-16ac182cdc9e19826d00a64fadc5bf91.ctex"]
 
 [params]
 

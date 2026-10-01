@@ -73,6 +73,7 @@ func _ready() -> void:
 	_climate_dismiss.pressed.connect(_dismiss_climate_tip)
 	_guard_box.visible = show_guards
 	_water_box.visible = show_water
+	_auto_show_counters.call_deferred()
 	# Initial pull.
 	_on_seeds_changed(GameState.seeds)
 	_on_trees_changed(GameState.trees_matured, GameState.tree_goal)
@@ -93,7 +94,19 @@ func _on_trees_changed(total: int, goal: int) -> void:
 	_pulse(_trees)
 
 
+## Show the guard / water counters only on stages that use them.
+func _auto_show_counters() -> void:
+	if GameState.guards > 0 or (GameState.current_stage != null and GameState.current_stage.starting_guards > 0) \
+			or not get_tree().get_nodes_in_group(&"pests").is_empty():
+		_guard_box.visible = true
+	if not get_tree().get_nodes_in_group(&"arid_zones").is_empty():
+		_water_box.visible = true
+		_refresh_dry_land()
+
+
 func _on_guards_changed(total: int) -> void:
+	if total > 0:
+		_guard_box.visible = true
 	_guards.text = str(total)
 	_pulse(_guards)
 

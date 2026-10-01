@@ -21,15 +21,17 @@ func _ready() -> void:
 	body_exited.connect(_on_body_exited)
 	_indicator.text = tr("SIGN_PRESS_E")
 	_indicator.hide()
+	# Gentle bob on the "Press E" label (the wooden sign itself stays planted).
+	var base_y: float = _indicator.position.y
 	var tween := create_tween().set_loops()
-	tween.tween_property(_icon, "position:y", -31.0, 0.65).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	tween.tween_property(_icon, "position:y", -26.0, 0.65).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(_indicator, "position:y", base_y - 4.0, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(_indicator, "position:y", base_y, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if _player_inside and event.is_action_pressed("interact"):
 		_read_once = true
-		_icon.modulate = Color(1, 1, 1, 0.6)  # dimmed = already read
+		_icon.modulate = Color(0.8, 0.8, 0.8)  # slightly dimmed = already read
 		EventBus.climate_tip_triggered.emit({"title": prompt_title, "text": prompt_message})
 		get_viewport().set_input_as_handled()
 

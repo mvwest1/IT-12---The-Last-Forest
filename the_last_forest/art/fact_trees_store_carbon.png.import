@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b337ekluson4a"
-path="res://.godot/imported/water_drop.png-fc3e9dd27635b71b6b9ce69e0bba4fb5.ctex"
+uid="uid://bg1x8m2mbn1vq"
+path="res://.godot/imported/fact_trees_store_carbon.png-2072c24201355d45cab6e2aedbc4a42d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://the_last_forest/assets/placeholders/water_drop.png"
-dest_files=["res://.godot/imported/water_drop.png-fc3e9dd27635b71b6b9ce69e0bba4fb5.ctex"]
+source_file="res://the_last_forest/art/fact_trees_store_carbon.png"
+dest_files=["res://.godot/imported/fact_trees_store_carbon.png-2072c24201355d45cab6e2aedbc4a42d.ctex"]
 
 [params]
 

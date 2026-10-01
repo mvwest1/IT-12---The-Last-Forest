@@ -124,3 +124,10 @@ QUIZ_PRE_DONE,Thank you! Now let's help the forest.,Salamat! Tulungan na natin a
 QUIZ_POST_DONE,Great job learning about the forest!,Magaling! Marami kang natutunan tungkol sa gubat!
 QUIZ_SCORE,Score: %d / %d,Puntos: %d / %d
 TIP_DIVERTER,Turn the lever so the water flows onto the dry land!,Iikot ang pingga para dumaloy ang tubig sa tuyong lupa!
+STAGE_DONE,Restored!,Naibalik!
+STAGE_PLAY,Play,Laruin
+HUD_JOURNAL,Leaf Journal,Talaan ng Dahon
+JOURNAL_TITLE,Leaf Journal,Talaan ng Dahon
+JOURNAL_EMPTY,Read the fact cards in the forest to fill your journal!,Basahin ang mga fact card sa gubat para mapuno ang iyong talaan!
+UI_PREV,Back,Bumalik
+UI_NEXT,Next,Susunod

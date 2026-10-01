@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" path="res://the_last_forest/art/water_icon.png" id="7"]
 [ext_resource type="Texture2D" path="res://the_last_forest/art/tree_icon.png" id="8"]
 [ext_resource type="PackedScene" path="res://the_last_forest/ui/fact_card_popup.tscn" id="9"]
-[ext_resource type="PackedScene" path="res://the_last_forest/scenes/quiz_modal.tscn" id="12"]
+[ext_resource type="PackedScene" path="res://the_last_forest/scenes/quiz_modal.tscn" id="10"]
 [ext_resource type="Script" path="res://the_last_forest/ui/pause_overlay.gd" id="11"]
 
 [node name="GameHUD" type="Control"]
@@ -24,101 +24,107 @@ script = ExtResource("2")
 heart_full = ExtResource("3")
 heart_empty = ExtResource("4")
 
-[node name="TopLeft" type="HBoxContainer" parent="."]
-offset_left = 10
-offset_top = 8
-offset_right = 420
-offset_bottom = 36
+[node name="TopLeft" type="PanelContainer" parent="."]
+offset_left = 8
+offset_top = 6
 mouse_filter = 2
-theme_override_constants/separation = 10
+theme_type_variation = "HudPanel"
 
-[node name="Hearts" type="HBoxContainer" parent="TopLeft"]
+[node name="Row" type="HBoxContainer" parent="TopLeft"]
+mouse_filter = 2
+theme_override_constants/separation = 14
+
+[node name="Hearts" type="HBoxContainer" parent="TopLeft/Row"]
 unique_name_in_owner = true
 mouse_filter = 2
+theme_override_constants/separation = 2
 
-[node name="SeedBox" type="HBoxContainer" parent="TopLeft"]
+[node name="SeedBox" type="HBoxContainer" parent="TopLeft/Row"]
 mouse_filter = 2
+theme_override_constants/separation = 4
 
-[node name="SeedIcon" type="TextureRect" parent="TopLeft/SeedBox"]
+[node name="SeedIcon" type="TextureRect" parent="TopLeft/Row/SeedBox"]
 texture = ExtResource("5")
 stretch_mode = 5
 mouse_filter = 2
 
-[node name="SeedLabel" type="Label" parent="TopLeft/SeedBox"]
+[node name="SeedLabel" type="Label" parent="TopLeft/Row/SeedBox"]
 unique_name_in_owner = true
 text = "0"
-theme_override_font_sizes/font_size = 20
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
+theme_type_variation = "HudLabel"
 
-[node name="GuardBox" type="HBoxContainer" parent="TopLeft"]
+[node name="GuardBox" type="HBoxContainer" parent="TopLeft/Row"]
 unique_name_in_owner = true
 mouse_filter = 2
+theme_override_constants/separation = 4
 
-[node name="GuardIcon" type="TextureRect" parent="TopLeft/GuardBox"]
+[node name="GuardIcon" type="TextureRect" parent="TopLeft/Row/GuardBox"]
 texture = ExtResource("6")
 stretch_mode = 5
 mouse_filter = 2
 
-[node name="GuardLabel" type="Label" parent="TopLeft/GuardBox"]
+[node name="GuardLabel" type="Label" parent="TopLeft/Row/GuardBox"]
 unique_name_in_owner = true
 text = "0"
-theme_override_font_sizes/font_size = 20
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
+theme_type_variation = "HudLabel"
 
-[node name="WaterBox" type="HBoxContainer" parent="TopLeft"]
+[node name="WaterBox" type="HBoxContainer" parent="TopLeft/Row"]
 unique_name_in_owner = true
 mouse_filter = 2
+theme_override_constants/separation = 4
 
-[node name="WaterIcon" type="TextureRect" parent="TopLeft/WaterBox"]
+[node name="WaterIcon" type="TextureRect" parent="TopLeft/Row/WaterBox"]
 texture = ExtResource("7")
 stretch_mode = 5
 mouse_filter = 2
 
-[node name="WaterLabel" type="Label" parent="TopLeft/WaterBox"]
+[node name="WaterLabel" type="Label" parent="TopLeft/Row/WaterBox"]
 unique_name_in_owner = true
 text = "0"
-theme_override_font_sizes/font_size = 20
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
+theme_type_variation = "HudLabel"
 
-[node name="TopRight" type="HBoxContainer" parent="."]
+[node name="TopRight" type="PanelContainer" parent="."]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -150
-offset_top = 8
-offset_right = -10
-offset_bottom = 36
+offset_left = -120
+offset_top = 6
+offset_right = -8
 grow_horizontal = 0
-alignment = 2
 mouse_filter = 2
+theme_type_variation = "HudPanel"
 
-[node name="TreeIcon" type="TextureRect" parent="TopRight"]
+[node name="Row" type="HBoxContainer" parent="TopRight"]
+alignment = 1
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="TreeIcon" type="TextureRect" parent="TopRight/Row"]
 texture = ExtResource("8")
 stretch_mode = 5
 mouse_filter = 2
 
-[node name="TreeLabel" type="Label" parent="TopRight"]
+[node name="TreeLabel" type="Label" parent="TopRight/Row"]
 unique_name_in_owner = true
 text = "0 / 0"
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
+theme_type_variation = "HudLabel"
 
-[node name="ObjectiveLabel" type="Label" parent="."]
-unique_name_in_owner = true
-anchors_preset = 10
-anchor_right = 1.0
-offset_left = 150
-offset_top = 40
-offset_right = -150
-offset_bottom = 80
+[node name="ObjectivePanel" type="PanelContainer" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -230
+offset_top = 44
+offset_right = 230
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 15
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
+mouse_filter = 2
+theme_type_variation = "HudPanel"
+
+[node name="ObjectiveLabel" type="Label" parent="ObjectivePanel"]
+unique_name_in_owner = true
+text = ""
 horizontal_alignment = 1
+theme_override_font_sizes/font_size = 15
 autowrap_mode = 3
 mouse_filter = 2
 
@@ -129,10 +135,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -80.0
-offset_top = 60
-offset_right = 80.0
-offset_bottom = 74
+offset_left = -85.0
+offset_top = 66
+offset_right = 85.0
+offset_bottom = 82
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -145,10 +151,10 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -250
-offset_top = -74
-offset_right = 250
-offset_bottom = -14
+offset_left = -260
+offset_top = -70
+offset_right = 260
+offset_bottom = -12
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
@@ -157,9 +163,9 @@ mouse_filter = 2
 unique_name_in_owner = true
 text = ""
 horizontal_alignment = 1
+theme_override_font_sizes/font_size = 17
 vertical_alignment = 1
 autowrap_mode = 3
-theme_override_font_sizes/font_size = 16
 
 [node name="ClimateTipModal" type="Control" parent="."]
 unique_name_in_owner = true
@@ -168,8 +174,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-process_mode = 3
-z_index = 10
 
 [node name="Dim" type="ColorRect" parent="ClimateTipModal"]
 anchors_preset = 15
@@ -177,7 +181,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.02, 0.08, 0.06, 0.85)
+color = Color(0.02, 0.06, 0.03, 0.7)
 
 [node name="Card" type="PanelContainer" parent="ClimateTipModal"]
 anchors_preset = 8
@@ -193,31 +197,35 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="VBox" type="VBoxContainer" parent="ClimateTipModal/Card"]
-theme_override_constants/separation = 16
+theme_override_constants/separation = 10
+alignment = 1
 
 [node name="ClimateTipTitle" type="Label" parent="ClimateTipModal/Card/VBox"]
 unique_name_in_owner = true
 text = "CLIMATE_TIP_TITLE"
 horizontal_alignment = 1
+theme_type_variation = "HeaderLabel"
 theme_override_font_sizes/font_size = 30
 
 [node name="ClimateTipLabel" type="Label" parent="ClimateTipModal/Card/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(500, 110)
+text = ""
 horizontal_alignment = 1
+theme_override_font_sizes/font_size = 22
+custom_minimum_size = Vector2(500, 120)
 vertical_alignment = 1
 autowrap_mode = 3
-theme_override_font_sizes/font_size = 22
 
 [node name="ClimateTipDismiss" type="Button" parent="ClimateTipModal/Card/VBox"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(220, 48)
 text = "UI_GOT_IT"
+theme_type_variation = "BigButton"
 size_flags_horizontal = 4
 
 [node name="FactCardPopup" parent="." instance=ExtResource("9")]
 
-[node name="QuizModalLayer" parent="." instance=ExtResource("12")]
+[node name="QuizModalLayer" parent="." instance=ExtResource("10")]
 
 [node name="PauseOverlay" type="Control" parent="."]
 anchors_preset = 15
@@ -234,36 +242,133 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.6)
+color = Color(0.02, 0.06, 0.03, 0.7)
 
-[node name="Center" type="CenterContainer" parent="PauseOverlay"]
+[node name="Card" type="PanelContainer" parent="PauseOverlay"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -170.0
+offset_right = 160.0
+offset_bottom = 170.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="PauseOverlay/Card"]
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="Title" type="Label" parent="PauseOverlay/Card/VBox"]
+text = "HUD_PAUSED"
+horizontal_alignment = 1
+theme_type_variation = "HeaderLabel"
+theme_override_font_sizes/font_size = 34
+
+[node name="ResumeButton" type="Button" parent="PauseOverlay/Card/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(270, 48)
+text = "HUD_RESUME"
+theme_type_variation = "BigButton"
+
+[node name="JournalButton" type="Button" parent="PauseOverlay/Card/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(270, 44)
+text = "HUD_JOURNAL"
+
+[node name="HoldToggle" type="CheckButton" parent="PauseOverlay/Card/VBox"]
+unique_name_in_owner = true
+text = "HUD_TAP_MODE"
+
+[node name="StageSelectButton" type="Button" parent="PauseOverlay/Card/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(270, 44)
+text = "HUD_STAGE_SELECT"
+
+[node name="JournalPanel" type="Control" parent="PauseOverlay"]
+unique_name_in_owner = true
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="PanelContainer" parent="PauseOverlay/Center"]
+[node name="Dim" type="ColorRect" parent="PauseOverlay/JournalPanel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.06, 0.03, 0.6)
 
-[node name="VBox" type="VBoxContainer" parent="PauseOverlay/Center/Panel"]
+[node name="Card" type="PanelContainer" parent="PauseOverlay/JournalPanel"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -310.0
+offset_top = -215.0
+offset_right = 310.0
+offset_bottom = 215.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="PauseOverlay/JournalPanel/Card"]
 theme_override_constants/separation = 10
+alignment = 1
 
-[node name="Title" type="Label" parent="PauseOverlay/Center/Panel/VBox"]
-text = "HUD_PAUSED"
+[node name="JournalHeader" type="Label" parent="PauseOverlay/JournalPanel/Card/VBox"]
+text = "JOURNAL_TITLE"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 28
+theme_type_variation = "HeaderLabel"
+theme_override_font_sizes/font_size = 30
 
-[node name="ResumeButton" type="Button" parent="PauseOverlay/Center/Panel/VBox"]
+[node name="JournalTitle" type="Label" parent="PauseOverlay/JournalPanel/Card/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(260, 44)
-text = "HUD_RESUME"
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 22
 
-[node name="HoldToggle" type="CheckButton" parent="PauseOverlay/Center/Panel/VBox"]
+[node name="JournalImage" type="TextureRect" parent="PauseOverlay/JournalPanel/Card/VBox"]
 unique_name_in_owner = true
-text = "HUD_TAP_MODE"
+custom_minimum_size = Vector2(0, 160)
+expand_mode = 1
+stretch_mode = 5
 
-[node name="StageSelectButton" type="Button" parent="PauseOverlay/Center/Panel/VBox"]
+[node name="JournalBody" type="Label" parent="PauseOverlay/JournalPanel/Card/VBox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(260, 44)
-text = "HUD_STAGE_SELECT"
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+autowrap_mode = 3
+custom_minimum_size = Vector2(560, 60)
 
+[node name="Nav" type="HBoxContainer" parent="PauseOverlay/JournalPanel/Card/VBox"]
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="JournalPrev" type="Button" parent="PauseOverlay/JournalPanel/Card/VBox/Nav"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 40)
+text = "UI_PREV"
+
+[node name="JournalPage" type="Label" parent="PauseOverlay/JournalPanel/Card/VBox/Nav"]
+unique_name_in_owner = true
+text = ""
+horizontal_alignment = 1
+theme_type_variation = "SubtleLabel"
+theme_override_font_sizes/font_size = 16
+custom_minimum_size = Vector2(80, 0)
+
+[node name="JournalNext" type="Button" parent="PauseOverlay/JournalPanel/Card/VBox/Nav"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 40)
+text = "UI_NEXT"
+
+[node name="JournalClose" type="Button" parent="PauseOverlay/JournalPanel/Card/VBox/Nav"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(140, 40)
+text = "UI_CLOSE"

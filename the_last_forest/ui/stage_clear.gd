@@ -7,6 +7,9 @@ extends Control
 @onready var _saved: Label = %SavedLabel
 @onready var _next: Button = %NextButton
 @onready var _select: Button = %StageSelectButton
+@onready var _stars: Array[TextureRect] = [%Star1, %Star2, %Star3]
+
+const STAR_FULL: Texture2D = preload("res://the_last_forest/art/star_full.png")
 
 
 func _ready() -> void:
@@ -27,6 +30,18 @@ func _ready() -> void:
 		_saved.text = tr("CLEAR_GUEST")
 	else:
 		_saved.text = tr("CLEAR_SAVED") if r.get("saved", false) else tr("CLEAR_SAVE_FAILED")
+	# Stars = post-quiz score out of 3 (always at least 1 for finishing).
+	var star_count: int = 3
+	if total > 0 and int(r.get("post_score", -1)) >= 0:
+		star_count = clampi(roundi(3.0 * float(r.get("post_score", 0)) / float(total)), 1, 3)
+	for i: int in _stars.size():
+		if i < star_count:
+			_stars[i].texture = STAR_FULL
+			_stars[i].pivot_offset = _stars[i].custom_minimum_size / 2.0
+			_stars[i].scale = Vector2.ZERO
+			var tw := create_tween()
+			tw.tween_interval(0.25 + 0.25 * i)
+			tw.tween_property(_stars[i], ^"scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	_next.visible = AppFlow.has_next_stage()
 	_next.pressed.connect(func() -> void: AppFlow.start_stage(AppFlow.current_stage_index + 1))
 	_select.pressed.connect(AppFlow.go_stage_select)

@@ -4,6 +4,10 @@
 [ext_resource type="AudioStream" uid="uid://c1i84mve6y67g" path="res://player/jump.wav" id="5"]
 [ext_resource type="Texture2D" uid="uid://iv1n4s17uj55" path="res://player/robot.webp" id="9"]
 [ext_resource type="Script" path="res://the_last_forest/interaction/player_interactor.gd" id="10"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/touch_interact.png" id="touch_I"]
+[ext_resource type="Texture2D" path="res://gui/touch_button_jump.webp" id="touch_J"]
+[ext_resource type="Texture2D" path="res://gui/touch_button_right.webp" id="touch_R"]
+[ext_resource type="Texture2D" path="res://gui/touch_button_left.webp" id="touch_L"]
 
 [sub_resource type="Animation" id="1"]
 resource_name = "crouch"
@@ -151,6 +155,7 @@ shape = SubResource("12")
 layer = 0
 
 [node name="Left" type="TouchScreenButton" parent="UI"]
+texture_normal = ExtResource("touch_L")
 position = Vector2(64, 420)
 scale = Vector2(1.1, 1.1)
 passby_press = true
@@ -158,6 +163,7 @@ action = "move_left"
 visibility_mode = 1
 
 [node name="Right" type="TouchScreenButton" parent="UI"]
+texture_normal = ExtResource("touch_R")
 position = Vector2(145, 420)
 scale = Vector2(1.1, 1.1)
 passby_press = true
@@ -165,12 +171,14 @@ action = "move_right"
 visibility_mode = 1
 
 [node name="Jump" type="TouchScreenButton" parent="UI"]
+texture_normal = ExtResource("touch_J")
 position = Vector2(730, 420)
 scale = Vector2(1.1, 1.1)
 action = "jump"
 visibility_mode = 1
 
 [node name="Interact" type="TouchScreenButton" parent="UI"]
+texture_normal = ExtResource("touch_I")
 position = Vector2(650, 420)
 scale = Vector2(1.1, 1.1)
 action = "interact"

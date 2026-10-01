@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://db4pay4kpphxq"
-path="res://.godot/imported/question_mark.png-9691371f020173470e1b565c8571c795.ctex"
+uid="uid://bgixi45ch4hjm"
+path="res://.godot/imported/spout.png-354537fbd5b4bfd4a562284af8f4f113.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://the_last_forest/assets/placeholders/question_mark.png"
-dest_files=["res://.godot/imported/question_mark.png-9691371f020173470e1b565c8571c795.ctex"]
+source_file="res://the_last_forest/art/spout.png"
+dest_files=["res://.godot/imported/spout.png-354537fbd5b4bfd4a562284af8f4f113.ctex"]
 
 [params]
 

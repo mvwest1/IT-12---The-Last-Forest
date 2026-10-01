@@ -1,12 +1,14 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://the_last_forest/water/water_source.gd" id="1"]
 [ext_resource type="PackedScene" path="res://the_last_forest/water/water_drop.tscn" id="2"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/spout.png" id="3"]
 
 [node name="WaterSource" type="Node2D"]
 script = ExtResource("1")
 drop_scene = ExtResource("2")
 
-[node name="Pipe" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(-14, -30, 14, -30, 10, 0, -10, 0)
-color = Color(0.45, 0.45, 0.5, 1)
+[node name="Spout" type="Sprite2D" parent="."]
+texture = ExtResource("3")
+centered = false
+offset = Vector2(-28, -15)

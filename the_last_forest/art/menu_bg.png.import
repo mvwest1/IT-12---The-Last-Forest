@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cko0kpdx0u1g3"
-path="res://.godot/imported/pest.png-db0878ba4a43d14f225da4d0bfe1f4fb.ctex"
+uid="uid://dbg2wg8blylw2"
+path="res://.godot/imported/menu_bg.png-55e4f2df6475073048cf65240343d37f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://the_last_forest/assets/placeholders/pest.png"
-dest_files=["res://.godot/imported/pest.png-db0878ba4a43d14f225da4d0bfe1f4fb.ctex"]
+source_file="res://the_last_forest/art/menu_bg.png"
+dest_files=["res://.godot/imported/menu_bg.png-55e4f2df6475073048cf65240343d37f.ctex"]
 
 [params]
 
