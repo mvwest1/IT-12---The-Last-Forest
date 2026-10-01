@@ -1,14 +1,14 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3]
 
 [ext_resource type="Script" path="res://the_last_forest/water/water_source.gd" id="1"]
 [ext_resource type="PackedScene" path="res://the_last_forest/water/water_drop.tscn" id="2"]
-[ext_resource type="Texture2D" path="res://the_last_forest/art/spout.png" id="3"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/rain_cloud.png" id="3"]
 
 [node name="WaterSource" type="Node2D"]
 script = ExtResource("1")
 drop_scene = ExtResource("2")
 
-[node name="Spout" type="Sprite2D" parent="."]
+[node name="RainCloud" type="Sprite2D" parent="."]
+position = Vector2(0, -34)
+scale = Vector2(0.8, 0.7)
 texture = ExtResource("3")
-centered = false
-offset = Vector2(-28, -15)

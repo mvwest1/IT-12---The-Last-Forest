@@ -2,13 +2,13 @@ extends SceneTree
 ## Renders every stage as one long strip image (burnt and restored) for review.
 ## Run (needs a display, e.g. xvfb-run):
 ##   godot --path . --rendering-driver opengl3 -s res://tests/level_overview.gd
-## Output: user://overview/stage_N_burnt.png and stage_N_green.png
+## Output: user://overview/stage_N_start.png (as the stage begins) and stage_N_green.png (all trees grown)
 
 func _initialize() -> void:
 	await process_frame
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("user://overview"))
 	for idx in range(1, 5):
-		for mode in ["burnt", "green"]:
+		for mode in ["start", "green"]:
 			await _render(idx, mode)
 	quit()
 
@@ -30,7 +30,7 @@ func _render(idx: int, mode: String) -> void:
 	await create_timer(1.2, true).timeout
 	ctl.set_process(false)
 	if ctl._tween: ctl._tween.kill()
-	ctl._set_value(0.0 if mode == "burnt" else 1.0)
+	ctl._set_value(root.get_node("GameState").restoration_ratio() if mode == "start" else 1.0)
 	var player: Node2D = sc.get_node("Player")
 	player.process_mode = Node.PROCESS_MODE_DISABLED
 	var cam := Camera2D.new()

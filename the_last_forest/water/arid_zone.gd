@@ -9,6 +9,10 @@ extends Area2D
 ##   ├─ CollisionShape2D   (wide rectangle covering the dry patch)
 ##   ├─ Ground (Polygon2D/Sprite2D)  cracked-earth art (assign to `visual`)
 ##   └─ Meter (ProgressBar, optional)  drops absorbed / needed
+##
+## Decor swap (no code per level): nodes in group "dry_decor" (straw bushes)
+## fade out and nodes in group "wet_decor" (green bushes) fade in when the
+## land is fully watered.
 
 @export var drops_needed: int = 30
 @export var visual: CanvasItem
@@ -27,6 +31,9 @@ func _ready() -> void:
 	add_to_group(&"arid_zones")
 	body_entered.connect(_on_body_entered)
 	_update_visual()
+	for node: Node in get_tree().get_nodes_in_group(&"wet_decor"):
+		if node is CanvasItem:
+			(node as CanvasItem).visible = is_hydrated()
 
 
 func is_hydrated() -> bool:
@@ -48,6 +55,7 @@ func _on_body_entered(body: Node2D) -> void:
 	_update_visual()
 	if is_hydrated():
 		EventBus.arid_zone_hydrated.emit(self)
+		_swap_decor()
 
 
 func _update_visual() -> void:
@@ -56,3 +64,18 @@ func _update_visual() -> void:
 	if _meter != null:
 		_meter.max_value = drops_needed
 		_meter.value = _absorbed
+
+
+func _swap_decor() -> void:
+	for node: Node in get_tree().get_nodes_in_group(&"dry_decor"):
+		if node is CanvasItem:
+			var item := node as CanvasItem
+			var tw := create_tween()
+			tw.tween_property(item, ^"modulate:a", 0.0, 1.2)
+			tw.tween_callback(item.hide)
+	for node: Node in get_tree().get_nodes_in_group(&"wet_decor"):
+		if node is CanvasItem:
+			var item := node as CanvasItem
+			item.modulate.a = 0.0
+			item.show()
+			create_tween().tween_property(item, ^"modulate:a", 1.0, 1.2)

@@ -14,6 +14,12 @@
 [ext_resource type="Texture2D" path="res://the_last_forest/art/env/rock_1.png" id="rock"]
 [ext_resource type="Texture2D" path="res://the_last_forest/art/env/vine_1.png" id="vine1"]
 [ext_resource type="Texture2D" path="res://the_last_forest/art/env/vine_2.png" id="vine2"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/snag.png" id="snag"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/stump.png" id="stump"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/smoke.png" id="smoke"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/ember.png" id="ember"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/fog.png" id="fog"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/dry_bush.png" id="drybush"]
 [ext_resource type="Material" path="res://level/props/wind_sway.tres" id="wind"]
 [ext_resource type="Script" path="res://the_last_forest/stage/stage_controller.gd" id="ctl"]
 [ext_resource type="Script" path="res://the_last_forest/stage/fact_trigger.gd" id="fact"]
@@ -30,6 +36,19 @@
 
 [sub_resource type="RectangleShape2D" id="StageMilestoneShape"]
 size = Vector2(56, 112)
+
+[sub_resource type="Curve" id="smoke_grow"]
+max_value = 2.0
+_data = [Vector2(0, 0.5), 0.0, 0.0, 0, 0, Vector2(1, 1.7), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="smoke_fade"]
+offsets = PackedFloat32Array(0, 0.2, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0.7, 1, 1, 1, 0)
+
+[sub_resource type="Gradient" id="ember_fade"]
+offsets = PackedFloat32Array(0, 0.6, 1)
+colors = PackedColorArray(1, 0.85, 0.4, 1, 1, 0.45, 0.1, 0.9, 0.8, 0.2, 0.05, 0)
 
 [node name="Stage4" type="Node2D"]
 
@@ -174,7 +193,7 @@ centered = false
 offset = Vector2(-32, -64)
 
 
-[node name="Bush1" type="Sprite2D" parent="Bushes" groups=["appear_at_1"]]
+[node name="Bush1" type="Sprite2D" parent="Bushes"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(471, 654)
@@ -194,7 +213,7 @@ centered = false
 offset = Vector2(-32, -64)
 
 
-[node name="Bush3" type="Sprite2D" parent="Bushes" groups=["appear_at_1"]]
+[node name="Bush3" type="Sprite2D" parent="Bushes"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(1312, 526)
@@ -214,7 +233,7 @@ centered = false
 offset = Vector2(-32, -64)
 
 
-[node name="Bush5" type="Sprite2D" parent="Bushes" groups=["appear_at_1"]]
+[node name="Bush5" type="Sprite2D" parent="Bushes"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(1819, 654)
@@ -234,7 +253,7 @@ centered = false
 offset = Vector2(-32, -64)
 
 
-[node name="Bush7" type="Sprite2D" parent="Bushes" groups=["appear_at_1"]]
+[node name="Bush7" type="Sprite2D" parent="Bushes"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(2335, 718)
@@ -254,7 +273,7 @@ centered = false
 offset = Vector2(-32, -64)
 
 
-[node name="Bush9" type="Sprite2D" parent="Bushes" groups=["appear_at_1"]]
+[node name="Bush9" type="Sprite2D" parent="Bushes"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(2913, 654)
@@ -274,7 +293,7 @@ centered = false
 offset = Vector2(-32, -64)
 
 
-[node name="Bush11" type="Sprite2D" parent="Bushes" groups=["appear_at_1"]]
+[node name="Bush11" type="Sprite2D" parent="Bushes"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(3418, 654)
@@ -294,7 +313,7 @@ centered = false
 offset = Vector2(-32, -64)
 
 
-[node name="Bush13" type="Sprite2D" parent="Bushes" groups=["appear_at_1"]]
+[node name="Bush13" type="Sprite2D" parent="Bushes"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(3754, 654)
@@ -371,7 +390,7 @@ scale = Vector2(0.88, 0.88)
 texture = ExtResource("grass2")
 
 
-[node name="W0" type="Sprite2D" parent="Flowers" groups=["appear_at_1"]]
+[node name="W0" type="Sprite2D" parent="Flowers"]
 z_index = 1
 material = ExtResource("wind")
 position = Vector2(301, 638)
@@ -395,7 +414,7 @@ scale = Vector2(-0.85, 0.85)
 texture = ExtResource("grass1")
 
 
-[node name="F0" type="Sprite2D" parent="Ferns" groups=["appear_at_1"]]
+[node name="F0" type="Sprite2D" parent="Ferns"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(364, 628)
@@ -419,7 +438,7 @@ scale = Vector2(-0.81, 0.81)
 texture = ExtResource("grass3")
 
 
-[node name="F1" type="Sprite2D" parent="Ferns" groups=["appear_at_1"]]
+[node name="F1" type="Sprite2D" parent="Ferns"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(419, 628)
@@ -443,7 +462,7 @@ scale = Vector2(0.83, 0.83)
 texture = ExtResource("grass3")
 
 
-[node name="F2" type="Sprite2D" parent="Ferns" groups=["appear_at_1"]]
+[node name="F2" type="Sprite2D" parent="Ferns"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(485, 628)
@@ -467,7 +486,7 @@ scale = Vector2(-0.80, 0.80)
 texture = ExtResource("grass2")
 
 
-[node name="F3" type="Sprite2D" parent="Ferns" groups=["appear_at_1"]]
+[node name="F3" type="Sprite2D" parent="Ferns"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(542, 628)
@@ -595,7 +614,7 @@ scale = Vector2(-0.90, 0.90)
 texture = ExtResource("grass1")
 
 
-[node name="W1" type="Sprite2D" parent="Flowers" groups=["appear_at_1"]]
+[node name="W1" type="Sprite2D" parent="Flowers"]
 z_index = 1
 material = ExtResource("wind")
 position = Vector2(1327, 510)
@@ -611,7 +630,7 @@ scale = Vector2(-0.86, 0.86)
 texture = ExtResource("grass3")
 
 
-[node name="F4" type="Sprite2D" parent="Ferns" groups=["appear_at_1"]]
+[node name="F4" type="Sprite2D" parent="Ferns"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(1387, 500)
@@ -675,7 +694,7 @@ scale = Vector2(0.91, 0.91)
 texture = ExtResource("grass3")
 
 
-[node name="F5" type="Sprite2D" parent="Ferns" groups=["appear_at_1"]]
+[node name="F5" type="Sprite2D" parent="Ferns"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(1622, 564)
@@ -715,7 +734,7 @@ scale = Vector2(0.93, 0.93)
 texture = ExtResource("grass1")
 
 
-[node name="F6" type="Sprite2D" parent="Ferns" groups=["appear_at_1"]]
+[node name="F6" type="Sprite2D" parent="Ferns"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(1826, 628)
@@ -763,7 +782,7 @@ scale = Vector2(0.95, 0.95)
 texture = ExtResource("grass2")
 
 
-[node name="F7" type="Sprite2D" parent="Ferns" groups=["appear_at_1"]]
+[node name="F7" type="Sprite2D" parent="Ferns"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(2009, 628)
@@ -859,7 +878,7 @@ scale = Vector2(-0.87, 0.87)
 texture = ExtResource("grass1")
 
 
-[node name="W2" type="Sprite2D" parent="Flowers" groups=["appear_at_1"]]
+[node name="W2" type="Sprite2D" parent="Flowers"]
 z_index = 1
 material = ExtResource("wind")
 position = Vector2(2478, 638)
@@ -939,7 +958,7 @@ scale = Vector2(0.82, 0.82)
 texture = ExtResource("grass2")
 
 
-[node name="W3" type="Sprite2D" parent="Flowers" groups=["appear_at_1"]]
+[node name="W3" type="Sprite2D" parent="Flowers"]
 z_index = 1
 position = Vector2(2977, 638)
 scale = Vector2(0.80, 0.80)
@@ -986,7 +1005,7 @@ scale = Vector2(-0.99, 0.99)
 texture = ExtResource("grass2")
 
 
-[node name="W4" type="Sprite2D" parent="Flowers" groups=["appear_at_1"]]
+[node name="W4" type="Sprite2D" parent="Flowers"]
 z_index = 1
 material = ExtResource("wind")
 position = Vector2(3175, 574)
@@ -1034,7 +1053,7 @@ scale = Vector2(0.81, 0.81)
 texture = ExtResource("grass1")
 
 
-[node name="F8" type="Sprite2D" parent="Ferns" groups=["appear_at_1"]]
+[node name="F8" type="Sprite2D" parent="Ferns"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(3486, 628)
@@ -1058,7 +1077,7 @@ scale = Vector2(-0.83, 0.83)
 texture = ExtResource("grass1")
 
 
-[node name="F9" type="Sprite2D" parent="Ferns" groups=["appear_at_1"]]
+[node name="F9" type="Sprite2D" parent="Ferns"]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(3547, 628)
@@ -1082,7 +1101,7 @@ scale = Vector2(0.81, 0.81)
 texture = ExtResource("grass3")
 
 
-[node name="W5" type="Sprite2D" parent="Flowers" groups=["appear_at_1"]]
+[node name="W5" type="Sprite2D" parent="Flowers"]
 z_index = 1
 position = Vector2(3615, 638)
 scale = Vector2(0.80, 0.80)
@@ -1097,7 +1116,7 @@ scale = Vector2(-0.86, 0.86)
 texture = ExtResource("grass3")
 
 
-[node name="W6" type="Sprite2D" parent="Flowers" groups=["appear_at_1"]]
+[node name="W6" type="Sprite2D" parent="Flowers"]
 z_index = 1
 position = Vector2(3696, 638)
 scale = Vector2(0.80, 0.80)
@@ -1176,7 +1195,7 @@ scale = Vector2(-0.97, 0.97)
 texture = ExtResource("grass3")
 
 
-[node name="W7" type="Sprite2D" parent="Flowers" groups=["appear_at_1"]]
+[node name="W7" type="Sprite2D" parent="Flowers"]
 z_index = 1
 position = Vector2(4014, 638)
 scale = Vector2(0.80, 0.80)
@@ -1228,6 +1247,46 @@ material = ExtResource("wind")
 position = Vector2(3558, 582)
 texture = ExtResource("vine1")
 
+
+[node name="Burnt" type="Node2D" parent="."]
+
+[node name="Smoke" type="Node2D" parent="."]
+
+[node name="Fog" type="Node2D" parent="."]
+
+[node name="Fog0" type="Sprite2D" parent="Fog"]
+z_index = 2
+modulate = Color(1, 1, 1, 0.95)
+position = Vector2(1080, 836)
+scale = Vector2(0.62, 0.62)
+texture = ExtResource("fog")
+
+
+[node name="Fog1" type="Sprite2D" parent="Fog"]
+z_index = 2
+modulate = Color(1, 1, 1, 0.6)
+position = Vector2(1096, 766)
+scale = Vector2(0.50, 0.50)
+texture = ExtResource("fog")
+
+
+[node name="Fog2" type="Sprite2D" parent="Fog"]
+z_index = 2
+modulate = Color(1, 1, 1, 0.95)
+position = Vector2(2680, 836)
+scale = Vector2(0.62, 0.62)
+texture = ExtResource("fog")
+
+
+[node name="Fog3" type="Sprite2D" parent="Fog"]
+z_index = 2
+modulate = Color(1, 1, 1, 0.6)
+position = Vector2(2696, 766)
+scale = Vector2(0.50, 0.50)
+texture = ExtResource("fog")
+
+
+[node name="DryLand" type="Node2D" parent="."]
 
 [node name="StageController" type="Node" parent="." node_paths=PackedStringArray("player", "spawn_point", "exit_gate")]
 script = ExtResource("ctl")

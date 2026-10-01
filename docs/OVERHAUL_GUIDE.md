@@ -21,7 +21,10 @@
 godot --headless --path . -s res://tests/smoke_test.gd   # full play-through of all 4 stages, real SQLite: expect 72/72 PASS
 godot --headless --path . -s res://tests/reach_test.gd   # every seed, zone and gate reachable on foot
 godot --headless --path . -s res://tests/load_all.gd     # every script and scene loads
+godot --headless --path . -s res://tests/edge_test.gd    # defeat, replay, leaving mid-stage, burnt->green decor, Filipino text: expect 25/25
+python tests/static_check.py                              # exact-case file paths (Windows export), translations complete, enough seeds
 ```
+`tests/perf_probe.gd` prints frame times per stage (needs a real renderer). The "leaked at exit" warning printed after the Godot tests is the background music still playing when the test quits; it is not a game bug.
 `tests/screenshots.gd` renders the main screens to PNG, and `tests/level_overview.gd` renders every stage end to end (burnt and green). Both need a real renderer, not `--headless`.
 
 ## Before the pilot
@@ -33,6 +36,7 @@ godot --headless --path . -s res://tests/load_all.gd     # every script and scen
 ## Rules that keep it working
 - **Node references in scenes:** an exported Node property (`player`, `arid_zone`, and so on) needs `node_paths=` in the `.tscn`. Assigning it in the Godot Inspector does this automatically. Hand-written scene text must include it, otherwise the reference is silently empty.
 - **Change levels in `tools/build_levels.py`, then re-run it** (`python the_last_forest/tools/build_levels.py` from the project root). It overwrites `stage_1..4.tscn`, so edits made in the Godot editor to those scenes are lost on the next build. Each layout is a list of `(columns, surface_row)` segments (`None` = pit) plus ledges, seeds, zones, trees and bushes by column. The build refuses layouts that break the kid-friendly rules: required steps of max 1 tile, gaps of max 2 tiles, a checkpoint after every pit, zones/gate/checkpoints on flat ground, bonus seeds only on ledges. Then run `reach_test.gd` and `smoke_test.gd`.
+- **Smart reuse (made by `recolor_env.py` from the demo art):** clouds become grey smoke over burnt ground, pale fog in pits, and the Stage 3 rain cloud; the tileset's tall tree becomes a leafless burnt snag; a tree trunk becomes a burnt stump; the bush becomes a dry straw bush; the sparkle becomes embers. Snags, stumps, smoke and embers fade out (`vanish_at_N` groups) as trees mature, and green trees, flowers and ferns fade in (`appear_at_N`). In Stage 3 the straw bushes turn green when the dry land is watered (`dry_decor`/`wet_decor` groups). Stage 4 is lush from the start.
 - **Asset rules (same in every stage):** ground = tiles, trees = `art/env/tree_1/2.png`, bushes/ferns/grass/flowers/rocks/vines = `art/env/*`, background = `forest_background.tscn` (sky, two cliff layers, drifting clouds). To try new placeholder art, replace the PNGs in `art/env/` with the same names and sizes; no scene edits needed. Don't re-run `recolor_env.py` after that, because it overwrites `art/env/` from the demo originals.
 - **Stage 3 water puzzle geometry is fixed:** left wall face, then the lever 278 px right of it, the spout 50 px further, the dry land 216 px after that, all on one flat floor. The water simulation was tuned on exactly this; move the whole group together or not at all.
 - **Camera limits** come from the tile map automatically (`StageController._fit_camera_to_level`), so a wider or taller level needs no player-scene change.

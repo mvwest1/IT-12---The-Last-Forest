@@ -14,6 +14,12 @@
 [ext_resource type="Texture2D" path="res://the_last_forest/art/env/rock_1.png" id="rock"]
 [ext_resource type="Texture2D" path="res://the_last_forest/art/env/vine_1.png" id="vine1"]
 [ext_resource type="Texture2D" path="res://the_last_forest/art/env/vine_2.png" id="vine2"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/snag.png" id="snag"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/stump.png" id="stump"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/smoke.png" id="smoke"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/ember.png" id="ember"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/fog.png" id="fog"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/dry_bush.png" id="drybush"]
 [ext_resource type="Material" path="res://level/props/wind_sway.tres" id="wind"]
 [ext_resource type="Script" path="res://the_last_forest/stage/stage_controller.gd" id="ctl"]
 [ext_resource type="Script" path="res://the_last_forest/stage/fact_trigger.gd" id="fact"]
@@ -32,6 +38,19 @@
 [sub_resource type="RectangleShape2D" id="StageMilestoneShape"]
 size = Vector2(56, 112)
 
+[sub_resource type="Curve" id="smoke_grow"]
+max_value = 2.0
+_data = [Vector2(0, 0.5), 0.0, 0.0, 0, 0, Vector2(1, 1.7), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="smoke_fade"]
+offsets = PackedFloat32Array(0, 0.2, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0.7, 1, 1, 1, 0)
+
+[sub_resource type="Gradient" id="ember_fade"]
+offsets = PackedFloat32Array(0, 0.6, 1)
+colors = PackedColorArray(1, 0.85, 0.4, 1, 1, 0.45, 0.1, 0.9, 0.8, 0.2, 0.05, 0)
+
 [node name="Stage1" type="Node2D"]
 
 [node name="Background" parent="." instance=ExtResource("bg")]
@@ -43,7 +62,7 @@ rendering_quadrant_size = 32
 
 [node name="Trees" type="Node2D" parent="."]
 
-[node name="Tree0" type="Sprite2D" parent="Trees"]
+[node name="Tree0" type="Sprite2D" parent="Trees" groups=["appear_at_2"]]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(152, 656)
@@ -53,7 +72,7 @@ centered = false
 offset = Vector2(-64, -128)
 
 
-[node name="Tree1" type="Sprite2D" parent="Trees"]
+[node name="Tree1" type="Sprite2D" parent="Trees" groups=["appear_at_2"]]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(466, 656)
@@ -63,7 +82,7 @@ centered = false
 offset = Vector2(-64, -128)
 
 
-[node name="Tree2" type="Sprite2D" parent="Trees"]
+[node name="Tree2" type="Sprite2D" parent="Trees" groups=["appear_at_3"]]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(989, 592)
@@ -73,7 +92,7 @@ centered = false
 offset = Vector2(-64, -128)
 
 
-[node name="Tree3" type="Sprite2D" parent="Trees"]
+[node name="Tree3" type="Sprite2D" parent="Trees" groups=["appear_at_3"]]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(1621, 592)
@@ -83,7 +102,7 @@ centered = false
 offset = Vector2(-64, -128)
 
 
-[node name="Tree4" type="Sprite2D" parent="Trees"]
+[node name="Tree4" type="Sprite2D" parent="Trees" groups=["appear_at_4"]]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(1948, 592)
@@ -93,7 +112,7 @@ centered = false
 offset = Vector2(-64, -128)
 
 
-[node name="Tree5" type="Sprite2D" parent="Trees"]
+[node name="Tree5" type="Sprite2D" parent="Trees" groups=["appear_at_4"]]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(2136, 656)
@@ -103,7 +122,7 @@ centered = false
 offset = Vector2(-64, -128)
 
 
-[node name="Tree6" type="Sprite2D" parent="Trees"]
+[node name="Tree6" type="Sprite2D" parent="Trees" groups=["appear_at_4"]]
 z_index = -1
 material = ExtResource("wind")
 position = Vector2(2578, 656)
@@ -776,6 +795,298 @@ texture = ExtResource("grass1")
 
 
 [node name="Vines" type="Node2D" parent="."]
+
+[node name="Burnt" type="Node2D" parent="."]
+
+[node name="Snag0" type="Sprite2D" parent="Burnt" groups=["vanish_at_2"]]
+z_index = -1
+position = Vector2(167, 658)
+scale = Vector2(-0.95, 0.95)
+texture = ExtResource("snag")
+centered = false
+offset = Vector2(-32, -190)
+
+
+[node name="Snag1" type="Sprite2D" parent="Burnt" groups=["vanish_at_2"]]
+z_index = -1
+position = Vector2(482, 658)
+scale = Vector2(-1.03, 1.03)
+texture = ExtResource("snag")
+centered = false
+offset = Vector2(-32, -190)
+
+
+[node name="Snag2" type="Sprite2D" parent="Burnt" groups=["vanish_at_3"]]
+z_index = -1
+position = Vector2(999, 594)
+scale = Vector2(-1.00, 1.00)
+texture = ExtResource("snag")
+centered = false
+offset = Vector2(-32, -190)
+
+
+[node name="Snag3" type="Sprite2D" parent="Burnt" groups=["vanish_at_3"]]
+z_index = -1
+position = Vector2(1629, 594)
+scale = Vector2(-0.93, 0.93)
+texture = ExtResource("snag")
+centered = false
+offset = Vector2(-32, -190)
+
+
+[node name="Snag4" type="Sprite2D" parent="Burnt" groups=["vanish_at_4"]]
+z_index = -1
+position = Vector2(1946, 594)
+scale = Vector2(-1.01, 1.01)
+texture = ExtResource("snag")
+centered = false
+offset = Vector2(-32, -190)
+
+
+[node name="Snag5" type="Sprite2D" parent="Burnt" groups=["vanish_at_4"]]
+z_index = -1
+position = Vector2(2150, 658)
+scale = Vector2(1.01, 1.01)
+texture = ExtResource("snag")
+centered = false
+offset = Vector2(-32, -190)
+
+
+[node name="Snag6" type="Sprite2D" parent="Burnt" groups=["vanish_at_4"]]
+z_index = -1
+position = Vector2(2583, 658)
+scale = Vector2(-0.98, 0.98)
+texture = ExtResource("snag")
+centered = false
+offset = Vector2(-32, -190)
+
+
+[node name="Stump7" type="Sprite2D" parent="Burnt" groups=["vanish_at_3"]]
+z_index = -1
+position = Vector2(598, 656)
+scale = Vector2(1.40, 1.40)
+texture = ExtResource("stump")
+centered = false
+offset = Vector2(-13, -41)
+
+
+[node name="Stump8" type="Sprite2D" parent="Burnt" groups=["vanish_at_4"]]
+z_index = -1
+position = Vector2(1121, 592)
+scale = Vector2(-1.40, 1.40)
+texture = ExtResource("stump")
+centered = false
+offset = Vector2(-13, -41)
+
+
+[node name="Stump9" type="Sprite2D" parent="Burnt" groups=["vanish_at_4"]]
+z_index = -1
+position = Vector2(1693, 592)
+scale = Vector2(1.40, 1.40)
+texture = ExtResource("stump")
+centered = false
+offset = Vector2(-13, -41)
+
+
+[node name="Stump10" type="Sprite2D" parent="Burnt" groups=["vanish_at_4"]]
+z_index = -1
+position = Vector2(2473, 656)
+scale = Vector2(1.40, 1.40)
+texture = ExtResource("stump")
+centered = false
+offset = Vector2(-13, -41)
+
+
+[node name="Smoke" type="Node2D" parent="."]
+
+[node name="Smoke0" type="CPUParticles2D" parent="Smoke" groups=["vanish_at_1"]]
+z_index = -1
+position = Vector2(352, 646)
+amount = 9
+lifetime = 5.0
+preprocess = 5.0
+texture = ExtResource("smoke")
+emission_shape = 3
+emission_rect_extents = Vector2(16, 4)
+direction = Vector2(0.25, -1)
+spread = 10.0
+gravity = Vector2(5, -4)
+initial_velocity_min = 16.0
+initial_velocity_max = 26.0
+scale_amount_min = 0.22
+scale_amount_max = 0.34
+scale_amount_curve = SubResource("smoke_grow")
+color_ramp = SubResource("smoke_fade")
+
+[node name="Embers0" type="CPUParticles2D" parent="Smoke" groups=["vanish_at_1"]]
+z_index = 1
+position = Vector2(352, 644)
+amount = 6
+lifetime = 2.0
+preprocess = 2.0
+texture = ExtResource("ember")
+emission_shape = 3
+emission_rect_extents = Vector2(18, 3)
+direction = Vector2(0, -1)
+spread = 35.0
+gravity = Vector2(0, -12)
+initial_velocity_min = 18.0
+initial_velocity_max = 38.0
+scale_amount_min = 0.7
+scale_amount_max = 1.3
+color_ramp = SubResource("ember_fade")
+
+[node name="Smoke1" type="CPUParticles2D" parent="Smoke" groups=["vanish_at_2"]]
+z_index = -1
+position = Vector2(1056, 582)
+amount = 6
+lifetime = 4.0
+preprocess = 5.0
+texture = ExtResource("smoke")
+emission_shape = 3
+emission_rect_extents = Vector2(16, 4)
+direction = Vector2(0.25, -1)
+spread = 10.0
+gravity = Vector2(5, -4)
+initial_velocity_min = 16.0
+initial_velocity_max = 26.0
+scale_amount_min = 0.15
+scale_amount_max = 0.24
+scale_amount_curve = SubResource("smoke_grow")
+color_ramp = SubResource("smoke_fade")
+
+[node name="Embers1" type="CPUParticles2D" parent="Smoke" groups=["vanish_at_2"]]
+z_index = 1
+position = Vector2(1056, 580)
+amount = 6
+lifetime = 2.0
+preprocess = 2.0
+texture = ExtResource("ember")
+emission_shape = 3
+emission_rect_extents = Vector2(18, 3)
+direction = Vector2(0, -1)
+spread = 35.0
+gravity = Vector2(0, -12)
+initial_velocity_min = 18.0
+initial_velocity_max = 38.0
+scale_amount_min = 0.7
+scale_amount_max = 1.3
+color_ramp = SubResource("ember_fade")
+
+[node name="Smoke2" type="CPUParticles2D" parent="Smoke" groups=["vanish_at_2"]]
+z_index = -1
+position = Vector2(1568, 582)
+amount = 9
+lifetime = 5.0
+preprocess = 5.0
+texture = ExtResource("smoke")
+emission_shape = 3
+emission_rect_extents = Vector2(16, 4)
+direction = Vector2(0.25, -1)
+spread = 10.0
+gravity = Vector2(5, -4)
+initial_velocity_min = 16.0
+initial_velocity_max = 26.0
+scale_amount_min = 0.22
+scale_amount_max = 0.34
+scale_amount_curve = SubResource("smoke_grow")
+color_ramp = SubResource("smoke_fade")
+
+[node name="Embers2" type="CPUParticles2D" parent="Smoke" groups=["vanish_at_2"]]
+z_index = 1
+position = Vector2(1568, 580)
+amount = 6
+lifetime = 2.0
+preprocess = 2.0
+texture = ExtResource("ember")
+emission_shape = 3
+emission_rect_extents = Vector2(18, 3)
+direction = Vector2(0, -1)
+spread = 35.0
+gravity = Vector2(0, -12)
+initial_velocity_min = 18.0
+initial_velocity_max = 38.0
+scale_amount_min = 0.7
+scale_amount_max = 1.3
+color_ramp = SubResource("ember_fade")
+
+[node name="Smoke3" type="CPUParticles2D" parent="Smoke" groups=["vanish_at_3"]]
+z_index = -1
+position = Vector2(1888, 582)
+amount = 6
+lifetime = 4.0
+preprocess = 5.0
+texture = ExtResource("smoke")
+emission_shape = 3
+emission_rect_extents = Vector2(16, 4)
+direction = Vector2(0.25, -1)
+spread = 10.0
+gravity = Vector2(5, -4)
+initial_velocity_min = 16.0
+initial_velocity_max = 26.0
+scale_amount_min = 0.15
+scale_amount_max = 0.24
+scale_amount_curve = SubResource("smoke_grow")
+color_ramp = SubResource("smoke_fade")
+
+[node name="Embers3" type="CPUParticles2D" parent="Smoke" groups=["vanish_at_3"]]
+z_index = 1
+position = Vector2(1888, 580)
+amount = 6
+lifetime = 2.0
+preprocess = 2.0
+texture = ExtResource("ember")
+emission_shape = 3
+emission_rect_extents = Vector2(18, 3)
+direction = Vector2(0, -1)
+spread = 35.0
+gravity = Vector2(0, -12)
+initial_velocity_min = 18.0
+initial_velocity_max = 38.0
+scale_amount_min = 0.7
+scale_amount_max = 1.3
+color_ramp = SubResource("ember_fade")
+
+[node name="Smoke4" type="CPUParticles2D" parent="Smoke" groups=["vanish_at_3"]]
+z_index = -1
+position = Vector2(2272, 646)
+amount = 9
+lifetime = 5.0
+preprocess = 5.0
+texture = ExtResource("smoke")
+emission_shape = 3
+emission_rect_extents = Vector2(16, 4)
+direction = Vector2(0.25, -1)
+spread = 10.0
+gravity = Vector2(5, -4)
+initial_velocity_min = 16.0
+initial_velocity_max = 26.0
+scale_amount_min = 0.22
+scale_amount_max = 0.34
+scale_amount_curve = SubResource("smoke_grow")
+color_ramp = SubResource("smoke_fade")
+
+[node name="Embers4" type="CPUParticles2D" parent="Smoke" groups=["vanish_at_3"]]
+z_index = 1
+position = Vector2(2272, 644)
+amount = 6
+lifetime = 2.0
+preprocess = 2.0
+texture = ExtResource("ember")
+emission_shape = 3
+emission_rect_extents = Vector2(18, 3)
+direction = Vector2(0, -1)
+spread = 35.0
+gravity = Vector2(0, -12)
+initial_velocity_min = 18.0
+initial_velocity_max = 38.0
+scale_amount_min = 0.7
+scale_amount_max = 1.3
+color_ramp = SubResource("ember_fade")
+
+[node name="Fog" type="Node2D" parent="."]
+
+[node name="DryLand" type="Node2D" parent="."]
 
 [node name="StageController" type="Node" parent="." node_paths=PackedStringArray("player", "spawn_point", "exit_gate")]
 script = ExtResource("ctl")
