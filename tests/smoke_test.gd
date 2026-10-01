@@ -34,6 +34,14 @@ func _initialize() -> void:
 	for idx in range(1, 5):
 		await play_stage(idx)
 
+	# RETRIEVE + DISPLAY: read the saved attempts back and show them in-game.
+	var recs: Array[Dictionary] = db.get_student_records(app.student_id)
+	check("Retrieve: 4 saved records read back from SQLite", recs.size() == 4 and int(recs[0].stage_index) == 4 and recs[0].post_score != null, str(recs.slice(0, 1)))
+	app.go_stage_select(); await frames(5)
+	current_scene._open_records(); await frames(3)
+	check("My Records panel displays the retrieved rows", current_scene._records_panel.visible and current_scene._records_grid.get_child_count() == 6 * 5, "cells=%d" % current_scene._records_grid.get_child_count())
+	current_scene._close_records()
+
 	var csv_path: String = db.export_eval_csv()
 	var csv: String = FileAccess.get_file_as_string(csv_path)
 	var rows: int = csv.strip_edges().split("\n").size() - 1

@@ -15,7 +15,7 @@ extends Node
 ## Set STORE_IDENTIFIERS_IN_CLEAR = true ONLY if your adviser and the school
 ## explicitly require raw identifiers (and you have written consent).
 ## This is pseudonymisation, not anonymisation: whoever holds the salt and a
-## class list can re-identify students. Keep the salt out of your manuscript.
+## class list can re-identify students. Keep the salt out of your manuscript and out of GitHub.
 
 const DB_PATH: String = "user://the_last_forest_eval.db"
 const FALLBACK_PATH: String = "user://eval_fallback.jsonl"
@@ -23,9 +23,9 @@ const EXPORT_DIR: String = "user://exports"
 const SCHEMA_VERSION: int = 1
 
 const STORE_IDENTIFIERS_IN_CLEAR: bool = false
-## Change before the pilot; identical on every lab PC so the same LRN maps to
-## the same student_id across machines.
-const LRN_SALT: String = "tlf-befe96895bd3b57b0507d00ad4cb6435"
+## The LRN salt is a secret: it lives in res://local_settings.cfg (git-ignored),
+## read through LocalSettings. It must be identical on every lab PC so the same
+## LRN maps to the same student_id across machines.
 
 # ------------------------------------------------------------------ DDL
 const DDL: Array[String] = [
@@ -119,13 +119,14 @@ func init_db_at(path: String) -> void:
 		return
 	_db = backend_override if backend_override != null else _create_backend()
 	if _db == null:
-		push_warning("DatabaseManager: godot-sqlite not installed — using JSONL fallback at " + FALLBACK_PATH)
+		push_warning("DatabaseManager: godot-sqlite not installed — using JSONL fallback at "
+				+ FALLBACK_PATH)
 		return
 	_db.path = path
 	_db.foreign_keys = true
 	_db.verbosity_level = 0  # QUIET
 	if not _db.open_db():
-		push_error("DatabaseManager: could not open " + path + " — " + str(_db.error_message))
+		push_error("DatabaseManager: could not open %s — %s" % [path, str(_db.error_message)])
 		_db = null
 		return
 	_exec("PRAGMA journal_mode = WAL;")   # safer if the PC is switched off mid-write
@@ -153,7 +154,8 @@ func register_student(lrn: String, name: String, grade_section: String) -> int:
 	if not _ready_ok:
 		return _fallback_register(key, grade)
 	_exec_bind(
-		"INSERT OR IGNORE INTO students (lrn, name, grade_section, registered_at) VALUES (?, ?, ?, ?);",
+		"INSERT OR IGNORE INTO students (lrn, name, grade_section, registered_at)"
+		+ " VALUES (?, ?, ?, ?);",
 		[key, stored_name, grade, _now()])
 	# Keep grade/section current if the student was registered before.
 	_exec_bind("UPDATE students SET grade_section = ? WHERE lrn = ?;", [grade, key])
@@ -163,27 +165,34 @@ func register_student(lrn: String, name: String, grade_section: String) -> int:
 	return int(rows[0]["student_id"]) if rows.size() > 0 else -1
 
 
-func save_stage_record(student_id: int, stage_idx: int, seeds: int, trees: int, duration: float, tips: int) -> bool:
+func save_stage_record(student_id: int, stage_idx: int, seeds: int, trees: int,
+		duration: float, tips: int) -> bool:
 	var row: Dictionary = {
-		"student_id": student_id, "stage_index": stage_idx, "seeds_collected": maxi(seeds, 0),
+		"student_id": student_id, "stage_index": stage_idx,
+		"seeds_collected": maxi(seeds, 0),
 		"trees_matured": maxi(trees, 0), "completion_time": maxf(duration, 0.0),
 		"tips_viewed": maxi(tips, 0), "completed_at": _now(),
 	}
 	if not _ready_ok:
 		return _fallback_write("session_records", row)
 	return _exec_bind(
-		"INSERT INTO session_records (student_id, stage_index, seeds_collected, trees_matured, completion_time, tips_viewed, completed_at) VALUES (?, ?, ?, ?, ?, ?, ?);",
-		[row.student_id, row.stage_index, row.seeds_collected, row.trees_matured, row.completion_time, row.tips_viewed, row.completed_at])
+		"INSERT INTO session_records (student_id, stage_index, seeds_collected,"
+		+ " trees_matured, completion_time, tips_viewed, completed_at)"
+		+ " VALUES (?, ?, ?, ?, ?, ?, ?);",
+		[row.student_id, row.stage_index, row.seeds_collected, row.trees_matured,
+			row.completion_time, row.tips_viewed, row.completed_at])
 
 
 ## Pre-test: creates the quiz row. Returns quiz_id (or -1).
 func save_pre_quiz(student_id: int, stage_idx: int, pre_score: int) -> int:
 	var ts: String = _now()
 	if not _ready_ok:
-		_fallback_write("quiz_results", {"student_id": student_id, "stage_index": stage_idx, "pre_score": pre_score, "timestamp": ts})
+		_fallback_write("quiz_results", {"student_id": student_id, "stage_index": stage_idx,
+				"pre_score": pre_score, "timestamp": ts})
 		return -1
 	if not _exec_bind(
-			"INSERT INTO quiz_results (student_id, stage_index, pre_score, post_score, timestamp) VALUES (?, ?, ?, NULL, ?);",
+			"INSERT INTO quiz_results (student_id, stage_index, pre_score, post_score, timestamp)"
+			+ " VALUES (?, ?, ?, NULL, ?);",
 			[student_id, stage_idx, pre_score, ts]):
 		return -1
 	return int(_db.last_insert_rowid)
@@ -193,11 +202,14 @@ func save_pre_quiz(student_id: int, stage_idx: int, pre_score: int) -> int:
 ## pre row is missing (quiz_id < 0), a row with NULL pre_score is inserted.
 func save_post_quiz(quiz_id: int, student_id: int, stage_idx: int, post_score: int) -> bool:
 	if not _ready_ok:
-		return _fallback_write("quiz_results", {"quiz_id": quiz_id, "student_id": student_id, "stage_index": stage_idx, "post_score": post_score, "timestamp": _now()})
+		return _fallback_write("quiz_results", {"quiz_id": quiz_id, "student_id": student_id,
+				"stage_index": stage_idx, "post_score": post_score, "timestamp": _now()})
 	if quiz_id > 0:
-		return _exec_bind("UPDATE quiz_results SET post_score = ? WHERE quiz_id = ?;", [post_score, quiz_id])
+		return _exec_bind("UPDATE quiz_results SET post_score = ? WHERE quiz_id = ?;",
+				[post_score, quiz_id])
 	return _exec_bind(
-		"INSERT INTO quiz_results (student_id, stage_index, pre_score, post_score, timestamp) VALUES (?, ?, NULL, ?, ?);",
+		"INSERT INTO quiz_results (student_id, stage_index, pre_score, post_score, timestamp)"
+		+ " VALUES (?, ?, NULL, ?, ?);",
 		[student_id, stage_idx, post_score, _now()])
 
 
@@ -211,6 +223,73 @@ func get_highest_completed_stage(student_id: int) -> int:
 		return 0
 	var rows: Array = _db.query_result
 	return int(rows[0]["best"]) if rows.size() > 0 else 0
+
+
+## RETRIEVE: this student's saved stage attempts, newest first, for the
+## in-game "My Records" panel. Each row: stage_index, pre_score, post_score,
+## trees_matured, seeds_collected, completion_time, completed_at.
+## Same quiz pairing as the export (latest quiz started before the finish).
+const RECORDS_SQL: String = """
+SELECT r.stage_index,
+       q.pre_score,
+       q.post_score,
+       r.trees_matured,
+       r.seeds_collected,
+       r.completion_time,
+       r.completed_at
+FROM session_records r
+LEFT JOIN quiz_results q ON q.quiz_id = (
+    SELECT q2.quiz_id FROM quiz_results q2
+    WHERE q2.student_id = r.student_id
+      AND q2.stage_index = r.stage_index
+      AND q2.timestamp <= r.completed_at
+    ORDER BY q2.timestamp DESC, q2.quiz_id DESC
+    LIMIT 1)
+WHERE r.student_id = ?
+ORDER BY r.completed_at DESC, r.session_id DESC
+LIMIT ?;
+"""
+
+
+func get_student_records(student_id: int, limit: int = 8) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	if student_id < 0:
+		return out
+	if not _ready_ok:
+		return _fallback_student_records(student_id, limit)
+	if not _exec_bind(RECORDS_SQL, [student_id, limit]):
+		return out
+	for row: Dictionary in _db.query_result:
+		out.append(row)
+	return out
+
+
+## Same rows from the backup journal when SQLite is unavailable.
+func _fallback_student_records(student_id: int, limit: int) -> Array[Dictionary]:
+	var records: Array[Dictionary] = []
+	var quizzes: Array[Dictionary] = []
+	if not FileAccess.file_exists(FALLBACK_PATH):
+		return records
+	var file := FileAccess.open(FALLBACK_PATH, FileAccess.READ)
+	if file == null:
+		return records
+	while not file.eof_reached():
+		var parsed: Variant = JSON.parse_string(file.get_line())
+		if not (parsed is Dictionary) or int((parsed as Dictionary).get("student_id", -1)) != student_id:
+			continue
+		var entry: Dictionary = parsed
+		match str(entry.get("table", "")):
+			"session_records": records.append(entry)
+			"quiz_results": quizzes.append(entry)
+	file.close()
+	for rec: Dictionary in records:
+		for quiz: Dictionary in quizzes:
+			if int(quiz.get("stage_index", 0)) == int(rec.get("stage_index", -1)) \
+					and str(quiz.get("timestamp", "")) <= str(rec.get("completed_at", "")):
+				if quiz.has("pre_score"): rec["pre_score"] = quiz["pre_score"]
+				if quiz.has("post_score"): rec["post_score"] = quiz["post_score"]
+	records.reverse()
+	return records.slice(0, limit)
 
 
 ## Writes user://exports/eval_<timestamp>.csv and returns its absolute OS path
@@ -316,7 +395,7 @@ static func is_valid_lrn(lrn: String) -> bool:
 func _lrn_key(lrn: String) -> String:
 	if STORE_IDENTIFIERS_IN_CLEAR:
 		return lrn
-	return "h:" + (LRN_SALT + lrn).sha256_text()
+	return "h:" + (LocalSettings.value("lrn_salt") + lrn).sha256_text()
 
 
 func _now() -> String:

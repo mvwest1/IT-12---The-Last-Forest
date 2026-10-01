@@ -1,9 +1,8 @@
 extends Control
 ## Main Menu: Play / Language / Teacher (PIN) / Quit.
 ## Results export lives ONLY inside the PIN-protected Teacher panel so
-## children can't export class data. Change TEACHER_PIN before the pilot.
+## children can't export class data. The teacher PIN is read from res://local_settings.cfg (not in GitHub).
 
-const TEACHER_PIN: String = "2468"
 
 @onready var _play: Button = %PlayButton
 @onready var _language: Button = %LanguageButton
@@ -65,7 +64,7 @@ func _close_teacher_panel() -> void:
 
 
 func _on_export() -> void:
-	if _pin.text != TEACHER_PIN:
+	if not _pin_ok():
 		_teacher_status.text = tr("TEACHER_WRONG_PIN")
 		return
 	var path: String = DatabaseManager.export_eval_csv()
@@ -73,8 +72,15 @@ func _on_export() -> void:
 
 
 func _on_open_folder() -> void:
-	if _pin.text != TEACHER_PIN:
+	if not _pin_ok():
 		_teacher_status.text = tr("TEACHER_WRONG_PIN")
 		return
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(DatabaseManager.EXPORT_DIR))
 	OS.shell_open(ProjectSettings.globalize_path(DatabaseManager.EXPORT_DIR))
+
+
+## Compares with the PIN in res://local_settings.cfg. An empty/missing PIN
+## never unlocks the panel.
+func _pin_ok() -> bool:
+	var expected: String = LocalSettings.value("teacher_pin").strip_edges()
+	return expected != "" and _pin.text.strip_edges() == expected

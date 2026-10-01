@@ -3,3 +3,13 @@
 addons/ziva_agent/bin/
 addons/ziva_agent/bin-deps/
 addons/ziva_agent/zivacode/
+
+# Secrets: real teacher PIN and LRN salt (see local_settings.sample.cfg)
+local_settings.cfg
+
+# Exports / OS clutter
+*.pck
+*.exe
+export/
+Claude outputs/
+__pycache__/

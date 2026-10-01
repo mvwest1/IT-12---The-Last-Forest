@@ -18,18 +18,18 @@
 
 ## Tests (run them after every change)
 ```
-godot --headless --path . -s res://tests/smoke_test.gd   # full play-through of all 4 stages, real SQLite: expect 72/72 PASS
+godot --headless --path . -s res://tests/smoke_test.gd   # full play-through of all 4 stages, real SQLite: expect 74/74 PASS
 godot --headless --path . -s res://tests/reach_test.gd   # every seed, zone and gate reachable on foot
 godot --headless --path . -s res://tests/load_all.gd     # every script and scene loads
-godot --headless --path . -s res://tests/edge_test.gd    # defeat, replay, leaving mid-stage, burnt->green decor, Filipino text: expect 25/25
+godot --headless --path . -s res://tests/edge_test.gd    # defeat, replay, leaving mid-stage, burnt->green decor, Filipino text: expect 28/28
 python tests/static_check.py                              # exact-case file paths (Windows export), translations complete, enough seeds
 ```
 `tests/perf_probe.gd` prints frame times per stage (needs a real renderer). The "leaked at exit" warning printed after the Godot tests is the background music still playing when the test quits; it is not a game bug.
 `tests/screenshots.gd` renders the main screens to PNG, and `tests/level_overview.gd` renders every stage end to end (burnt and green). Both need a real renderer, not `--headless`.
 
 ## Before the pilot
-1. Change `TEACHER_PIN` in `the_last_forest/ui/main_menu.gd`. The default is `2468`.
-2. Keep `LRN_SALT` in `database_manager.gd` **unchanged once data collection starts**: changing it splits each student into two IDs. Keep it out of your manuscript.
+1. Copy `local_settings.sample.cfg` to `local_settings.cfg` (git-ignored) and set your own `teacher_pin` and a long random `lrn_salt`. They are read by `the_last_forest/config/local_settings.gd`; never put them back into code or GitHub.
+2. Use the **same** `lrn_salt` on every lab PC and keep it **unchanged once data collection starts**: changing it splits each student into two IDs. Keep it out of your manuscript.
 3. Export: Project → Export → "Windows Desktop (Lab PCs)". Install the export templates first. Then run one full stage and one CSV export **on an actual lab PC**.
 4. Have a teacher review the Filipino column of both CSV files and the facts (each fact `.tres` has a `source_note`).
 

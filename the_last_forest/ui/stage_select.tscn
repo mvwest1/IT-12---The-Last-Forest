@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene format=3]
 
 [ext_resource type="Theme" path="res://the_last_forest/ui/ui_theme.tres" id="1"]
 [ext_resource type="Script" path="res://the_last_forest/ui/stage_select.gd" id="2"]
@@ -119,7 +119,79 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 40)
 text = "UI_BACK"
 
+[node name="RecordsButton" type="Button" parent="Margin/VBox/Bottom"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(190, 40)
+text = "RECORDS_BUTTON"
+
 [node name="LogoutButton" type="Button" parent="Margin/VBox/Bottom"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(220, 40)
 text = "SELECT_LOGOUT"
+
+[node name="RecordsPanel" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="RecordsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.55)
+
+[node name="Center" type="CenterContainer" parent="RecordsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Card" type="PanelContainer" parent="RecordsPanel/Center"]
+custom_minimum_size = Vector2(700, 0)
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="RecordsPanel/Center/Card"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RecordsTitle" type="Label" parent="RecordsPanel/Center/Card/VBox"]
+layout_mode = 2
+theme_type_variation = &"HeaderLabel"
+theme_override_font_sizes/font_size = 28
+text = "RECORDS_TITLE"
+horizontal_alignment = 1
+
+[node name="RecordsSource" type="Label" parent="RecordsPanel/Center/Card/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"SubtleLabel"
+horizontal_alignment = 1
+
+[node name="RecordsGrid" type="GridContainer" parent="RecordsPanel/Center/Card/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/h_separation = 18
+theme_override_constants/v_separation = 6
+columns = 6
+
+[node name="RecordsEmpty" type="Label" parent="RecordsPanel/Center/Card/VBox"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+text = "RECORDS_EMPTY"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="RecordsClose" type="Button" parent="RecordsPanel/Center/Card/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 40)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "UI_CLOSE"

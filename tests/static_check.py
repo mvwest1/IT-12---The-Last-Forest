@@ -40,7 +40,9 @@ path_re = re.compile(r'res://([^"\'\s\)\]]+)')
 checked = 0
 for f in text_files:
     for m in path_re.finditer(open(f, encoding="utf-8", errors="replace").read()):
-        p = m.group(1).split("::")[0]
+        p = m.group(1).split("::")[0].rstrip(".,;:")
+        if p == "local_settings.cfg":
+            continue  # git-ignored on purpose; LocalSettings falls back to the sample
         if "%" in p or "{" in p or p.endswith("/") or "*" in p:
             continue  # format strings / folders / patterns
         checked += 1
@@ -78,6 +80,17 @@ for f in text_files:
 for k, where in sorted(used):
     if k not in keys:
         problems.append("key %s used in %s but not in any translation CSV" % (k, where))
+
+# 5. secrets stay out of GitHub ------------------------------------------------
+gi = open(os.path.join(ROOT, ".gitignore")).read().splitlines()
+if "local_settings.cfg" not in [l.strip() for l in gi]:
+    problems.append(".gitignore must list local_settings.cfg (real PIN and salt)")
+if not os.path.exists(os.path.join(ROOT, "local_settings.sample.cfg")):
+    problems.append("local_settings.sample.cfg is missing (setup example for a fresh clone)")
+for f in text_files:
+    txt = open(f, encoding="utf-8", errors="replace").read()
+    if re.search(r'(LRN_SALT|TEACHER_PIN)\s*:?\s*\w*\s*=\s*"', txt):
+        problems.append("hard-coded secret constant in %s (use LocalSettings)" % rel(f))
 
 # 4. seeds per stage -------------------------------------------------------------
 for i in range(1, 5):

@@ -26,6 +26,7 @@ func _initialize() -> void:
 	await leave_mid_stage()
 	await replay_resets_state()
 	await hydration_swaps_bushes()
+	await teacher_pin()
 	await no_raw_keys("fil")
 	await no_raw_keys("en")
 	print("\n==== EDGE RESULT: %d passed, %d failed ====" % [passes, fails])
@@ -109,6 +110,22 @@ func hydration_swaps_bushes() -> void:
 	await create_timer(1.6, true).timeout
 	check("Land watered", gully.is_hydrated())
 	check("Straw bushes replaced by green ones", all_visible(&"dry_decor", false) and all_visible(&"wet_decor", true))
+
+
+func teacher_pin() -> void:
+	print("\n-- Teacher PIN (read from local_settings.cfg, never hard-coded)")
+	var menu: Node = load(app.MAIN_MENU).instantiate()
+	root.add_child(menu)
+	await frames(3)
+	var real: String = LocalSettings.value("teacher_pin")
+	menu._pin.text = ""
+	check("Empty PIN rejected", not menu._pin_ok())
+	menu._pin.text = "0000" if real != "0000" else "9999"
+	check("Wrong PIN rejected", not menu._pin_ok())
+	menu._pin.text = real
+	check("Correct PIN accepted (%s settings)" % ("sample" if LocalSettings.using_sample() else "local"), menu._pin_ok())
+	menu.queue_free()
+	await frames(2)
 
 
 func no_raw_keys(locale: String) -> void:

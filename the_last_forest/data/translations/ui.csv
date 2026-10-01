@@ -131,3 +131,15 @@ JOURNAL_TITLE,Leaf Journal,Talaan ng Dahon
 JOURNAL_EMPTY,Read the fact cards in the forest to fill your journal!,Basahin ang mga fact card sa gubat para mapuno ang iyong talaan!
 UI_PREV,Back,Bumalik
 UI_NEXT,Next,Susunod
+RECORDS_BUTTON,My Records,Aking Talaan
+RECORDS_TITLE,My Saved Records,Aking mga Naitalang Laro
+RECORDS_SOURCE_DB,Loaded from the game database (SQLite),Kinuha mula sa database ng laro (SQLite)
+RECORDS_SOURCE_BACKUP,Loaded from the backup file,Kinuha mula sa backup na file
+RECORDS_EMPTY,No saved records yet. Finish a stage to save one!,Wala pang naitalang laro. Tapusin ang isang yugto para maitala ito!
+RECORDS_GUEST,Log in with your LRN to save and see your records.,Mag-log in gamit ang iyong LRN para maitala at makita ang iyong talaan.
+RECORDS_COL_STAGE,Stage,Yugto
+RECORDS_COL_QUIZ,Quiz (before → after),Pagsusulit (bago → pagkatapos)
+RECORDS_COL_TREES,Trees,Puno
+RECORDS_COL_SEEDS,Seeds,Binhi
+RECORDS_COL_TIME,Time,Oras
+RECORDS_COL_DATE,Date,Petsa

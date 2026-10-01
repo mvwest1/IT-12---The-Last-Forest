@@ -139,7 +139,8 @@ func finish_stage(result: Dictionary) -> void:
 	var saved: bool = false
 	if is_logged_in():
 		if int(result.get("post_score", -1)) >= 0:
-			DatabaseManager.save_post_quiz(_pre_quiz_id, student_id, result.stage_index, result.post_score)
+			DatabaseManager.save_post_quiz(_pre_quiz_id, student_id, result.stage_index,
+					result.post_score)
 		saved = DatabaseManager.save_stage_record(
 				student_id, result.stage_index, result.seeds_collected,
 				result.trees_matured, result.duration, result.tips_viewed)
