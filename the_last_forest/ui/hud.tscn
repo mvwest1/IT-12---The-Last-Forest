@@ -1,0 +1,269 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Theme" path="res://the_last_forest/ui/ui_theme.tres" id="1"]
+[ext_resource type="Script" path="res://the_last_forest/gui/game_hud.gd" id="2"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/heart_full.png" id="3"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/heart_empty.png" id="4"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/seed.png" id="5"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/guard.png" id="6"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/water_icon.png" id="7"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/tree_icon.png" id="8"]
+[ext_resource type="PackedScene" path="res://the_last_forest/ui/fact_card_popup.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://the_last_forest/scenes/quiz_modal.tscn" id="12"]
+[ext_resource type="Script" path="res://the_last_forest/ui/pause_overlay.gd" id="11"]
+
+[node name="GameHUD" type="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("1")
+script = ExtResource("2")
+heart_full = ExtResource("3")
+heart_empty = ExtResource("4")
+
+[node name="TopLeft" type="HBoxContainer" parent="."]
+offset_left = 10
+offset_top = 8
+offset_right = 420
+offset_bottom = 36
+mouse_filter = 2
+theme_override_constants/separation = 10
+
+[node name="Hearts" type="HBoxContainer" parent="TopLeft"]
+unique_name_in_owner = true
+mouse_filter = 2
+
+[node name="SeedBox" type="HBoxContainer" parent="TopLeft"]
+mouse_filter = 2
+
+[node name="SeedIcon" type="TextureRect" parent="TopLeft/SeedBox"]
+texture = ExtResource("5")
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="SeedLabel" type="Label" parent="TopLeft/SeedBox"]
+unique_name_in_owner = true
+text = "0"
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+
+[node name="GuardBox" type="HBoxContainer" parent="TopLeft"]
+unique_name_in_owner = true
+mouse_filter = 2
+
+[node name="GuardIcon" type="TextureRect" parent="TopLeft/GuardBox"]
+texture = ExtResource("6")
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="GuardLabel" type="Label" parent="TopLeft/GuardBox"]
+unique_name_in_owner = true
+text = "0"
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+
+[node name="WaterBox" type="HBoxContainer" parent="TopLeft"]
+unique_name_in_owner = true
+mouse_filter = 2
+
+[node name="WaterIcon" type="TextureRect" parent="TopLeft/WaterBox"]
+texture = ExtResource("7")
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="WaterLabel" type="Label" parent="TopLeft/WaterBox"]
+unique_name_in_owner = true
+text = "0"
+theme_override_font_sizes/font_size = 20
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+
+[node name="TopRight" type="HBoxContainer" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -150
+offset_top = 8
+offset_right = -10
+offset_bottom = 36
+grow_horizontal = 0
+alignment = 2
+mouse_filter = 2
+
+[node name="TreeIcon" type="TextureRect" parent="TopRight"]
+texture = ExtResource("8")
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="TreeLabel" type="Label" parent="TopRight"]
+unique_name_in_owner = true
+text = "0 / 0"
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+
+[node name="ObjectiveLabel" type="Label" parent="."]
+unique_name_in_owner = true
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 150
+offset_top = 40
+offset_right = -150
+offset_bottom = 80
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+horizontal_alignment = 1
+autowrap_mode = 3
+mouse_filter = 2
+
+[node name="HoldBar" type="ProgressBar" parent="."]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = 60
+offset_right = 80.0
+offset_bottom = 74
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+show_percentage = false
+
+[node name="TipPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -250
+offset_top = -74
+offset_right = 250
+offset_bottom = -14
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="TipLabel" type="Label" parent="TipPanel"]
+unique_name_in_owner = true
+text = ""
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+theme_override_font_sizes/font_size = 16
+
+[node name="ClimateTipModal" type="Control" parent="."]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+process_mode = 3
+z_index = 10
+
+[node name="Dim" type="ColorRect" parent="ClimateTipModal"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.02, 0.08, 0.06, 0.85)
+
+[node name="Card" type="PanelContainer" parent="ClimateTipModal"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -150.0
+offset_right = 280.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="ClimateTipModal/Card"]
+theme_override_constants/separation = 16
+
+[node name="ClimateTipTitle" type="Label" parent="ClimateTipModal/Card/VBox"]
+unique_name_in_owner = true
+text = "CLIMATE_TIP_TITLE"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 30
+
+[node name="ClimateTipLabel" type="Label" parent="ClimateTipModal/Card/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(500, 110)
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+theme_override_font_sizes/font_size = 22
+
+[node name="ClimateTipDismiss" type="Button" parent="ClimateTipModal/Card/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 48)
+text = "UI_GOT_IT"
+size_flags_horizontal = 4
+
+[node name="FactCardPopup" parent="." instance=ExtResource("9")]
+
+[node name="QuizModalLayer" parent="." instance=ExtResource("12")]
+
+[node name="PauseOverlay" type="Control" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+process_mode = 3
+script = ExtResource("11")
+
+[node name="Dim" type="ColorRect" parent="PauseOverlay"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="Center" type="CenterContainer" parent="PauseOverlay"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="PauseOverlay/Center"]
+
+[node name="VBox" type="VBoxContainer" parent="PauseOverlay/Center/Panel"]
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="PauseOverlay/Center/Panel/VBox"]
+text = "HUD_PAUSED"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 28
+
+[node name="ResumeButton" type="Button" parent="PauseOverlay/Center/Panel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 44)
+text = "HUD_RESUME"
+
+[node name="HoldToggle" type="CheckButton" parent="PauseOverlay/Center/Panel/VBox"]
+unique_name_in_owner = true
+text = "HUD_TAP_MODE"
+
+[node name="StageSelectButton" type="Button" parent="PauseOverlay/Center/Panel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 44)
+text = "HUD_STAGE_SELECT"
+

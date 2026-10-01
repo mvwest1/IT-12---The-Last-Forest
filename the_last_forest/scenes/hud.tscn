@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://the_last_forest/ui/hud.tscn" id="1"]
+
+[node name="HUD" instance=ExtResource("1")]

@@ -8,13 +8,15 @@ extends Area2D
 ##   HOLDING --(released / moved / jumped / target gone)--> cancel -> IDLE
 ##
 ## Uses a dedicated "interact" action (E / gamepad Y), NOT ui_accept:
-## in this project Space is "shoot" and ui_accept also drives UI buttons.
+## ui_accept (Space/Enter) also presses focused UI buttons.
 
 const ACTION: StringName = &"interact"
 
 ## Accessibility: tap once to start, tap again to cancel (for kids who
 ## struggle to keep a key held down).
 @export var toggle_mode: bool = false
+## ForestPlayer sets this false: its PLANTING state locks movement instead.
+@export var cancel_on_move: bool = true
 @export var cancel_move_threshold: float = 0.5
 
 var _nearby: Array[Interactable] = []
@@ -72,7 +74,7 @@ func _update_hold(delta: float) -> void:
 		keep = not Input.is_action_just_pressed(ACTION)
 	else:
 		keep = Input.is_action_pressed(ACTION)
-	var moving: bool = absf(Input.get_axis(&"move_left", &"move_right")) > cancel_move_threshold
+	var moving: bool = cancel_on_move and absf(Input.get_axis(&"move_left", &"move_right")) > cancel_move_threshold
 	var target_ok: bool = is_instance_valid(_target) and _nearby.has(_target) and _target.is_interactable()
 	if not keep or moving or Input.is_action_just_pressed(&"jump") or not target_ok:
 		_cancel()
@@ -91,6 +93,12 @@ func _finish() -> void:
 	done.complete_interaction(self)
 	EventBus.interaction_completed.emit(done)
 	_retarget()
+
+
+## Public: e.g. the player got hurt mid-plant.
+func cancel_interaction() -> void:
+	if _holding:
+		_cancel()
 
 
 func _cancel() -> void:

@@ -13,7 +13,7 @@ var _file: FileAccess = null
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	DirAccess.make_dir_recursive_absolute("user://sessions")
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path("user://sessions"))
 	var stamp: String = Time.get_datetime_string_from_system(false, true).replace(":", "-").replace(" ", "_")
 	_file = FileAccess.open("user://sessions/session_%s.csv" % stamp, FileAccess.WRITE)
 	if _file == null:

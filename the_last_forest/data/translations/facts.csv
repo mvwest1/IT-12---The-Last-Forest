@@ -1,4 +1,4 @@
-keys,en,fil
+﻿keys,en,fil
 PROMPT_HOLD_E,Hold E to plant,Pindutin nang matagal ang E para magtanim
 PROMPT_REVIVE,Hold E to help the tree,Pindutin nang matagal ang E para tulungan ang puno
 PROMPT_WATER,Hold E to water,Pindutin nang matagal ang E para diligan
@@ -9,8 +9,8 @@ TIP_WATER_FULL,Your water can is full. Water the dry land!,Puno na ang iyong lal
 UI_GOT_IT,Got it!,Sige!
 UI_LISTEN,Listen,Pakinggan
 OBJ_STAGE_1,Collect seeds and grow 5 trees in the burnt soil.,Mangolekta ng binhi at magpalaki ng 5 puno sa sunog na lupa.
-OBJ_STAGE_2,Keep the young trees safe from pests until they grow big!,Ingatan ang mga batang puno laban sa peste hanggang lumaki sila!
-OBJ_STAGE_3,Bring water to the dry land so the trees can grow.,Magdala ng tubig sa tuyong lupa para lumaki ang mga puno.
+OBJ_STAGE_2,Protect the young trees! Bump pests away and add tree guards.,Protektahan ang mga batang puno! Itaboy ang peste at lagyan ng bakod.
+OBJ_STAGE_3,"Turn the lever to send water to the dry land, then grow the trees.","Iikot ang pingga para dumaloy ang tubig sa tuyong lupa, saka palakihin ang mga puno."
 OBJ_STAGE_4,Explore the forest you brought back to life!,Libutin ang gubat na muli mong binuhay!
 FACT_CARBON_TITLE,Trees Clean the Air,Nililinis ng Puno ang Hangin
 FACT_CARBON_BODY,"Trees take in carbon dioxide (CO2) from the air. They keep the carbon in their trunks, branches, and roots.","Kinukuha ng mga puno ang carbon dioxide (CO2) mula sa hangin. Iniimbak nila ang carbon sa kanilang katawan, sanga, at ugat."

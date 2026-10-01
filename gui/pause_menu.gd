@@ -7,7 +7,6 @@ extends Control
 
 @onready var center_cont := $ColorRect/CenterContainer as CenterContainer
 @onready var resume_button := center_cont.get_node(^"VBoxContainer/ResumeButton") as Button
-@onready var coins_counter := $ColorRect/CoinsCounter as CoinsCounter
 
 
 func _ready() -> void:
@@ -51,10 +50,6 @@ func open() -> void:
 			1.0,
 			fade_out_duration
 		).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-
-
-func _on_coin_collected() -> void:
-	coins_counter.collect_coin()
 
 
 func _on_resume_button_pressed() -> void:

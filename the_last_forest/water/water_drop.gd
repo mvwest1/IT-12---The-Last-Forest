@@ -1,34 +1,31 @@
 class_name WaterDrop
-extends Area2D
-## Collectible water drop (Stage 3). Player carries up to
-## GameState.water_capacity drops and pours them on AridZones (hold E).
-## If the player's can is full, the drop stays put and a tip explains why.
-## Optional: set fall_speed > 0 to make it drip from a cloud/leaf until it
-## lands on a ground ray (simple "rain" feel).
+extends RigidBody2D
+## One droplet in a WaterSource stream. Rolls along ground and Diverter ramps.
+## Absorbed by an AridZone, or evaporates after `lifetime` seconds.
+##
+## Scene (water_drop.tscn):
+##   WaterDrop (RigidBody2D, this script)
+##     collision_layer = layer 8 "water"
+##     collision_mask  = layers 4 "platforms" + 5 "ground" (24)
+##     (NOT the player — water never blocks or pushes the child)
+##   ├─ Sprite2D (small blue drop)
+##   └─ CollisionShape2D (circle r≈4)
 
-@export var amount: int = 1
-@export var fall_speed: float = 0.0
+const LAYER: int = 1 << 7   # physics layer 8 "water"
 
-var _taken: bool = false
+@export var lifetime: float = 7.0
 
 
 func _ready() -> void:
-	body_entered.connect(_on_body_entered)
-
-
-func _physics_process(delta: float) -> void:
-	if fall_speed > 0.0 and not _taken:
-		position.y += fall_speed * delta
-
-
-func _on_body_entered(body: Node2D) -> void:
-	if _taken or not body.is_in_group(&"player"):
-		return
-	if not GameState.add_water(amount):
-		EventBus.tip_requested.emit("TIP_WATER_FULL")
-		return
-	_taken = true
-	set_deferred(&"monitoring", false)
+	collision_layer = LAYER
+	collision_mask = (1 << 3) | (1 << 4)
+	add_to_group(&"water_drops")
 	var tween := create_tween()
-	tween.tween_property(self, ^"modulate:a", 0.0, 0.15)
+	tween.tween_interval(maxf(lifetime - 0.5, 0.0))
+	tween.tween_property(self, ^"modulate:a", 0.0, 0.5)
 	tween.tween_callback(queue_free)
+
+
+func absorb() -> void:
+	remove_from_group(&"water_drops")
+	queue_free()

@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://the_last_forest/pests/pest.gd" id="1"]
+[ext_resource type="Texture2D" path="res://the_last_forest/assets/placeholders/pest.png" id="2"]
+
+[sub_resource type="CircleShape2D" id="c"]
+radius = 8.0
+
+[node name="Pest" type="Area2D"]
+collision_layer = 64
+collision_mask = 1
+script = ExtResource("1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2")
+scale = Vector2(1, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("c")

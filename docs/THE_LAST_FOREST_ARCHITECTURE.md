@@ -32,7 +32,7 @@ The risk in your approach is that `SeedManager`, `TreeManager` and `HealthManage
 ### Autoloads (Project Settings → Globals, **in this order**)
 ```
 Music             res://music.tscn                                  (existing)
-EventBus          res://the_last_forest/autoload/event_bus.gd        signals only, no state
+EventBus          res://the_last_forest/autoload/Events.gd           signals only, no state
 GameState         res://the_last_forest/autoload/game_state.gd       all counters + pause ownership
 LearningDirector  res://the_last_forest/autoload/learning_director.gd  WHEN facts appear
 SessionLog        res://the_last_forest/autoload/session_log.gd      anonymous CSV for evaluation
@@ -95,7 +95,7 @@ Don't put pests on layer 2 ("enemies"): the player's mask is 30, so the player w
 
 ## 2. Signal architecture (event bus)
 
-The rules are at the top of `event_bus.gd`. The data flow always runs one way:
+The rules are at the top of `Events.gd`. The data flow always runs one way:
 
 ```
 World object ──calls──▶ GameState method ──emits──▶ EventBus ──▶ HUD / Restoration / Log / Stage
@@ -169,14 +169,7 @@ Health (3) refills at each new stage. When health reaches 0 the sapling is **WIL
 ### 3.4 Pests (Stage 2)
 - `PestSpawner` spawns pests only while at least one sapling `is_vulnerable()`. It uses `max_alive` 3, `interval` 7 s and `first_delay` 5 s.
 - A `Pest` has three states: `SEEKING` (flies to the nearest vulnerable sapling at 55 px/s; the player's walk speed is 300), `EATING` (1 damage every 1.5 s, so an unprotected sapling wilts in about 4.5 s), and `FLEEING` (after a hit it flies away and is freed after 1.5 s).
-- Required patch to `player/bullet.gd`:
-```gdscript
-func _on_body_entered(body: Node) -> void:
-	if body is Enemy:
-		(body as Enemy).destroy()
-	elif body.has_method(&"on_projectile_hit"):
-		body.call(&"on_projectile_hit")
-```
+- `ForestPlayer` shooes a nearby pest when the player taps E; touching a pest also sends it fleeing. There is no projectile or stomp kill path.
 - The mechanic teaches that saplings are vulnerable only while young. Once every tree matures, the pests stop coming.
 
 ### 3.5 Water (Stage 3)
@@ -256,10 +249,7 @@ elif input_event.is_action_pressed(&"toggle_pause"):
 		_pause_menu.open()
 	get_tree().root.set_input_as_handled()
 ```
-**`gui/pause_menu.gd`**: in `close()`, replace `get_tree().paused = false` with `GameState.release_pause(&"pause_menu")`. Delete `_on_coin_collected()` and the `CoinsCounter` reference, and remove the `coin_collected` connection in `game_singleplayer.tscn`. Remove the Splitscreen button. Add a "Leaf Journal" button and a "Hold / Tap" toggle.
-**`player/bullet.gd`**: add the patch from §3.4.
-**`player/player.tscn`**: add the `PlayerInteractor` child and the `UI/Interact` touch button. `player.gd` itself needs **no changes**, because the interactor adds the player to the `player` group.
-**`level/coin.*`**: stop using them. Duplicate `coin.tscn` as `seed_pickup.tscn`, swap the sprite, and replace the script with `seed_pickup.gd`.
+The implementation is in place: the main project route uses the forest player and four stage scenes, `player/player.tscn` is a compatibility wrapper, and arcade coins, firing, projectiles, and their HUD counter have been removed. Do not re-add the deleted bullet patch; pest repelling uses E and contact.
 
 ## 7. Suggested build order (each step can be played)
 1. Settings (§5) and the patches (§6). Check that pausing still works.
@@ -272,7 +262,7 @@ elif input_event.is_action_pressed(&"toggle_pause"):
 ## 8. File map
 ```
 the_last_forest/
-  autoload/     event_bus.gd  game_state.gd  learning_director.gd  session_log.gd
+  autoload/     Events.gd  game_state.gd  learning_director.gd  session_log.gd  database_manager.gd  app_flow.gd
   interaction/  interactable.gd  player_interactor.gd
   planting/     seed_pickup.gd  planting_zone.gd  sapling.gd
   pests/        pest.gd  pest_spawner.gd

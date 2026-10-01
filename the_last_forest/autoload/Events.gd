@@ -1,5 +1,6 @@
 extends Node
-## EventBus (Autoload #1) — global signal hub for THE LAST FOREST.
+## EventBus (Autoload) — global signal hub for THE LAST FOREST.
+## Registered as "EventBus" -> res://the_last_forest/autoload/Events.gd
 ##
 ## Rules:
 ##   1. This script holds NO state and NO logic. Signals only.
@@ -14,31 +15,35 @@ extends Node
 ## A seed pickup was touched (for SFX / VFX / logging). Count lives in GameState.
 signal seed_collected(amount: int, world_position: Vector2)
 signal seeds_changed(total: int)
-signal water_collected(amount: int)
-signal water_changed(carried: int, capacity: int)
+## Tree guards (Stage 2 barrier tool).
+signal guards_changed(total: int)
 
-# ---------------------------------------------------------------- Generic hold-to-interact (plant, water, revive)
+# ---------------------------------------------------------------- Generic hold-to-interact (plant, guard, revive, lever)
 signal interaction_started(target: Node2D)
 signal interaction_progress(target: Node2D, ratio: float)
 signal interaction_cancelled(target: Node2D)
 signal interaction_completed(target: Node2D)
-## reason: &"no_seeds", &"occupied", &"no_water", &"not_on_floor"
+## reason: &"no_seeds", &"occupied", &"no_guards"
 signal interaction_denied(target: Node2D, reason: StringName)
 
 # ---------------------------------------------------------------- Planting & sapling lifecycle
 signal tree_planted(zone: Node2D, sapling: Node2D)
 signal trees_planted_changed(total: int, goal: int)
+signal trees_matured_changed(total: int, goal: int)
 signal sapling_stage_changed(sapling: Node2D, stage: int)
 signal sapling_damaged(sapling: Node2D, health: int)
 signal sapling_wilted(sapling: Node2D)
 signal sapling_revived(sapling: Node2D)
+signal sapling_guarded(sapling: Node2D)
 signal sapling_matured(sapling: Node2D)
 
-# ---------------------------------------------------------------- Pests (Stage 2)
+# ---------------------------------------------------------------- Pests (Stage 2) — non-lethal
 signal pest_spawned(pest: Node2D)
-signal pest_removed(pest: Node2D)
+## The pest was shooed away (it flies off; it is never killed).
+signal pest_repelled(pest: Node2D)
 
 # ---------------------------------------------------------------- Water (Stage 3)
+signal diverter_toggled(diverter: Node2D, points_to_target: bool)
 signal water_delivered(zone: Node2D, amount: int)
 signal arid_zone_hydrated(zone: Node2D)
 
@@ -57,6 +62,13 @@ signal player_defeated()
 signal stage_started(stage_id: StringName)
 signal objective_updated(text_key: String)
 signal stage_completed(stage_id: StringName)
+## Emitted after the active stage's objectives have been met.
+signal stage_cleared
+
+# ---------------------------------------------------------------- Assessment
+## phase: &"pre" | &"post"
+signal quiz_started(stage_index: int, phase: StringName)
+signal quiz_finished(stage_index: int, phase: StringName, score: int, total: int)
 
 # ---------------------------------------------------------------- Climate literacy
 signal climate_fact_unlocked(fact_id: StringName)
@@ -66,8 +78,5 @@ signal fact_card_closed(fact_id: StringName, seconds_open: float)
 signal tip_requested(text_key: String)
 ## Rich climate-literacy message. GameHUD may pause while this is displayed.
 signal climate_tip_triggered(tip_data: Variant)
-
-## Emitted after the active stage's objectives have been met.
-signal stage_cleared
 
 @warning_ignore_restore("unused_signal")

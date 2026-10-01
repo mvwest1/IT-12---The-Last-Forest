@@ -1,0 +1,94 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Theme" path="res://the_last_forest/ui/ui_theme.tres" id="1"]
+[ext_resource type="Script" path="res://the_last_forest/ui/quiz_modal.gd" id="2"]
+
+[node name="QuizModalLayer" type="CanvasLayer"]
+layer = 110
+
+[node name="QuizModal" type="Control" parent="."]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+process_mode = 3
+theme = ExtResource("1")
+script = ExtResource("2")
+
+[node name="Dim" type="ColorRect" parent="QuizModal"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.05, 0.1, 0.05, 0.85)
+
+[node name="Card" type="PanelContainer" parent="QuizModal"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -310.0
+offset_top = -230.0
+offset_right = 310.0
+offset_bottom = 230.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="QuizModal/Card"]
+theme_override_constants/separation = 8
+
+[node name="QuizHeader" type="Label" parent="QuizModal/Card/VBox"]
+unique_name_in_owner = true
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 24
+
+[node name="QuizProgress" type="Label" parent="QuizModal/Card/VBox"]
+unique_name_in_owner = true
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 14
+
+[node name="QuizImage" type="TextureRect" parent="QuizModal/Card/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 90)
+expand_mode = 1
+stretch_mode = 5
+
+[node name="QuizPrompt" type="Label" parent="QuizModal/Card/VBox"]
+unique_name_in_owner = true
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 22
+autowrap_mode = 3
+
+[node name="Choice1" type="Button" parent="QuizModal/Card/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(560, 46)
+
+[node name="Choice2" type="Button" parent="QuizModal/Card/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(560, 46)
+
+[node name="Choice3" type="Button" parent="QuizModal/Card/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(560, 46)
+
+[node name="QuizFeedback" type="Label" parent="QuizModal/Card/VBox"]
+unique_name_in_owner = true
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="ScoreTally" type="Label" parent="QuizModal/Card/VBox"]
+unique_name_in_owner = true
+visible = false
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 24
+
+[node name="QuizNextButton" type="Button" parent="QuizModal/Card/VBox"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(240, 48)
+text = "Next Stage"
+size_flags_horizontal = 4

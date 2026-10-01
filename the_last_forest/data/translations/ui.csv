@@ -1,0 +1,109 @@
+keys,en,fil
+MENU_TITLE,The Last Forest,Ang Huling Gubat
+MENU_SUBTITLE,Bring the forest back to life!,Buhayin muli ang gubat!
+MENU_PLAY,Play,Maglaro
+MENU_TEACHER,Teacher,Guro
+MENU_QUIT,Quit,Lumabas
+TEACHER_TITLE,Teacher Panel,Panel ng Guro
+TEACHER_PIN,PIN,PIN
+TEACHER_ENTER_PIN,Enter the teacher PIN.,Ilagay ang PIN ng guro.
+TEACHER_WRONG_PIN,Wrong PIN.,Mali ang PIN.
+TEACHER_EXPORT,Export results (CSV),I-export ang resulta (CSV)
+TEACHER_OPEN_FOLDER,Open export folder,Buksan ang folder
+TEACHER_EXPORTED,Saved to:,Na-save sa:
+TEACHER_EXPORT_FAILED,Export failed. Please try again.,Hindi na-export. Subukan muli.
+UI_CLOSE,Close,Isara
+DB_OK,Database: ready,Database: handa
+DB_FALLBACK,Database: add-on missing (saving to backup file),Database: walang add-on (sa backup file nag-se-save)
+LOGIN_TITLE,Who is playing?,Sino ang maglalaro?
+LOGIN_HINT,Teacher: type the learner's 12-digit LRN.,Guro: i-type ang 12-digit na LRN ng mag-aaral.
+LOGIN_LRN,LRN (12 digits),LRN (12 numero)
+LOGIN_NAME,First name (optional),Pangalan (opsyonal)
+LOGIN_GRADE,Grade & Section,Baitang at Seksyon
+LOGIN_CONTINUE,Continue,Magpatuloy
+UI_CANCEL,Cancel,Kanselahin
+CLIMATE_TIP_TITLE,Forest Fact,Alam tungkol sa Gubat
+UI_BACK,Back,Bumalik
+LOGIN_ERR_LRN,The LRN must be exactly 12 digits.,Dapat eksaktong 12 numero ang LRN.
+LOGIN_ERR_GRADE,Please enter the grade and section.,Pakilagay ang baitang at seksyon.
+LOGIN_ERR_DB,Could not save. Please call the teacher.,Hindi ma-save. Pakitawag ang guro.
+SELECT_TITLE,Choose a Stage,Pumili ng Yugto
+SELECT_LOGOUT,Change player,Palitan ang manlalaro
+STUDENT_GENERIC,Player,Manlalaro
+GUEST_MODE,Guest (results are not saved),Bisita (hindi naka-save ang resulta)
+STAGE_1_TITLE,Burnt Grove,Sunog na Kakahuyan
+STAGE_2_TITLE,Pest Control,Pagkontrol sa Peste
+STAGE_3_TITLE,Water Management,Pamamahala ng Tubig
+STAGE_4_TITLE,Forest Sanctuary,Santuwaryo ng Gubat
+STAGE_LOCKED,Locked,Naka-lock
+STAGE_COMING_SOON,Coming soon,Malapit na
+PROMPT_HOLD_TO_PLANT,Hold E to plant,Pindutin nang matagal ang E para magtanim
+PROMPT_GUARD,Hold E to add a tree guard,Pindutin nang matagal ang E para lagyan ng bakod
+PROMPT_DIVERTER,Hold E to turn the water,Pindutin nang matagal ang E para ibaling ang tubig
+TIP_GUARD_PICKED,You got a tree guard! Hold E next to a young tree.,May bakod ka na! Pindutin nang matagal ang E sa tabi ng batang puno.
+DENY_NO_GUARDS,You need a tree guard.,Kailangan mo ng bakod.
+HUD_PAUSED,Paused,Nakahinto
+HUD_RESUME,Resume,Ituloy
+HUD_STAGE_SELECT,Stage Select,Pumili ng Yugto
+HUD_TAP_MODE,Tap E instead of holding,I-tap ang E sa halip na pindutin nang matagal
+QUIZ_PRE_HEADER,Before we start…,Bago tayo magsimula…
+QUIZ_POST_HEADER,What did you learn?,Ano ang natutunan mo?
+QUIZ_RIGHT,Correct! Great job!,Tama! Magaling!
+QUIZ_WRONG,Nice try! The green answer is correct.,Magandang subok! Ang berdeng sagot ang tama.
+QUIZ_THANKS,Thank you!,Salamat!
+CLEAR_TITLE,%s restored!,Naibalik ang %s!
+CLEAR_FINAL,You brought the whole forest back to life!,Nabuhay mong muli ang buong gubat!
+CLEAR_STATS,Trees grown: %d   Seeds found: %d   Time: %d:%02d,Punong lumaki: %d   Binhing nahanap: %d   Oras: %d:%02d
+CLEAR_QUIZ,Quiz: %d/%d before  →  %d/%d after,Pagsusulit: %d/%d bago  →  %d/%d pagkatapos
+CLEAR_SAVED,Your progress is saved.,Naka-save ang iyong progreso.
+CLEAR_SAVE_FAILED,Could not save. Please tell your teacher.,Hindi na-save. Pakisabi sa iyong guro.
+CLEAR_GUEST,Guest mode: results were not saved.,Bisita: hindi na-save ang resulta.
+CLEAR_NEXT,Next Stage,Susunod na Yugto
+Q1_1,What do trees take in from the air?,Ano ang kinukuha ng mga puno mula sa hangin?
+Q1_1_A,Carbon dioxide (CO2),Carbon dioxide (CO2)
+Q1_1_B,Salt,Asin
+Q1_1_C,Plastic,Plastik
+Q1_2,What happens when a forest is burned?,Ano ang nangyayari kapag sinunog ang gubat?
+Q1_2_A,CO2 goes into the air,Napupunta ang CO2 sa hangin
+Q1_2_B,The air gets cleaner,Lumilinis ang hangin
+Q1_2_C,Nothing changes,Walang nagbabago
+Q1_3,What holds the soil in place?,Ano ang humahawak sa lupa?
+Q1_3_A,Tree roots,Ugat ng puno
+Q1_3_B,Clouds,Ulap
+Q1_3_C,Plastic bags,Plastik na supot
+Q2_1,Which animals eat insect pests?,Aling mga hayop ang kumakain ng pesteng insekto?
+Q2_1_A,Ladybugs and birds,Ladybug at ibon
+Q2_1_B,Mosquitoes,Lamok
+Q2_1_C,No animals,Walang hayop
+Q2_2,What do young trees need to survive?,Ano ang kailangan ng batang puno para mabuhay?
+Q2_2_A,Water and protection,Tubig at proteksyon
+Q2_2_B,Nothing,Wala
+Q2_2_C,Fire,Apoy
+Q2_3,Why do we put a guard around a young tree?,Bakit nilalagyan ng bakod ang batang puno?
+Q2_3_A,To keep it safe while it grows,Para ligtas ito habang lumalaki
+Q2_3_B,To make it stop growing,Para tumigil ito sa paglaki
+Q2_3_C,To hide it,Para itago ito
+Q3_1,How do trees help make rain?,Paano tumutulong ang puno sa pagbuo ng ulan?
+Q3_1_A,They release water from their leaves,Naglalabas sila ng tubig mula sa dahon
+Q3_1_B,They make fire,Gumagawa sila ng apoy
+Q3_1_C,They eat clouds,Kinakain nila ang ulap
+Q3_2,What happens to young trees on dry land?,Ano ang nangyayari sa batang puno sa tuyong lupa?
+Q3_2_A,They cannot grow well,Hindi sila lumalaki nang maayos
+Q3_2_B,They grow faster,Mas mabilis silang lumaki
+Q3_2_C,They turn into rocks,Nagiging bato sila
+Q3_3,Where do tree roots get water?,Saan kumukuha ng tubig ang ugat ng puno?
+Q3_3_A,From the ground,Mula sa lupa
+Q3_3_B,From the sun,Mula sa araw
+Q3_3_C,From rocks,Mula sa bato
+Q4_1,Who lives in the forest?,Sino ang nakatira sa gubat?
+Q4_1_A,"Many animals, like the Philippine eagle","Maraming hayop, gaya ng Philippine eagle"
+Q4_1_B,No one,Walang nakatira
+Q4_1_C,Only cars,Mga kotse lang
+Q4_2,What is reforestation?,Ano ang reforestation?
+Q4_2_A,Planting trees where forests were lost,Pagtatanim ng puno kung saan nawala ang gubat
+Q4_2_B,Cutting all the trees,Pagputol ng lahat ng puno
+Q4_2_C,Building roads,Paggawa ng kalsada
+Q4_3,What should we do after planting a tree?,Ano ang dapat gawin pagkatapos magtanim ng puno?
+Q4_3_A,Take care of it,Alagaan ito
+Q4_3_B,Forget about it,Kalimutan ito
+Q4_3_C,Cut it down,Putulin ito

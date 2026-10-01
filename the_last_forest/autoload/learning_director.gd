@@ -19,6 +19,8 @@ const PAUSE_OWNER: StringName = &"fact_card"
 var _facts: Dictionary = {}          # StringName -> ClimateFact
 var _queue: Array[Dictionary] = []   # {"id": StringName, "priority": int}
 var _popup: FactCardPopup = null
+var _quiz_popup: QuizModal = null
+var _quiz_running: bool = false
 var _showing: StringName = &""
 var _opened_msec: int = 0
 var _last_closed_msec: int = -COOLDOWN_MSEC
@@ -49,6 +51,29 @@ func register_popup(popup: FactCardPopup) -> void:
 	_popup = popup
 	if not popup.closed.is_connected(_on_popup_closed):
 		popup.closed.connect(_on_popup_closed)
+
+
+func register_quiz_popup(popup: QuizModal) -> void:
+	_quiz_popup = popup
+
+
+## Runs a pre- or post-test. Pauses gameplay, returns the number of correct
+## answers, or -1 if no QuizModal is in the scene / the set is empty.
+func run_quiz(quiz: QuizSet, phase: StringName) -> int:
+	if quiz == null or quiz.questions.is_empty():
+		return -1
+	if _quiz_popup == null or not is_instance_valid(_quiz_popup):
+		push_warning("LearningDirector: no QuizModal registered; skipping quiz.")
+		return -1
+	_quiz_running = true
+	GameState.request_pause(&"quiz")
+	EventBus.quiz_started.emit(quiz.stage_index, phase)
+	_quiz_popup.present(quiz, phase)
+	var score: int = await _quiz_popup.finished
+	GameState.release_pause(&"quiz")
+	_quiz_running = false
+	EventBus.quiz_finished.emit(quiz.stage_index, phase, score, quiz.questions.size())
+	return score
 
 
 func get_fact(fact_id: StringName) -> ClimateFact:
@@ -91,9 +116,20 @@ func is_showing() -> bool:
 	return _showing != &""
 
 
+## True when no card is open or waiting.
+func is_idle() -> bool:
+	return _showing == &"" and _queue.is_empty()
+
+
+## Called on scene changes so a card queued in one stage never pops up in another.
+func clear_queue() -> void:
+	_queue.clear()
+	_waiting_since = -1
+
+
 # ------------------------------------------------------------------ Scheduling
 func _process(_delta: float) -> void:
-	if _showing != &"" or _queue.is_empty():
+	if _showing != &"" or _queue.is_empty() or _quiz_running:
 		return
 	if _popup == null or not is_instance_valid(_popup):
 		return

@@ -3,7 +3,6 @@
 [ext_resource type="TileSet" uid="uid://bc2x0sp26cvxb" path="res://level/tileset.tres" id="1"]
 [ext_resource type="PackedScene" uid="uid://bc4a8j7okb15h" path="res://enemy/enemy.tscn" id="2"]
 [ext_resource type="PackedScene" uid="uid://cp1iwt1wdglve" path="res://level/platforms/platform.tscn" id="3"]
-[ext_resource type="PackedScene" uid="uid://dfg1bqmq1k47c" path="res://level/coin.tscn" id="4"]
 [ext_resource type="Texture2D" uid="uid://c684ydh6l18bp" path="res://level/platforms/moving_platform.webp" id="6"]
 [ext_resource type="PackedScene" uid="uid://bbl6yrj1g5jgi" path="res://level/background/parallax_background.tscn" id="7"]
 [ext_resource type="Texture2D" uid="uid://cot0528c0dfd8" path="res://level/props/grass_1.webp" id="10"]
@@ -1205,85 +1204,6 @@ material = ExtResource("18")
 position = Vector2(584, 382)
 scale = Vector2(0.8, 0.8)
 texture = ExtResource("11")
-
-[node name="Coins" type="Node" parent="." unique_id=1657800085]
-
-[node name="CoinsHorizontal1" type="Node2D" parent="Coins" unique_id=1831044754]
-position = Vector2(700, 610)
-
-[node name="Coin" parent="Coins/CoinsHorizontal1" unique_id=800041734 instance=ExtResource("4")]
-
-[node name="Coin2" parent="Coins/CoinsHorizontal1" unique_id=118845354 instance=ExtResource("4")]
-position = Vector2(30, 0)
-
-[node name="Coin3" parent="Coins/CoinsHorizontal1" unique_id=648774255 instance=ExtResource("4")]
-position = Vector2(60, 0)
-
-[node name="CoinsHorizontal3" type="Node2D" parent="Coins" unique_id=163293025]
-position = Vector2(154, 43)
-
-[node name="Coin" parent="Coins/CoinsHorizontal3" unique_id=835654187 instance=ExtResource("4")]
-
-[node name="Coin2" parent="Coins/CoinsHorizontal3" unique_id=733462874 instance=ExtResource("4")]
-position = Vector2(30, 0)
-
-[node name="Coin3" parent="Coins/CoinsHorizontal3" unique_id=1760360106 instance=ExtResource("4")]
-position = Vector2(60, 0)
-
-[node name="CoinsHorizontal2" type="Node2D" parent="Coins" unique_id=724755560]
-position = Vector2(200, 610)
-
-[node name="Coin" parent="Coins/CoinsHorizontal2" unique_id=2055643400 instance=ExtResource("4")]
-
-[node name="Coin2" parent="Coins/CoinsHorizontal2" unique_id=2055670279 instance=ExtResource("4")]
-position = Vector2(30, 0)
-
-[node name="Coin3" parent="Coins/CoinsHorizontal2" unique_id=1940277600 instance=ExtResource("4")]
-position = Vector2(60, 0)
-
-[node name="CoinsArc1" type="Node2D" parent="Coins" unique_id=455900908]
-position = Vector2(307, 594)
-
-[node name="Coin" parent="Coins/CoinsArc1" unique_id=40726656 instance=ExtResource("4")]
-
-[node name="Coin2" parent="Coins/CoinsArc1" unique_id=1774555216 instance=ExtResource("4")]
-position = Vector2(30, -10)
-
-[node name="Coin3" parent="Coins/CoinsArc1" unique_id=449695508 instance=ExtResource("4")]
-position = Vector2(60, 0)
-
-[node name="CoinsArc2" type="Node2D" parent="Coins" unique_id=1984733654]
-position = Vector2(453, 332)
-
-[node name="Coin" parent="Coins/CoinsArc2" unique_id=450368845 instance=ExtResource("4")]
-
-[node name="Coin2" parent="Coins/CoinsArc2" unique_id=412300776 instance=ExtResource("4")]
-position = Vector2(30, -10)
-
-[node name="Coin3" parent="Coins/CoinsArc2" unique_id=1148923593 instance=ExtResource("4")]
-position = Vector2(60, 0)
-
-[node name="CoinsArc4" type="Node2D" parent="Coins" unique_id=1412036031]
-position = Vector2(122, 406)
-
-[node name="Coin" parent="Coins/CoinsArc4" unique_id=53559994 instance=ExtResource("4")]
-
-[node name="Coin2" parent="Coins/CoinsArc4" unique_id=2070768338 instance=ExtResource("4")]
-position = Vector2(30, -10)
-
-[node name="Coin3" parent="Coins/CoinsArc4" unique_id=1691536943 instance=ExtResource("4")]
-position = Vector2(60, 0)
-
-[node name="CoinsArc3" type="Node2D" parent="Coins" unique_id=719296825]
-position = Vector2(594, 332)
-
-[node name="Coin" parent="Coins/CoinsArc3" unique_id=1367083975 instance=ExtResource("4")]
-
-[node name="Coin2" parent="Coins/CoinsArc3" unique_id=609059759 instance=ExtResource("4")]
-position = Vector2(30, -10)
-
-[node name="Coin3" parent="Coins/CoinsArc3" unique_id=546810613 instance=ExtResource("4")]
-position = Vector2(60, 0)
 
 [node name="Platforms" type="Node" parent="." unique_id=561757885]
 

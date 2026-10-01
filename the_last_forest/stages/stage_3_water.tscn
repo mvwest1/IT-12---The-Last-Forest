@@ -1,0 +1,141 @@
+[gd_scene load_steps=20 format=3]
+
+[ext_resource type="Shader" path="res://the_last_forest/environment/restoration.gdshader" id="1"]
+[ext_resource type="Script" path="res://the_last_forest/stage/stage_controller.gd" id="2"]
+[ext_resource type="Resource" path="res://the_last_forest/stage/stages/stage_3_water.tres" id="3"]
+[ext_resource type="Resource" path="res://the_last_forest/quiz/quizzes/stage_3_quiz.tres" id="4"]
+[ext_resource type="Script" path="res://the_last_forest/environment/restoration_controller.gd" id="5"]
+[ext_resource type="Texture2D" path="res://level/props/tree_1.webp" id="6"]
+[ext_resource type="PackedScene" path="res://the_last_forest/player/forest_player.tscn" id="7"]
+[ext_resource type="PackedScene" path="res://the_last_forest/planting/planting_zone.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://the_last_forest/planting/seed_pickup.tscn" id="9"]
+[ext_resource type="PackedScene" path="res://the_last_forest/water/arid_zone.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://the_last_forest/water/diverter.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://the_last_forest/water/water_source.tscn" id="12"]
+[ext_resource type="PackedScene" path="res://the_last_forest/ui/hud.tscn" id="13"]
+[ext_resource type="PackedScene" path="res://level/platforms/platform.tscn" id="14"]
+
+[ext_resource type="TileSet" path="res://level/tileset.tres" id="15"]
+[ext_resource type="PackedScene" path="res://level/background/parallax_background.tscn" id="16"]
+
+[sub_resource type="ShaderMaterial" id="restoration_mat"]
+shader = ExtResource("1")
+
+[sub_resource type="RectangleShape2D" id="ground"]
+size = Vector2(3600, 60)
+
+[sub_resource type="RectangleShape2D" id="wall"]
+size = Vector2(40, 1400)
+
+[node name="Stage3" type="Node2D"]
+
+[node name="DemoTerrain" type="TileMapLayer" parent="."]
+tile_set = ExtResource("15")
+use_parent_material = true
+tile_map_data = PackedByteArray("AAD0/wAABwAAAAAAAQD1/wAAAAAAAAAAAAD2/wAAAAAAAAAAAAD3/wAAAAAAAAAAAAD4/wAAAAAAAAAAAAD5/wAAAAAAAAAAAAD6/wAAAAAAAAAAAAD7/wAAAAAAAAAAAAD8/wAAAgAAAAAAAAAOAAAAAgAAAAAAAQAPAAAAAAAAAAAAAQAQAAAAAAAAAAAAAAARAAAAAAAAAAAAAAASAAAAAAAAAAAAAAATAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAVAAAAAAAAAAAAAAAWAAAABwAAAAAAAAD0/wEABwAAAAAAAQD1/wEABgAAAAAAAAD2/wEABgAAAAAAAAD3/wEABgAAAAAAAAD4/wEABgAAAAAAAAD5/wEABgAAAAAAAAD6/wEABgAAAAAAAAD7/wEABgAAAAAAAAD8/wEABwAAAAAAAAACAAEABAAAAAAAAQADAAEAAwAAAAAAAAAEAAEAAwAAAAAAAAAFAAEAAwAAAAAAAQAGAAEABAAAAAAAAAAOAAEABwAAAAAAAQAPAAEABgAAAAAAAQAQAAEABgAAAAAAAAARAAEABgAAAAAAAAASAAEABgAAAAAAAAATAAEABgAAAAAAAAAUAAEABgAAAAAAAAAVAAEABgAAAAAAAAAWAAEABwAAAAAAAAD0/wIABwAAAAAAAQD1/wIABgAAAAAAAAD2/wIABgAAAAAAAAD3/wIABgAAAAAAAAD4/wIABgAAAAAAAAD5/wIABgAAAAAAAAD6/wIABgAAAAAAAAD7/wIABgAAAAAAAAD8/wIABwAAAAAAAAD//wIABAAAAAAAAQAAAAIABAAAAAAAAAAOAAIABwAAAAAAAQAPAAIABgAAAAAAAQAQAAIABgAAAAAAAAARAAIABgAAAAAAAAASAAIABgAAAAAAAAATAAIABgAAAAAAAAAUAAIABgAAAAAAAAAVAAIABgAAAAAAAAAWAAIABwAAAAAAAAD0/wMABwAAAAAAAQD1/wMABgAAAAAAAAD2/wMABgAAAAAAAAD3/wMABgAAAAAAAAD4/wMABgAAAAAAAAD5/wMABgAAAAAAAAD6/wMABgAAAAAAAAD7/wMABgAAAAAAAAD8/wMABwAAAAAAAAAGAAMABAAAAAAAAQAHAAMAAwAAAAAAAQAIAAMABAAAAAAAAAAOAAMABwAAAAAAAQAPAAMABgAAAAAAAQAQAAMABgAAAAAAAAARAAMABgAAAAAAAAASAAMABgAAAAAAAAATAAMABgAAAAAAAAAUAAMABgAAAAAAAAAVAAMABgAAAAAAAAAWAAMABwAAAAAAAAD0/wQABwAAAAAAAQD1/wQABgAAAAAAAAD2/wQABgAAAAAAAAD3/wQABgAAAAAAAAD4/wQABgAAAAAAAAD5/wQABgAAAAAAAAD6/wQABgAAAAAAAAD7/wQABgAAAAAAAAD8/wQACAAAAAAAAAD9/wQAAgAAAAAAAAAOAAQABwAAAAAAAQAPAAQABgAAAAAAAQAQAAQABgAAAAAAAAARAAQABgAAAAAAAAASAAQABgAAAAAAAAATAAQABgAAAAAAAAAUAAQABgAAAAAAAAAVAAQABgAAAAAAAAAWAAQABwAAAAAAAAD0/wUABwAAAAAAAQD1/wUABgAAAAAAAAD2/wUABgAAAAAAAAD3/wUABgAAAAAAAAD4/wUABgAAAAAAAAD5/wUABgAAAAAAAAD6/wUABgAAAAAAAAD7/wUABgAAAAAAAAD8/wUABgAAAAAAAAD9/wUABwAAAAAAAAABAAUABAAAAAAAAQACAAUAAwAAAAAAAAADAAUABAAAAAAAAAAOAAUABwAAAAAAAQAPAAUABgAAAAAAAQAQAAUABgAAAAAAAAARAAUABgAAAAAAAAASAAUABgAAAAAAAAATAAUABgAAAAAAAAAUAAUABgAAAAAAAAAVAAUABgAAAAAAAAAWAAUABwAAAAAAAAD0/wYABwAAAAAAAQD1/wYABgAAAAAAAAD2/wYABgAAAAAAAAD3/wYABgAAAAAAAAD4/wYABgAAAAAAAAD5/wYABgAAAAAAAAD6/wYABgAAAAAAAAD7/wYABgAAAAAAAAD8/wYAEgAAAAAAAQD9/wYABwAAAAAAAAAGAAYAAgAAAAAAAQAHAAYACwAAAAAAAAAIAAYADQAAAAAAAAAJAAYACwAAAAAAAAAKAAYAAgAAAAAAAAAOAAYABwAAAAAAAQAPAAYABgAAAAAAAQAQAAYABgAAAAAAAAARAAYABgAAAAAAAAASAAYABgAAAAAAAAATAAYABgAAAAAAAAAUAAYABgAAAAAAAAAVAAYABgAAAAAAAAAWAAYABwAAAAAAAAD0/wcABwAAAAAAAQD1/wcABgAAAAAAAAD2/wcABgAAAAAAAAD3/wcABgAAAAAAAAD4/wcABgAAAAAAAAD5/wcABgAAAAAAAAD6/wcABgAAAAAAAAD7/wcABgAAAAAAAAD8/wcABgAAAAAAAAD9/wcABwAAAAAAAAABAAcABAAAAAAAAQACAAcAAwAAAAAAAQADAAcAAwAAAAAAAQAEAAcABAAAAAAAAAAGAAcAEAAAAAAAAQAHAAcADwAAAAAAAQAIAAcADgAAAAAAAAAJAAcADgAAAAAAAAAKAAcAEAAAAAAAAAAOAAcABwAAAAAAAQAPAAcABgAAAAAAAQAQAAcABgAAAAAAAAARAAcABgAAAAAAAAASAAcABgAAAAAAAAATAAcABgAAAAAAAAAUAAcABgAAAAAAAAAVAAcABgAAAAAAAAAWAAcABwAAAAAAAAD0/wgABwAAAAAAAQD1/wgABgAAAAAAAAD2/wgABgAAAAAAAAD3/wgABgAAAAAAAAD4/wgABgAAAAAAAAD5/wgABgAAAAAAAAD6/wgABgAAAAAAAAD7/wgABgAAAAAAAAD8/wgABgAAAAAAAAD9/wgABwAAAAAAAAAOAAgABwAAAAAAAQAPAAgABgAAAAAAAQAQAAgABgAAAAAAAAARAAgABgAAAAAAAAASAAgABgAAAAAAAAATAAgABgAAAAAAAAAUAAgABgAAAAAAAAAVAAgABgAAAAAAAAAWAAgABwAAAAAAAAD0/wkABwAAAAAAAQD1/wkABgAAAAAAAAD2/wkABgAAAAAAAAD3/wkABgAAAAAAAAD4/wkABgAAAAAAAAD5/wkABgAAAAAAAAD6/wkABgAAAAAAAAD7/wkABgAAAAAAAAD8/wkAEgAAAAAAAQD9/wkABwAAAAAAAAANAAkACQAAAAAAAQAOAAkACAAAAAAAAQAPAAkABgAAAAAAAQAQAAkABgAAAAAAAAARAAkABgAAAAAAAAASAAkABgAAAAAAAAATAAkABgAAAAAAAAAUAAkABgAAAAAAAAAVAAkABgAAAAAAAAAWAAkABwAAAAAAAAD0/woABwAAAAAAAQD1/woABgAAAAAAAAD2/woABgAAAAAAAAD3/woABgAAAAAAAAD4/woABgAAAAAAAAD5/woABgAAAAAAAAD6/woABgAAAAAAAAD7/woABgAAAAAAAAD8/woABgAAAAAAAAD9/woACAAAAAAAAAD+/woADQAAAAAAAAD//woACwAAAAAAAAAAAAoACwAAAAAAAAABAAoADQAAAAAAAAACAAoADQAAAAAAAAADAAoACwAAAAAAAAAEAAoACwAAAAAAAAAFAAoADQAAAAAAAAAGAAoACwAAAAAAAAAHAAoADQAAAAAAAAAIAAoACwAAAAAAAAAJAAoADQAAAAAAAAAKAAoACwAAAAAAAAALAAoACwAAAAAAAAAMAAoADQAAAAAAAAANAAoACgAAAAAAAQAOAAoABgAAAAAAAQAPAAoABgAAAAAAAQAQAAoABgAAAAAAAAARAAoABgAAAAAAAAASAAoABgAAAAAAAAATAAoABgAAAAAAAAAUAAoABgAAAAAAAAAVAAoABgAAAAAAAAAWAAoABwAAAAAAAAD0/wsABwAAAAAAAQD1/wsABgAAAAAAAAD2/wsABgAAAAAAAAD3/wsABgAAAAAAAAD4/wsABgAAAAAAAAD5/wsABgAAAAAAAAD6/wsABgAAAAAAAAD7/wsABgAAAAAAAAD8/wsABgAAAAAAAAD9/wsABgAAAAAAAAD+/wsABgAAAAAAAAD//wsABgAAAAAAAAAAAAsAEgAAAAAAAAABAAsABgAAAAAAAAACAAsAEgAAAAAAAAADAAsABgAAAAAAAAAEAAsAEgAAAAAAAAAFAAsABgAAAAAAAAAGAAsABgAAAAAAAAAHAAsABgAAAAAAAAAIAAsAEgAAAAAAAQAJAAsAEgAAAAAAAAAKAAsABgAAAAAAAAALAAsABgAAAAAAAAAMAAsAEgAAAAAAAQANAAsABgAAAAAAAAAOAAsABgAAAAAAAQAPAAsABgAAAAAAAQAQAAsABgAAAAAAAAARAAsABgAAAAAAAAASAAsABgAAAAAAAAATAAsABgAAAAAAAAAUAAsABgAAAAAAAAAVAAsABgAAAAAAAAAWAAsABwAAAAAAAAD0/wwABwAAAAAAAQD1/wwABgAAAAAAAAD2/wwABgAAAAAAAAD3/wwABgAAAAAAAAD4/wwABgAAAAAAAAD5/wwABgAAAAAAAAD6/wwABgAAAAAAAAD7/wwABgAAAAAAAAD8/wwADgAAAAAAAQD9/wwADgAAAAAAAQD+/wwADgAAAAAAAAD//wwADgAAAAAAAAAAAAwADgAAAAAAAAABAAwADgAAAAAAAAACAAwADgAAAAAAAAADAAwADgAAAAAAAAAEAAwADgAAAAAAAAAFAAwAEgAAAAAAAAAGAAwADgAAAAAAAAAHAAwADgAAAAAAAAAIAAwADgAAAAAAAAAJAAwADgAAAAAAAAAKAAwADgAAAAAAAAALAAwADgAAAAAAAAAMAAwADgAAAAAAAAANAAwADgAAAAAAAAAOAAwABgAAAAAAAQAPAAwABgAAAAAAAQAQAAwABgAAAAAAAAARAAwABgAAAAAAAAASAAwABgAAAAAAAAATAAwABgAAAAAAAAAUAAwABgAAAAAAAAAVAAwABgAAAAAAAAAWAAwABwAAAAAAAAD0//X/AgAAAAAAAQAWAPX/AgAAAAAAAAAWAP//BwAAAAAAAAAWAP7/BwAAAAAAAAAWAP3/BwAAAAAAAAAWAPz/BwAAAAAAAAAWAPv/BwAAAAAAAAAWAPr/BwAAAAAAAAAWAPn/BwAAAAAAAAAWAPj/BwAAAAAAAAAWAPf/BwAAAAAAAAAWAPb/BwAAAAAAAAD0//b/BwAAAAAAAQD0//f/BwAAAAAAAQD0//j/BwAAAAAAAQD0//n/BwAAAAAAAQD0//r/BwAAAAAAAQD0//v/BwAAAAAAAQD0//z/BwAAAAAAAQD0//3/BwAAAAAAAQD0//7/BwAAAAAAAQD0////BwAAAAAAAQA=")
+rendering_quadrant_size = 32
+position = Vector2(0, -140)
+collision_enabled = true
+
+[node name="DemoParallax" parent="." instance=ExtResource("16")]
+
+[node name="StageController" type="Node" parent="."]
+script = ExtResource("2")
+data = ExtResource("3")
+quiz = ExtResource("4")
+player = NodePath("../Player")
+spawn_point = NodePath("../SpawnPoint")
+
+[node name="RestorationController" type="Node" parent="."]
+script = ExtResource("5")
+
+[node name="Sky" type="CanvasLayer" parent="."]
+layer = -10
+
+[node name="SkyColor" type="ColorRect" parent="Sky"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+material = SubResource("restoration_mat")
+color = Color(0.55, 0.78, 0.95, 1)
+
+[node name="Ground" type="StaticBody2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
+position = Vector2(1600, 530)
+shape = SubResource("ground")
+
+[node name="Visual" type="Polygon2D" parent="Ground"]
+material = SubResource("restoration_mat")
+color = Color(0.35, 0.62, 0.3, 1)
+polygon = PackedVector2Array(-200, 500, 3400, 500, 3400, 720, -200, 720)
+
+[node name="WallLeft" type="StaticBody2D" parent="."]
+position = Vector2(-20, 0)
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallLeft"]
+shape = SubResource("wall")
+
+[node name="WallRight" type="StaticBody2D" parent="."]
+position = Vector2(3220, 0)
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallRight"]
+shape = SubResource("wall")
+
+[node name="Platforms" type="Node2D" parent="."]
+
+[node name="DryBank" parent="Platforms" instance=ExtResource("14")]
+position = Vector2(650, 410)
+
+[node name="HighBank" parent="Platforms" instance=ExtResource("14")]
+position = Vector2(2250, 370)
+
+[node name="SpawnPoint" type="Marker2D" parent="."]
+position = Vector2(100, 490)
+
+[node name="Player" parent="." instance=ExtResource("7")]
+position = Vector2(100, 490)
+
+[node name="PlantingZones" type="Node2D" parent="."]
+
+[node name="Zone1" parent="PlantingZones" instance=ExtResource("8")]
+position = Vector2(500, 500)
+
+[node name="Zone2" parent="PlantingZones" instance=ExtResource("8")]
+position = Vector2(1640, 500)
+arid_zone = NodePath("../../AridZone")
+
+[node name="Zone3" parent="PlantingZones" instance=ExtResource("8")]
+position = Vector2(1800, 500)
+arid_zone = NodePath("../../AridZone")
+
+[node name="Seeds" type="Node2D" parent="."]
+
+[node name="Seed1" parent="Seeds" instance=ExtResource("9")]
+position = Vector2(700, 470)
+
+[node name="Seed2" parent="Seeds" instance=ExtResource("9")]
+position = Vector2(1000, 470)
+
+[node name="AridZone" parent="." instance=ExtResource("10")]
+position = Vector2(1700, 500)
+
+[node name="Diverter" parent="." instance=ExtResource("11")]
+position = Vector2(1350, 500)
+
+[node name="WaterSource" parent="." instance=ExtResource("12")]
+position = Vector2(1450, 120)
+
+[node name="HUDLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="HUD" parent="HUDLayer" instance=ExtResource("13")]
+show_water = true

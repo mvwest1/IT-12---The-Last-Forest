@@ -1,14 +1,7 @@
 class_name Enemy
 extends CharacterBody2D
 
-enum State {
-	WALKING,
-	DEAD,
-}
-
 const WALK_SPEED = 22.0
-
-var _state := State.WALKING
 
 @onready var gravity: int = ProjectSettings.get(&"physics/2d/default_gravity")
 @onready var platform_detector := $PlatformDetector as RayCast2D
@@ -19,7 +12,7 @@ var _state := State.WALKING
 
 
 func _physics_process(delta: float) -> void:
-	if _state == State.WALKING and velocity.is_zero_approx():
+	if velocity.is_zero_approx():
 		velocity.x = WALK_SPEED
 	velocity.y += gravity * delta
 	if not floor_detector_left.is_colliding():
@@ -42,18 +35,5 @@ func _physics_process(delta: float) -> void:
 		animation_player.play(animation)
 
 
-func destroy() -> void:
-	_state = State.DEAD
-	velocity = Vector2.ZERO
-
-
 func get_new_animation() -> StringName:
-	var animation_new: StringName
-	if _state == State.WALKING:
-		if velocity.x == 0:
-			animation_new = &"idle"
-		else:
-			animation_new = &"walk"
-	else:
-		animation_new = &"destroy"
-	return animation_new
+	return &"idle" if velocity.x == 0.0 else &"walk"

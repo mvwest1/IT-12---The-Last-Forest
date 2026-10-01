@@ -2,12 +2,16 @@ class_name Sapling
 extends Interactable
 ## A planted tree. Grows through 4 stages; can be nibbled by pests; can wilt
 ## and be revived (hold E) — it never dies permanently (no harsh loss for kids).
+## Stage 2 barrier tool: hold E on a young sapling while carrying a Tree Guard
+## to fence it — guarded saplings are ignored by pests (real reforestation
+## projects use tree guards/shelters for exactly this).
 ##
 ## Scene (sapling.tscn):
 ##   Sapling (Area2D, this script)   — also the pests' target
 ##   ├─ CollisionShape2D  (small circle around the trunk base)
 ##   ├─ Sprite (Sprite2D)  (offset so the base sits at the origin)
 ##   ├─ ThirstyIcon (Sprite2D, optional)  (water-drop icon for Stage 3)
+##   ├─ Guard (CanvasItem, optional)  (fence art, shown once guarded)
 ##   └─ Prompt (Label)  ("Hold E to help!")
 ##
 ## Growth state machine:
@@ -27,11 +31,13 @@ var zone: PlantingZone = null
 var stage: Stage = Stage.SEEDLING
 var health: int = 3
 var wilted: bool = false
+var guarded: bool = false
 
 var _growth: float = 0.0
 
 @onready var _sprite: Sprite2D = $Sprite
 @onready var _thirsty_icon: CanvasItem = get_node_or_null(^"ThirstyIcon") as CanvasItem
+@onready var _guard_visual: CanvasItem = get_node_or_null(^"Guard") as CanvasItem
 
 
 func _ready() -> void:
@@ -43,6 +49,8 @@ func _ready() -> void:
 	_apply_stage_visual(false)
 	if _thirsty_icon != null:
 		_thirsty_icon.hide()
+	if _guard_visual != null:
+		_guard_visual.hide()
 
 
 func _process(delta: float) -> void:
@@ -70,7 +78,7 @@ func _advance_stage() -> void:
 
 ## Pests only target vulnerable saplings.
 func is_vulnerable() -> bool:
-	return not wilted and stage != Stage.TREE
+	return not wilted and not guarded and stage != Stage.TREE
 
 
 func take_damage(amount: int) -> void:
@@ -92,13 +100,30 @@ func _wilt() -> void:
 	EventBus.sapling_wilted.emit(self)
 
 
-# ------------------------------------------------------------------ Interactable (revive)
+# ------------------------------------------------------------------ Interactable (revive / guard)
 func is_interactable() -> bool:
-	return wilted
+	return wilted or _can_guard()
+
+
+func _can_guard() -> bool:
+	return not guarded and stage != Stage.TREE and GameState.guards > 0
+
+
+func set_highlighted(on: bool) -> void:
+	prompt_key = "PROMPT_REVIVE" if wilted else "PROMPT_GUARD"
+	if _prompt is Label:
+		(_prompt as Label).text = tr(prompt_key)
+	super(on)
 
 
 func complete_interaction(_interactor: Node) -> void:
 	if not wilted:
+		if _can_guard() and GameState.try_spend_guard():
+			guarded = true
+			if _guard_visual != null:
+				_guard_visual.show()
+			set_highlighted(false)
+			EventBus.sapling_guarded.emit(self)
 		return
 	wilted = false
 	health = max_health
@@ -110,12 +135,16 @@ func complete_interaction(_interactor: Node) -> void:
 
 # ------------------------------------------------------------------ Visuals
 func _apply_stage_visual(animate: bool) -> void:
-	var target_scale := Vector2.ONE
+	var target_scale: Vector2 = Vector2([0.75, 1.0, 0.5, 0.85][stage], [0.75, 1.0, 0.5, 0.85][stage])
 	if stage_textures.size() > int(stage):
 		_sprite.texture = stage_textures[stage]
 	else:
-		var s: float = [0.25, 0.45, 0.7, 1.0][stage]
-		target_scale = Vector2(s, s)
+		var legacy_scale: float = [0.5, 0.8, 1.1, 1.5][stage]
+		target_scale = Vector2(legacy_scale, legacy_scale)
+	if _sprite.texture != null:
+		_sprite.centered = false
+		_sprite.position = Vector2.ZERO
+		_sprite.offset = Vector2(-_sprite.texture.get_width() * 0.5, -_sprite.texture.get_height())
 	if animate:
 		_sprite.scale = target_scale * Vector2(0.8, 1.25)
 		create_tween().tween_property(_sprite, ^"scale", target_scale, 0.35) \

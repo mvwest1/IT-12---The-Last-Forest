@@ -1,0 +1,73 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Theme" path="res://the_last_forest/ui/ui_theme.tres" id="1"]
+[ext_resource type="Script" path="res://the_last_forest/ui/stage_clear.gd" id="2"]
+
+[node name="StageClear" type="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1")
+script = ExtResource("2")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.12, 0.2, 0.14, 1)
+
+[node name="Center" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Center"]
+custom_minimum_size = Vector2(640, 0)
+theme_override_constants/separation = 12
+
+[node name="ClearTitle" type="Label" parent="Center/VBox"]
+unique_name_in_owner = true
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 32
+autowrap_mode = 3
+
+[node name="StatsLabel" type="Label" parent="Center/VBox"]
+unique_name_in_owner = true
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="QuizLabel" type="Label" parent="Center/VBox"]
+unique_name_in_owner = true
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="SavedLabel" type="Label" parent="Center/VBox"]
+unique_name_in_owner = true
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.75, 0.95, 0.75, 1)
+
+[node name="Buttons" type="HBoxContainer" parent="Center/VBox"]
+alignment = 1
+theme_override_constants/separation = 16
+
+[node name="StageSelectButton" type="Button" parent="Center/VBox/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 44)
+text = "HUD_STAGE_SELECT"
+
+[node name="NextButton" type="Button" parent="Center/VBox/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 44)
+text = "CLEAR_NEXT"

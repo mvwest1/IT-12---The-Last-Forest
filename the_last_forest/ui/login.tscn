@@ -1,0 +1,85 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Theme" path="res://the_last_forest/ui/ui_theme.tres" id="1"]
+[ext_resource type="Script" path="res://the_last_forest/ui/login.gd" id="2"]
+
+[node name="Login" type="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1")
+script = ExtResource("2")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.12, 0.2, 0.14, 1)
+
+[node name="Center" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Center"]
+custom_minimum_size = Vector2(440, 0)
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Center/VBox"]
+text = "LOGIN_TITLE"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 32
+
+[node name="Hint" type="Label" parent="Center/VBox"]
+text = "LOGIN_HINT"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 14
+autowrap_mode = 3
+
+[node name="LrnEdit" type="LineEdit" parent="Center/VBox"]
+unique_name_in_owner = true
+placeholder_text = "LOGIN_LRN"
+max_length = 12
+virtual_keyboard_type = 2
+alignment = 1
+
+[node name="NameEdit" type="LineEdit" parent="Center/VBox"]
+unique_name_in_owner = true
+placeholder_text = "LOGIN_NAME"
+max_length = 30
+alignment = 1
+
+[node name="GradeEdit" type="LineEdit" parent="Center/VBox"]
+unique_name_in_owner = true
+placeholder_text = "LOGIN_GRADE"
+max_length = 30
+alignment = 1
+
+[node name="ErrorLabel" type="Label" parent="Center/VBox"]
+unique_name_in_owner = true
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(1, 0.55, 0.5, 1)
+autowrap_mode = 3
+
+[node name="Buttons" type="HBoxContainer" parent="Center/VBox"]
+alignment = 1
+theme_override_constants/separation = 16
+
+[node name="BackButton" type="Button" parent="Center/VBox/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 44)
+text = "UI_BACK"
+
+[node name="ContinueButton" type="Button" parent="Center/VBox/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 44)
+text = "LOGIN_CONTINUE"

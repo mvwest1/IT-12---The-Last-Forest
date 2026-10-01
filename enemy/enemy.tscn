@@ -1,6 +1,5 @@
 [gd_scene format=3 uid="uid://bc4a8j7okb15h"]
 
-[ext_resource type="Texture2D" uid="uid://dh5f4544n38df" path="res://player/bullet.webp" id="1"]
 [ext_resource type="AudioStream" uid="uid://cwqx3s5fy0q7t" path="res://enemy/explode.wav" id="2"]
 [ext_resource type="AudioStream" uid="uid://v1ehqldgci2l" path="res://enemy/hit.wav" id="3"]
 [ext_resource type="Texture2D" uid="uid://g31nf3mg4rpj" path="res://enemy/enemy.webp" id="4"]
@@ -288,7 +287,6 @@ self_modulate = Color(1, 1, 1, 0.12)
 material = SubResource("6")
 emitting = false
 amount = 32
-texture = ExtResource("1")
 lifetime = 0.5
 one_shot = true
 speed_scale = 1.2

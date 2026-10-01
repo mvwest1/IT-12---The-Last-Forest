@@ -1,0 +1,191 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Theme" path="res://the_last_forest/ui/ui_theme.tres" id="1"]
+[ext_resource type="Script" path="res://the_last_forest/ui/main_menu.gd" id="2"]
+
+[node name="MainMenu" type="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1")
+script = ExtResource("2")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.12, 0.2, 0.14, 1)
+
+[node name="Center" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Center"]
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="Center/VBox"]
+text = "MENU_TITLE"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 44
+
+[node name="Subtitle" type="Label" parent="Center/VBox"]
+text = "MENU_SUBTITLE"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 18
+
+[node name="PlayButton" type="Button" parent="Center/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 44)
+text = "MENU_PLAY"
+
+[node name="StageSelectButton" type="Button" parent="Center/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 44)
+text = "SELECT_TITLE"
+
+[node name="ExportCsvButton" type="Button" parent="Center/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 44)
+text = "TEACHER_EXPORT"
+
+[node name="LanguageButton" type="Button" parent="Center/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 44)
+text = "Language"
+
+[node name="TeacherButton" type="Button" parent="Center/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 44)
+text = "MENU_TEACHER"
+
+[node name="QuitButton" type="Button" parent="Center/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 44)
+text = "MENU_QUIT"
+
+[node name="DbStatus" type="Label" parent="Center/VBox"]
+unique_name_in_owner = true
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="TeacherPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -210.0
+offset_top = -160.0
+offset_right = 210.0
+offset_bottom = 160.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="TeacherPanel"]
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="TeacherPanel/VBox"]
+text = "TEACHER_TITLE"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 24
+
+[node name="PinEdit" type="LineEdit" parent="TeacherPanel/VBox"]
+unique_name_in_owner = true
+placeholder_text = "TEACHER_PIN"
+secret = true
+virtual_keyboard_type = 2
+
+[node name="ExportButton" type="Button" parent="TeacherPanel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 44)
+text = "TEACHER_EXPORT"
+
+[node name="OpenFolderButton" type="Button" parent="TeacherPanel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 44)
+text = "TEACHER_OPEN_FOLDER"
+
+[node name="TeacherStatus" type="Label" parent="TeacherPanel/VBox"]
+unique_name_in_owner = true
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 14
+custom_minimum_size = Vector2(380, 40)
+autowrap_mode = 3
+
+[node name="CloseTeacherButton" type="Button" parent="TeacherPanel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 44)
+text = "UI_CLOSE"
+
+[node name="StudentLoginModal" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -210.0
+offset_right = 230.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="StudentLoginModal"]
+theme_override_constants/separation = 9
+
+[node name="Title" type="Label" parent="StudentLoginModal/VBox"]
+text = "LOGIN_TITLE"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 26
+
+[node name="Hint" type="Label" parent="StudentLoginModal/VBox"]
+text = "LOGIN_HINT"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="StudentLrn" type="LineEdit" parent="StudentLoginModal/VBox"]
+unique_name_in_owner = true
+placeholder_text = "LOGIN_LRN"
+max_length = 12
+virtual_keyboard_type = 2
+
+[node name="StudentName" type="LineEdit" parent="StudentLoginModal/VBox"]
+unique_name_in_owner = true
+placeholder_text = "LOGIN_NAME"
+max_length = 30
+
+[node name="StudentGradeSection" type="LineEdit" parent="StudentLoginModal/VBox"]
+unique_name_in_owner = true
+placeholder_text = "LOGIN_GRADE"
+max_length = 30
+
+[node name="StudentLoginError" type="Label" parent="StudentLoginModal/VBox"]
+unique_name_in_owner = true
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Buttons" type="HBoxContainer" parent="StudentLoginModal/VBox"]
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="StudentCancelButton" type="Button" parent="StudentLoginModal/VBox/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 44)
+text = "UI_CANCEL"
+
+[node name="StudentContinueButton" type="Button" parent="StudentLoginModal/VBox/Buttons"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(190, 44)
+text = "LOGIN_CONTINUE"

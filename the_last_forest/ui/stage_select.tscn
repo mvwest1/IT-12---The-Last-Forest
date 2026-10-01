@@ -1,0 +1,88 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Theme" path="res://the_last_forest/ui/ui_theme.tres" id="1"]
+[ext_resource type="Script" path="res://the_last_forest/ui/stage_select.gd" id="2"]
+
+[node name="StageSelect" type="Control"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1")
+script = ExtResource("2")
+
+[node name="Background" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.12, 0.2, 0.14, 1)
+
+[node name="Margin" type="MarginContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Margin/VBox"]
+text = "SELECT_TITLE"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 32
+
+[node name="StudentLabel" type="Label" parent="Margin/VBox"]
+unique_name_in_owner = true
+text = ""
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 16
+
+[node name="Grid" type="GridContainer" parent="Margin/VBox"]
+size_flags_horizontal = 4
+size_flags_vertical = 3
+columns = 2
+theme_override_constants/h_separation = 16
+theme_override_constants/v_separation = 16
+
+[node name="Stage1Button" type="Button" parent="Margin/VBox/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(340, 100)
+text = "Stage 1"
+
+[node name="Stage2Button" type="Button" parent="Margin/VBox/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(340, 100)
+text = "Stage 2"
+
+[node name="Stage3Button" type="Button" parent="Margin/VBox/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(340, 100)
+text = "Stage 3"
+
+[node name="Stage4Button" type="Button" parent="Margin/VBox/Grid"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(340, 100)
+text = "Stage 4"
+
+[node name="Bottom" type="HBoxContainer" parent="Margin/VBox"]
+alignment = 1
+theme_override_constants/separation = 16
+
+[node name="BackButton" type="Button" parent="Margin/VBox/Bottom"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 44)
+text = "UI_BACK"
+
+[node name="LogoutButton" type="Button" parent="Margin/VBox/Bottom"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 44)
+text = "SELECT_LOGOUT"

@@ -1,0 +1,177 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://the_last_forest/player/forest_player.gd" id="3"]
+[ext_resource type="AudioStream" uid="uid://c1i84mve6y67g" path="res://player/jump.wav" id="5"]
+[ext_resource type="Texture2D" uid="uid://iv1n4s17uj55" path="res://player/robot.webp" id="9"]
+[ext_resource type="Script" path="res://the_last_forest/interaction/player_interactor.gd" id="10"]
+
+[sub_resource type="Animation" id="1"]
+resource_name = "crouch"
+length = 0.01
+step = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [42]
+}
+
+[sub_resource type="Animation" id="2"]
+resource_name = "falling"
+length = 0.01
+step = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [48]
+}
+
+[sub_resource type="Animation" id="4"]
+loop_mode = 1
+step = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 0.75),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 1,
+"values": [30, 31, 32, 33]
+}
+
+[sub_resource type="Animation" id="6"]
+length = 0.5
+step = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [45]
+}
+
+[sub_resource type="Animation" id="8"]
+length = 0.6
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.06003, 0.12006, 0.18009, 0.24012, 0.30015, 0.36018, 0.42021, 0.48024, 0.54027),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jnr5f"]
+_data = {
+&"crouch": SubResource("1"),
+&"falling": SubResource("2"),
+&"idle": SubResource("4"),
+&"jumping": SubResource("6"),
+&"run": SubResource("8")
+}
+
+[sub_resource type="RectangleShape2D" id="11"]
+size = Vector2(42.5, 54.5)
+
+[sub_resource type="RectangleShape2D" id="12"]
+size = Vector2(64, 56)
+
+[node name="Player" type="CharacterBody2D"]
+scale = Vector2(0.8, 0.8)
+collision_mask = 24
+floor_constant_speed = true
+platform_on_leave = 2
+script = ExtResource("3")
+
+[node name="PlatformDetector" type="RayCast2D" parent="."]
+target_position = Vector2(0, 6)
+collision_mask = 8
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -14)
+texture = ExtResource("9")
+hframes = 8
+vframes = 8
+frame = 42
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries/ = SubResource("AnimationLibrary_jnr5f")
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2(0, -28)
+offset = Vector2(0, -50)
+process_callback = 0
+limit_left = -768
+limit_top = -768
+limit_right = 1472
+limit_bottom = 1472
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -14)
+shape = SubResource("11")
+
+[node name="Jump" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5")
+volume_db = -3.0
+
+[node name="PlayerInteractor" type="Area2D" parent="."]
+position = Vector2(0, -14)
+script = ExtResource("10")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerInteractor"]
+shape = SubResource("12")
+
+[node name="UI" type="CanvasLayer" parent="."]
+layer = 0
+
+[node name="Left" type="TouchScreenButton" parent="UI"]
+position = Vector2(64, 420)
+scale = Vector2(1.1, 1.1)
+passby_press = true
+action = "move_left"
+visibility_mode = 1
+
+[node name="Right" type="TouchScreenButton" parent="UI"]
+position = Vector2(145, 420)
+scale = Vector2(1.1, 1.1)
+passby_press = true
+action = "move_right"
+visibility_mode = 1
+
+[node name="Jump" type="TouchScreenButton" parent="UI"]
+position = Vector2(730, 420)
+scale = Vector2(1.1, 1.1)
+action = "jump"
+visibility_mode = 1
+
+[node name="Interact" type="TouchScreenButton" parent="UI"]
+position = Vector2(650, 420)
+scale = Vector2(1.1, 1.1)
+action = "interact"
+visibility_mode = 1

@@ -5,12 +5,15 @@
 [resource]
 script = ExtResource("1")
 stage_id = &"stage_4"
+stage_index = 4
+title_key = "STAGE_4_TITLE"
 objective_key = "OBJ_STAGE_4"
 tree_goal = 1
 starting_seeds = 1
+starting_guards = 0
 base_restoration = 0.85
 intro_fact_ids = Array[StringName]([&"fact_forest_home"])
 milestone_fact_ids = Array[StringName]([&"", &"", &"", &""])
 outro_fact_id = &""
 require_all_arid_zones = false
-next_scene = ""
+kill_y = 800.0

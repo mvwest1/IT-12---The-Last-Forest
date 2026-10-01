@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://co70mruq2p4fa"
+
+[deps]
+
+files=["res://the_last_forest/data/translations/ui.en.translation", "res://the_last_forest/data/translations/ui.fil.translation"]
+
+source_file="res://the_last_forest/data/translations/ui.csv"
+dest_files=["res://the_last_forest/data/translations/ui.en.translation", "res://the_last_forest/data/translations/ui.fil.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true
