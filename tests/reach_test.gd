@@ -52,7 +52,8 @@ func walk_to(p: CharacterBody2D, target: Vector2) -> bool:
 		if absf(p.global_position.x - last_x) < 0.5: stuck += 1
 		else: stuck = 0
 		last_x = p.global_position.x
-		if (stuck > 10 or target.y < p.global_position.y - 60) and p.is_on_floor():
+		var gap_ahead := p.is_on_floor() and not _ground_ahead(p, signf(dx))
+		if (stuck > 10 or gap_ahead or target.y < p.global_position.y - 60) and p.is_on_floor():
 			Input.action_press(&"jump")
 		elif not p.is_on_floor() and p.velocity.y > 0 and stuck > 10:
 			Input.action_release(&"jump"); Input.action_press(&"jump")  # double jump
@@ -61,3 +62,13 @@ func walk_to(p: CharacterBody2D, target: Vector2) -> bool:
 		await physics_frame
 	Input.action_release(&"move_left"); Input.action_release(&"move_right"); Input.action_release(&"jump")
 	return false
+
+
+## True when there is ground (or a step) within reach just ahead of the feet.
+## A child sees a hole and jumps; the walker does the same.
+func _ground_ahead(p: CharacterBody2D, dir: float) -> bool:
+	var space := p.get_world_2d().direct_space_state
+	var from := p.global_position + Vector2(dir * 48.0, -40.0)
+	var q := PhysicsRayQueryParameters2D.create(from, from + Vector2(0, 200), 16 | 8)
+	q.exclude = [p.get_rid()]
+	return not space.intersect_ray(q).is_empty()

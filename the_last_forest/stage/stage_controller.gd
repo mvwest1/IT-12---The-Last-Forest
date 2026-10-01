@@ -35,6 +35,7 @@ func _ready() -> void:
 	if exit_gate == null:
 		exit_gate = get_node_or_null(^"../ExitGate") as Node2D
 	GameState.start_stage(data)
+	_fit_camera_to_level()
 	if AppFlow.current_stage_index == 0:
 		AppFlow.current_stage_index = data.stage_index  # launched directly (F6)
 	if spawn_point != null:
@@ -163,3 +164,21 @@ func request_stage_clear() -> void:
 		"post_score": post_score,
 		"quiz_total": quiz.questions.size() if quiz != null else 0,
 	})
+
+
+## Clamps the player's camera to the level's tiles, so each stage can have
+## its own width/height without editing the player scene.
+func _fit_camera_to_level() -> void:
+	var tiles := get_node_or_null(^"../TileMapLayer") as TileMapLayer
+	if tiles == null or player == null or tiles.tile_set == null:
+		return
+	var cam := player.get_node_or_null(^"Camera") as Camera2D
+	if cam == null:
+		return
+	var used: Rect2i = tiles.get_used_rect()
+	var size: Vector2i = tiles.tile_set.tile_size
+	cam.limit_left = used.position.x * size.x
+	cam.limit_right = used.end.x * size.x
+	cam.limit_top = used.position.y * size.y - size.y * 2  # a little sky above the walls
+	cam.limit_bottom = used.end.y * size.y
+	cam.reset_smoothing()

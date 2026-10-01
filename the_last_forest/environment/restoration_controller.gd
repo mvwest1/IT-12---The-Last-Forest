@@ -24,7 +24,7 @@ const RESTORATION_WIND_SHADER: Shader = preload("res://the_last_forest/environme
 ##    Gameplay nodes (Player, saplings, pickups, HUD) are never touched.
 @export var auto_apply: bool = true
 @export var decor_root_names: PackedStringArray = [
-	"TileMapLayer", "ParallaxBackground", "Grass", "Flowers", "Trees", "Bushes",
+	"TileMapLayer", "Background", "ParallaxBackground", "Grass", "Flowers", "Trees", "Bushes",
 	"Rocks", "Props", "Vines", "Ferns", "Platforms", "Decor",
 ]
 

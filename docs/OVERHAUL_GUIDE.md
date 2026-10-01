@@ -3,7 +3,9 @@
 ## Where things are
 | What | Path |
 |---|---|
-| Playable stages (real tile art) | `the_last_forest/scenes/stage_1..4.tscn` |
+| Playable stages (generated, do not hand-edit) | `the_last_forest/scenes/stage_1..4.tscn`, built by `tools/build_levels.py` |
+| Environment art (green copies of the demo art) | `the_last_forest/art/env/`, made by `tools/recolor_env.py` |
+| Tileset / background / checkpoint | `environment/forest_tileset.tres`, `environment/forest_background.tscn`, `stage/checkpoint.tscn` |
 | Stage settings (goal, seeds, facts) | `the_last_forest/stage/stages/*.tres` |
 | Quizzes (3 questions per stage, same pre and post) | `the_last_forest/quiz/quizzes/*.tres` |
 | Fact cards and their pictures | `the_last_forest/data/facts/*.tres`, `the_last_forest/art/fact_*.png` |
@@ -16,11 +18,11 @@
 
 ## Tests (run them after every change)
 ```
-godot --headless --path . -s res://tests/smoke_test.gd   # full play-through of all 4 stages, real SQLite: expect 70/70 PASS
+godot --headless --path . -s res://tests/smoke_test.gd   # full play-through of all 4 stages, real SQLite: expect 72/72 PASS
 godot --headless --path . -s res://tests/reach_test.gd   # every seed, zone and gate reachable on foot
 godot --headless --path . -s res://tests/load_all.gd     # every script and scene loads
 ```
-`tests/screenshots.gd` renders the main screens to PNG. It needs a real renderer, not `--headless`.
+`tests/screenshots.gd` renders the main screens to PNG, and `tests/level_overview.gd` renders every stage end to end (burnt and green). Both need a real renderer, not `--headless`.
 
 ## Before the pilot
 1. Change `TEACHER_PIN` in `the_last_forest/ui/main_menu.gd`. The default is `2468`.
@@ -30,5 +32,8 @@ godot --headless --path . -s res://tests/load_all.gd     # every script and scen
 
 ## Rules that keep it working
 - **Node references in scenes:** an exported Node property (`player`, `arid_zone`, and so on) needs `node_paths=` in the `.tscn`. Assigning it in the Godot Inspector does this automatically. Hand-written scene text must include it, otherwise the reference is silently empty.
-- **Place gameplay objects on reachable floor.** The demo tile map has solid walls right of x≈844 and tall ledges. Run `reach_test.gd` after moving anything.
+- **Change levels in `tools/build_levels.py`, then re-run it** (`python the_last_forest/tools/build_levels.py` from the project root). It overwrites `stage_1..4.tscn`, so edits made in the Godot editor to those scenes are lost on the next build. Each layout is a list of `(columns, surface_row)` segments (`None` = pit) plus ledges, seeds, zones, trees and bushes by column. The build refuses layouts that break the kid-friendly rules: required steps of max 1 tile, gaps of max 2 tiles, a checkpoint after every pit, zones/gate/checkpoints on flat ground, bonus seeds only on ledges. Then run `reach_test.gd` and `smoke_test.gd`.
+- **Asset rules (same in every stage):** ground = tiles, trees = `art/env/tree_1/2.png`, bushes/ferns/grass/flowers/rocks/vines = `art/env/*`, background = `forest_background.tscn` (sky, two cliff layers, drifting clouds). To try new placeholder art, replace the PNGs in `art/env/` with the same names and sizes; no scene edits needed. Don't re-run `recolor_env.py` after that, because it overwrites `art/env/` from the demo originals.
+- **Stage 3 water puzzle geometry is fixed:** left wall face, then the lever 278 px right of it, the spout 50 px further, the dry land 216 px after that, all on one flat floor. The water simulation was tuned on exactly this; move the whole group together or not at all.
+- **Camera limits** come from the tile map automatically (`StageController._fit_camera_to_level`), so a wider or taller level needs no player-scene change.
 - **Pausing:** go through `GameState.request_pause(owner)` and `release_pause(owner)` only.

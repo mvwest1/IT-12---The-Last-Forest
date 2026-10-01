@@ -124,6 +124,18 @@ func play_stage(idx: int) -> void:
 	check("Stage %d gate opened" % idx, gate._ready_to_clear)
 	await close_cards(sc)
 
+	# Checkpoints: touch one, fall into a pit, come back at the checkpoint (not the start).
+	var cps: Node = sc.get_node_or_null("Checkpoints")
+	if cps != null and cps.get_child_count() > 0:
+		var cp: Node2D = cps.get_child(0)
+		player.global_position = cp.global_position + Vector2(0, -20)
+		await physics(10)
+		player.global_position = Vector2(cp.global_position.x, gs.current_stage.kill_y + 50)
+		await physics(3)
+		check("Stage %d checkpoint respawn" % idx, player.global_position.distance_to(cp.global_position + cp.respawn_offset) < 2.0, "at %s, cp %s" % [player.global_position, cp.global_position])
+		await physics(160)
+		await close_cards(sc)
+
 	# Walk (not teleport) from the spawn point to the gate, like a child would.
 	player.global_position = ctl.spawn_point.global_position
 	await physics(10)
@@ -247,7 +259,8 @@ func walk_to(p: CharacterBody2D, target: Vector2, ctl: Node = null) -> bool:
 		if absf(p.global_position.x - last_x) < 0.5: stuck += 1
 		else: stuck = 0
 		last_x = p.global_position.x
-		if (stuck > 10 or target.y < p.global_position.y - 60) and p.is_on_floor():
+		var gap_ahead := p.is_on_floor() and not _ground_ahead(p, signf(dx))
+		if (stuck > 10 or gap_ahead or target.y < p.global_position.y - 60) and p.is_on_floor():
 			Input.action_press(&"jump")
 		elif not p.is_on_floor() and p.velocity.y > 0 and stuck > 10:
 			Input.action_release(&"jump"); Input.action_press(&"jump")  # double jump
@@ -256,3 +269,13 @@ func walk_to(p: CharacterBody2D, target: Vector2, ctl: Node = null) -> bool:
 		await physics_frame
 	Input.action_release(&"move_left"); Input.action_release(&"move_right"); Input.action_release(&"jump")
 	return false
+
+
+## True when there is ground (or a step) within reach just ahead of the feet.
+## A child sees a hole and jumps; the walker does the same.
+func _ground_ahead(p: CharacterBody2D, dir: float) -> bool:
+	var space := p.get_world_2d().direct_space_state
+	var from := p.global_position + Vector2(dir * 48.0, -40.0)
+	var q := PhysicsRayQueryParameters2D.create(from, from + Vector2(0, 200), 16 | 8)
+	q.exclude = [p.get_rid()]
+	return not space.intersect_ray(q).is_empty()

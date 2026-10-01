@@ -1,0 +1,97 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/sky.png" id="sky"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/distant_platforms_1.png" id="dp1"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/distant_platforms_2.png" id="dp2"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/cloud_1.png" id="c1"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/cloud_2.png" id="c2"]
+[ext_resource type="Texture2D" path="res://the_last_forest/art/env/cloud_3.png" id="c3"]
+
+[node name="Background" type="Node2D"]
+z_index = -100
+z_as_relative = false
+
+[node name="Sky" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.1, 1)
+repeat_size = Vector2(4096, 0)
+
+[node name="Sprite2D" type="Sprite2D" parent="Sky"]
+position = Vector2(0, -256)
+scale = Vector2(2, 2.25)
+texture = ExtResource("sky")
+centered = false
+
+[node name="Clouds" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.15, 1)
+repeat_size = Vector2(1800, 0)
+autoscroll = Vector2(-6, 0)
+
+[node name="Cloud0" type="Sprite2D" parent="Clouds"]
+position = Vector2(60, 10)
+scale = Vector2(1.0, 1.0)
+texture = ExtResource("c2")
+centered = false
+
+[node name="Cloud1" type="Sprite2D" parent="Clouds"]
+position = Vector2(420, 120)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("c1")
+centered = false
+
+[node name="Cloud2" type="Sprite2D" parent="Clouds"]
+position = Vector2(700, 40)
+scale = Vector2(1.0, 1.0)
+texture = ExtResource("c3")
+centered = false
+
+[node name="Cloud3" type="Sprite2D" parent="Clouds"]
+position = Vector2(1000, 150)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("c2")
+centered = false
+
+[node name="Cloud4" type="Sprite2D" parent="Clouds"]
+position = Vector2(1350, 30)
+scale = Vector2(1.0, 1.0)
+texture = ExtResource("c1")
+centered = false
+
+[node name="Cloud5" type="Sprite2D" parent="Clouds"]
+position = Vector2(1580, 170)
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("c3")
+centered = false
+
+[node name="FarCliffs" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.25, 1)
+repeat_size = Vector2(1524, 0)
+
+[node name="Far0" type="Sprite2D" parent="FarCliffs"]
+position = Vector2(0, 430)
+scale = Vector2(1, 1.85)
+modulate = Color(1, 1, 1, 0.9)
+texture = ExtResource("dp2")
+centered = false
+
+[node name="Far1" type="Sprite2D" parent="FarCliffs"]
+position = Vector2(762, 430)
+scale = Vector2(1, 1.85)
+modulate = Color(1, 1, 1, 0.9)
+texture = ExtResource("dp2")
+centered = false
+
+[node name="NearCliffs" type="Parallax2D" parent="."]
+scroll_scale = Vector2(0.45, 1)
+repeat_size = Vector2(1568, 0)
+
+[node name="Near0" type="Sprite2D" parent="NearCliffs"]
+position = Vector2(0, 500)
+scale = Vector2(1, 1.6)
+texture = ExtResource("dp1")
+centered = false
+
+[node name="Near1" type="Sprite2D" parent="NearCliffs"]
+position = Vector2(784, 500)
+scale = Vector2(1, 1.6)
+texture = ExtResource("dp1")
+centered = false
