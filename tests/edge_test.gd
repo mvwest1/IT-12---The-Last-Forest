@@ -27,6 +27,7 @@ func _initialize() -> void:
 	await replay_resets_state()
 	await hydration_swaps_bushes()
 	await teacher_pin()
+	await attempt_pairing_and_transactions()
 	await no_raw_keys("fil")
 	await no_raw_keys("en")
 	print("\n==== EDGE RESULT: %d passed, %d failed ====" % [passes, fails])
@@ -113,19 +114,103 @@ func hydration_swaps_bushes() -> void:
 
 
 func teacher_pin() -> void:
-	print("\n-- Teacher PIN (read from local_settings.cfg, never hard-coded)")
+	print("\n-- Teacher PIN & Security Controls (Activity 9)")
+	db.reset_pin_lockout()
 	var menu: Node = load(app.MAIN_MENU).instantiate()
 	root.add_child(menu)
 	await frames(3)
+	check("Main menu displays build version", menu._db_status.text.begins_with("v" + app.get_version()), menu._db_status.text)
 	var real: String = LocalSettings.value("teacher_pin")
 	menu._pin.text = ""
 	check("Empty PIN rejected", not menu._pin_ok())
-	menu._pin.text = "0000" if real != "0000" else "9999"
+	var wrong: String = "0000" if real != "0000" else "9999"
+	menu._pin.text = wrong
 	check("Wrong PIN rejected", not menu._pin_ok())
+	check("Unauthorized teacher CSV export denied at DB layer", db.export_eval_csv_for_teacher(wrong) == "")
 	menu._pin.text = real
 	check("Correct PIN accepted (%s settings)" % ("sample" if LocalSettings.using_sample() else "local"), menu._pin_ok())
+	# Brute-force lockout after 5 wrong PIN attempts
+	for i in range(5):
+		db.verify_teacher_pin(wrong)
+	check("Teacher PIN locked out after 5 failed attempts", db.is_pin_locked_out() and not db.verify_teacher_pin(real))
+	db.reset_pin_lockout()
+	check("Teacher PIN works after lockout reset", db.verify_teacher_pin(real))
+	# Negative security checks: invalid score bounds, cross-student tampering, CSV formula injection
+	check("Negative or excessive quiz scores rejected (-500, 999)",
+			db.save_pre_quiz(app.student_id, 1, -500) == -1 and db.save_pre_quiz(app.student_id, 1, 999) == -1)
+	var qid_s1: int = db.save_pre_quiz(app.student_id, 1, 2)
+	var intruding_student: int = db.register_student("999999999999", "Intruder", "4-B")
+	check("Cross-student quiz overwrite denied",
+			not db.save_post_quiz(qid_s1, intruding_student, 1, 0))
+	check("CSV formula injection prefix neutralized",
+			db._csv_cell("=HYPERLINK(\"http://evil\")").begins_with("\"'=HYPERLINK") or db._csv_cell("=SUM(A1)").begins_with("'=SUM"))
 	menu.queue_free()
 	await frames(2)
+
+
+func attempt_pairing_and_transactions() -> void:
+	print("\n-- Explicit attempt_id pairing, transactional save + Retry, and reopen persistence")
+	# 1. Transactional save failure when save_post_quiz fails: no stage unlock, retained for Retry.
+	gs.highest_completed_stage = 0
+	app.current_stage_index = 1
+	app.current_attempt_id = db.new_attempt_id(app.student_id, 1)
+	app.record_pre_quiz(1, 1)
+	db.simulate_post_quiz_failure = true
+	var ok_fail_quiz: bool = app.finish_stage({
+		"stage_index": 1, "seeds_collected": 4, "trees_matured": 3,
+		"duration": 42.0, "tips_viewed": 2, "pre_score": 1, "post_score": 3, "quiz_total": 3,
+	})
+	await frames(4)
+	check("Post-quiz failure makes finish_stage report unsaved", not ok_fail_quiz and not app.last_result.get("saved", true))
+	check("Stage 2 stays locked when save fails", not app.is_stage_unlocked(2))
+	check("Unsaved result retained for Retry", app.has_pending_save())
+	check("Rollback prevented orphan session_records row", db.get_student_records(app.student_id).is_empty())
+	db.simulate_post_quiz_failure = false
+
+	# 2. Transactional save failure when save_stage_record fails: rolls back post_score update too.
+	db.simulate_stage_record_failure = true
+	var ok_fail_stage: bool = app.retry_save()
+	check("Stage-record failure makes retry_save report unsaved", not ok_fail_stage and not app.last_result.get("saved", true))
+	check("Stage 2 still locked after rolled-back retry", not app.is_stage_unlocked(2))
+	db._exec_bind("SELECT post_score FROM quiz_results WHERE quiz_id = ?;", [app._pre_quiz_id])
+	check("Transaction rolled back post_score update on stage_record failure",
+			db._db.query_result.size() == 1 and db._db.query_result[0]["post_score"] == null,
+			str(db._db.query_result))
+	db.simulate_stage_record_failure = false
+
+	# 3. Retry succeeds: both updates commit in one transaction and Stage 2 unlocks.
+	var ok_retry: bool = app.retry_save()
+	check("Retry succeeds once DB is healthy", ok_retry and app.last_result.get("saved", false) and not app.has_pending_save())
+	check("Stage 2 unlocks after successful persistence", app.is_stage_unlocked(2))
+
+	# 4. Repeated attempts on Stage 1 (even within the same second) keep distinct attempt_ids and scores.
+	app.current_stage_index = 1
+	app.current_attempt_id = db.new_attempt_id(app.student_id, 1)
+	app.record_pre_quiz(1, 0)
+	var ok_second: bool = app.finish_stage({
+		"stage_index": 1, "seeds_collected": 6, "trees_matured": 3,
+		"duration": 35.0, "tips_viewed": 3, "pre_score": 0, "post_score": 2, "quiz_total": 3,
+	})
+	await frames(4)
+	check("Second Stage 1 attempt saved", ok_second)
+	var recs: Array[Dictionary] = db.get_student_records(app.student_id)
+	check("Two distinct Stage 1 attempts retrieved with distinct attempt_ids",
+			recs.size() == 2 and str(recs[0].get("attempt_id", "")) != "" and recs[0].get("attempt_id") != recs[1].get("attempt_id"),
+			str(recs))
+	check("Newest attempt paired with its own quiz (0 -> 2) and first attempt paired with (1 -> 3)",
+			int(recs[0].get("pre_score", -1)) == 0 and int(recs[0].get("post_score", -1)) == 2
+			and int(recs[1].get("pre_score", -1)) == 1 and int(recs[1].get("post_score", -1)) == 3,
+			str(recs))
+
+	# 5. Simulate reopening the game: logout clears in-memory state, re-login restores from SQLite.
+	var saved_student_id: int = app.student_id
+	app.logout()
+	await frames(4)
+	check("Logout clears in-memory unlock state", gs.highest_completed_stage == 0 and not app.is_logged_in())
+	check("Re-login with same LRN succeeds", app.login("123456789012", "Ana", "4-A") == "")
+	await frames(4)
+	check("Reopen restores same student_id, unlocked Stage 2, and saved quiz records",
+			app.student_id == saved_student_id and app.is_stage_unlocked(2) and db.get_student_records(app.student_id).size() == 2)
 
 
 func no_raw_keys(locale: String) -> void:

@@ -21,6 +21,12 @@ const STAGE_SCENES: Array[String] = [
 ]
 const STAGE_TITLE_KEYS: Array[String] = ["STAGE_1_TITLE", "STAGE_2_TITLE", "STAGE_3_TITLE", "STAGE_4_TITLE"]
 const STAGE_COUNT: int = 4
+const DEFAULT_VERSION: String = "0.1.1"
+
+
+func get_version() -> String:
+	var v: String = str(ProjectSettings.get_setting("application/config/version", DEFAULT_VERSION)).strip_edges()
+	return v if v != "" else DEFAULT_VERSION
 
 var student_id: int = -1
 ## Shown on screens/certificate; never written to the DB in pseudonymous mode.
@@ -28,8 +34,12 @@ var student_display_name: String = ""
 var grade_section: String = ""
 ## 1..4 while a stage is running.
 var current_stage_index: int = 0
+## Explicit identifier linking the active attempt's pre/post quiz and gameplay record.
+var current_attempt_id: String = ""
 ## Result of the last cleared stage, read by the Stage Clear screen.
 var last_result: Dictionary = {}
+## Retained stage result when a database save fails, so Retry can persist it.
+var pending_result: Dictionary = {}
 
 var _pre_quiz_id: int = -1
 
@@ -93,6 +103,9 @@ func logout() -> void:
 	student_id = -1
 	student_display_name = ""
 	grade_section = ""
+	current_attempt_id = ""
+	_pre_quiz_id = -1
+	pending_result = {}
 	GameState.highest_completed_stage = 0
 	go_main_menu()
 
@@ -117,6 +130,8 @@ func start_stage(index: int) -> void:
 		return
 	current_stage_index = index
 	_pre_quiz_id = -1
+	current_attempt_id = DatabaseManager.new_attempt_id(student_id, index)
+	pending_result = {}
 	goto(STAGE_SCENES[index - 1])
 
 
@@ -126,25 +141,102 @@ func has_next_stage() -> bool:
 
 # ------------------------------------------------------------------ Research writes
 func record_pre_quiz(stage_index: int, score: int) -> void:
+	if current_attempt_id == "":
+		current_attempt_id = DatabaseManager.new_attempt_id(student_id, stage_index)
 	if not is_logged_in() or score < 0:
 		return
-	_pre_quiz_id = DatabaseManager.save_pre_quiz(student_id, stage_index, score)
+	_pre_quiz_id = DatabaseManager.save_pre_quiz(student_id, stage_index, score, current_attempt_id)
 
 
-## Called by StageController after the post-quiz. Writes, then shows Stage Clear.
+## Called by StageController after the post-quiz. Saves both the post-quiz
+## score and the stage record inside a single transaction, confirms both
+## succeed before unlocking the next stage, and retains the result for Retry
+## if either write fails.
 ## result keys: stage_index, seeds_collected, trees_matured, duration,
 ##              tips_viewed, pre_score, post_score, quiz_total
-func finish_stage(result: Dictionary) -> void:
-	GameState.record_stage_cleared(int(result.get("stage_index", 0)))
-	var saved: bool = false
-	if is_logged_in():
-		if int(result.get("post_score", -1)) >= 0:
-			DatabaseManager.save_post_quiz(_pre_quiz_id, student_id, result.stage_index,
-					result.post_score)
-		saved = DatabaseManager.save_stage_record(
-				student_id, result.stage_index, result.seeds_collected,
-				result.trees_matured, result.duration, result.tips_viewed)
-	result["saved"] = saved
-	result["guest"] = not is_logged_in()
-	last_result = result
+func finish_stage(result: Dictionary) -> bool:
+	var attempt_result: Dictionary = result.duplicate(true)
+	var stage_idx: int = int(attempt_result.get("stage_index", current_stage_index))
+	attempt_result["stage_index"] = stage_idx
+	if str(attempt_result.get("attempt_id", "")) == "":
+		if current_attempt_id == "":
+			current_attempt_id = DatabaseManager.new_attempt_id(student_id, stage_idx)
+		attempt_result["attempt_id"] = current_attempt_id
+	if int(attempt_result.get("quiz_id", -1)) <= 0 and _pre_quiz_id > 0:
+		attempt_result["quiz_id"] = _pre_quiz_id
+	var saved: bool = _persist_stage_result(attempt_result)
+	attempt_result["saved"] = saved
+	attempt_result["guest"] = not is_logged_in()
+	last_result = attempt_result
+	if saved:
+		pending_result = {}
+		GameState.record_stage_cleared(stage_idx)
+		current_attempt_id = ""
+	elif not is_logged_in():
+		pending_result = {}
+		GameState.record_stage_cleared(stage_idx)
+		current_attempt_id = ""
+	else:
+		pending_result = attempt_result.duplicate(true)
 	goto(STAGE_CLEAR)
+	return saved
+
+
+func has_pending_save() -> bool:
+	return not pending_result.is_empty()
+
+
+## Retries saving the retained result from a failed finish_stage() call.
+## Unlocks the next stage only after persistence succeeds.
+func retry_save() -> bool:
+	var target: Dictionary = pending_result if not pending_result.is_empty() else last_result
+	if target.is_empty() or not is_logged_in():
+		return false
+	var saved: bool = _persist_stage_result(target)
+	target["saved"] = saved
+	target["guest"] = false
+	last_result = target.duplicate(true)
+	if saved:
+		var stage_idx: int = int(target.get("stage_index", current_stage_index))
+		pending_result = {}
+		current_attempt_id = ""
+		GameState.record_stage_cleared(stage_idx)
+	else:
+		pending_result = target.duplicate(true)
+	return saved
+
+
+func _persist_stage_result(attempt_result: Dictionary) -> bool:
+	if not is_logged_in():
+		return false
+	var stage_idx: int = int(attempt_result.get("stage_index", current_stage_index))
+	var post_score: int = int(attempt_result.get("post_score", -1))
+	if post_score < 0:
+		return false
+	var pre_raw: int = int(attempt_result.get("pre_score", -1))
+	var pre_score: Variant = pre_raw if pre_raw >= 0 else null
+	var quiz_id: int = int(attempt_result.get("quiz_id", _pre_quiz_id))
+	var attempt_id: String = str(attempt_result.get("attempt_id", current_attempt_id)).strip_edges()
+	if attempt_id == "":
+		attempt_id = DatabaseManager.new_attempt_id(student_id, stage_idx)
+		current_attempt_id = attempt_id
+		attempt_result["attempt_id"] = attempt_id
+	if not DatabaseManager.begin_transaction():
+		return false
+	var quiz_ok: bool = DatabaseManager.save_post_quiz(
+			quiz_id, student_id, stage_idx, post_score, attempt_id, pre_score)
+	if quiz_ok and quiz_id <= 0 and DatabaseManager.last_saved_quiz_id > 0:
+		quiz_id = DatabaseManager.last_saved_quiz_id
+		_pre_quiz_id = quiz_id
+		attempt_result["quiz_id"] = quiz_id
+	var stage_ok: bool = quiz_ok and DatabaseManager.save_stage_record(
+			student_id, stage_idx,
+			int(attempt_result.get("seeds_collected", 0)),
+			int(attempt_result.get("trees_matured", 0)),
+			float(attempt_result.get("duration", 0.0)),
+			int(attempt_result.get("tips_viewed", 0)),
+			attempt_id, quiz_id)
+	if quiz_ok and stage_ok and DatabaseManager.commit_transaction():
+		return true
+	DatabaseManager.rollback_transaction()
+	return false

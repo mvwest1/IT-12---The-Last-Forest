@@ -10,6 +10,12 @@ local_settings.cfg
 # Exports / OS clutter
 *.pck
 *.exe
+*.db
+*.db-wal
+*.db-shm
+build/
 export/
+releases/
 Claude outputs/
+SegreGo_Reworked_Thesis.docx
 __pycache__/

@@ -48,7 +48,7 @@ Each stage starts with a 3-question pre-quiz and ends with the same post-quiz. S
 Automated tests (optional):
 ```
 godot --headless --path . -s res://tests/smoke_test.gd   # full play-through incl. save + retrieve: 74/74
-godot --headless --path . -s res://tests/edge_test.gd    # edge cases: 28/28
+godot --headless --path . -s res://tests/edge_test.gd    # edge cases, security checks, attempt pairing, transaction rollback + retry: 50/50
 python tests/static_check.py                              # paths, translations, secrets
 ```
 
@@ -56,14 +56,14 @@ python tests/static_check.py                              # paths, translations,
 | When | What is SAVED | Function (file: `the_last_forest/autoload/database_manager.gd`) |
 |---|---|---|
 | Login | student code (salted SHA-256 hash of the LRN), grade/section, date | `register_student()` |
-| After the pre-quiz | stage, pre-quiz score, time | `save_pre_quiz()` (called from `AppFlow.record_pre_quiz`) |
-| After the post-quiz / stage finish | post-quiz score; seeds collected, trees grown, completion time, fact cards read, date | `save_post_quiz()`, `save_stage_record()` (called from `AppFlow.finish_stage`) |
+| After the pre-quiz | unique `attempt_id`, stage, pre-quiz score, time | `save_pre_quiz()` (called from `AppFlow.record_pre_quiz`) |
+| After the post-quiz / stage finish | post-quiz score + gameplay record (`attempt_id`, `quiz_id`, seeds collected, trees grown, completion time, fact cards read, date) in one SQLite transaction; retains unsaved result for **Retry Save** if either write fails, and unlocks the next stage only after persistence succeeds | `begin_transaction()`, `save_post_quiz()`, `save_stage_record()`, `commit_transaction()` / `rollback_transaction()` (called from `AppFlow.finish_stage` and `AppFlow.retry_save`) |
 
 | When | What is RETRIEVED | Where it is DISPLAYED |
 |---|---|---|
 | Login and Stage Select | highest stage completed (`get_highest_completed_stage()`) | Stage Select: which stages are unlocked or "Restored!" |
-| My Records button | the player's last 8 attempts (`get_student_records()`, SQL `RECORDS_SQL`) | Stage Select → **My Records** table (stage, quiz before → after, trees, seeds, time, date) |
-| Teacher export | all attempts, no names or LRNs (`export_eval_csv()`) | CSV file for the teacher/researchers |
+| My Records button | the player's last 8 attempts paired with their exact quiz record via `quiz_id` / `attempt_id` (`get_student_records()`, SQL `RECORDS_SQL`) | Stage Select → **My Records** table (stage, quiz before → after, trees, seeds, time, date) |
+| Teacher export | all attempts paired by explicit `quiz_id` / `attempt_id`, no names or LRNs (`export_eval_csv()`) | CSV file for the teacher/researchers |
 
 **Not stored on purpose:** the student's name and raw LRN. These are personal data of minors under the Data Privacy Act of 2012 (RA 10173). The LRN is stored only as a salted hash.
 

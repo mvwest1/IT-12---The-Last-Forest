@@ -11,6 +11,7 @@ extends RefCounted
 ## starts (the salt turns each LRN into the same student code every time).
 
 const LOCAL_PATH: String = "res://local_settings.cfg"
+const USER_LOCAL_PATH: String = "user://local_settings.cfg"
 const SAMPLE_PATH: String = "res://local_settings.sample.cfg"
 const SECTION: String = "secrets"
 
@@ -29,12 +30,21 @@ static func using_sample() -> bool:
 	return _from_sample
 
 
+static func reload() -> void:
+	_cfg = null
+	_from_sample = false
+	_load()
+
+
 static func _load() -> void:
 	if _cfg != null:
 		return
 	_cfg = ConfigFile.new()
-	if _cfg.load(LOCAL_PATH) == OK:
-		return
+	var exe_dir_cfg: String = OS.get_executable_path().get_base_dir().path_join("local_settings.cfg")
+	for candidate: String in [LOCAL_PATH, USER_LOCAL_PATH, exe_dir_cfg]:
+		if candidate != "" and FileAccess.file_exists(candidate) and _cfg.load(candidate) == OK:
+			_from_sample = false
+			return
 	_from_sample = true
 	if _cfg.load(SAMPLE_PATH) != OK:
 		push_error("LocalSettings: neither %s nor %s found" % [LOCAL_PATH, SAMPLE_PATH])

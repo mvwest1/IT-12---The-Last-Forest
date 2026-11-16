@@ -21,7 +21,7 @@
 godot --headless --path . -s res://tests/smoke_test.gd   # full play-through of all 4 stages, real SQLite: expect 74/74 PASS
 godot --headless --path . -s res://tests/reach_test.gd   # every seed, zone and gate reachable on foot
 godot --headless --path . -s res://tests/load_all.gd     # every script and scene loads
-godot --headless --path . -s res://tests/edge_test.gd    # defeat, replay, leaving mid-stage, burnt->green decor, Filipino text: expect 28/28
+godot --headless --path . -s res://tests/edge_test.gd    # defeat, replay, leaving mid-stage, security checks, attempt pairing, transactional save + retry, Filipino text: expect 50/50
 python tests/static_check.py                              # exact-case file paths (Windows export), translations complete, enough seeds
 ```
 `tests/perf_probe.gd` prints frame times per stage (needs a real renderer). The "leaked at exit" warning printed after the Godot tests is the background music still playing when the test quits; it is not a game bug.

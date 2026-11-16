@@ -1,10 +1,12 @@
 extends Control
-## Stage Clear: shows results of AppFlow.last_result (already saved to SQLite).
+## Stage Clear: shows results of AppFlow.last_result (saved to SQLite, or
+## offers Retry if persistence failed).
 
 @onready var _title: Label = %ClearTitle
 @onready var _stats: Label = %StatsLabel
 @onready var _quiz: Label = %QuizLabel
 @onready var _saved: Label = %SavedLabel
+@onready var _retry: Button = %RetryButton
 @onready var _next: Button = %NextButton
 @onready var _select: Button = %StageSelectButton
 @onready var _stars: Array[TextureRect] = [%Star1, %Star2, %Star3]
@@ -26,10 +28,6 @@ func _ready() -> void:
 		_quiz.text = tr("CLEAR_QUIZ") % [maxi(int(r.get("pre_score", 0)), 0), total, int(r.get("post_score", 0)), total]
 	else:
 		_quiz.text = ""
-	if r.get("guest", true):
-		_saved.text = tr("CLEAR_GUEST")
-	else:
-		_saved.text = tr("CLEAR_SAVED") if r.get("saved", false) else tr("CLEAR_SAVE_FAILED")
 	# Stars = post-quiz score out of 3 (always at least 1 for finishing).
 	var star_count: int = 3
 	if total > 0 and int(r.get("post_score", -1)) >= 0:
@@ -42,7 +40,31 @@ func _ready() -> void:
 			var tw := create_tween()
 			tw.tween_interval(0.25 + 0.25 * i)
 			tw.tween_property(_stars[i], ^"scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	_next.visible = AppFlow.has_next_stage()
+	_retry.pressed.connect(_on_retry_pressed)
 	_next.pressed.connect(func() -> void: AppFlow.start_stage(AppFlow.current_stage_index + 1))
 	_select.pressed.connect(AppFlow.go_stage_select)
-	(_next if _next.visible else _select).grab_focus()
+	_refresh_save_state()
+
+
+func _on_retry_pressed() -> void:
+	AppFlow.retry_save()
+	_refresh_save_state()
+
+
+func _refresh_save_state() -> void:
+	var r: Dictionary = AppFlow.last_result
+	var index: int = clampi(int(r.get("stage_index", AppFlow.current_stage_index)), 1, AppFlow.STAGE_COUNT)
+	var is_guest: bool = bool(r.get("guest", not AppFlow.is_logged_in()))
+	var is_saved: bool = bool(r.get("saved", false))
+	if is_guest:
+		_saved.text = tr("CLEAR_GUEST")
+	else:
+		_saved.text = tr("CLEAR_SAVED") if is_saved else tr("CLEAR_SAVE_FAILED")
+	_retry.visible = (not is_guest) and (not is_saved)
+	_next.visible = (is_saved or is_guest) and AppFlow.has_next_stage() and AppFlow.is_stage_unlocked(index + 1)
+	if _retry.visible:
+		_retry.grab_focus()
+	elif _next.visible:
+		_next.grab_focus()
+	else:
+		_select.grab_focus()

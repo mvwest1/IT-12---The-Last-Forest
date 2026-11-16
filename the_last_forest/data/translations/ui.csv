@@ -56,7 +56,8 @@ CLEAR_FINAL,You brought the whole forest back to life!,Nabuhay mong muli ang buo
 CLEAR_STATS,Trees grown: %d   Seeds found: %d   Time: %d:%02d,Punong lumaki: %d   Binhing nahanap: %d   Oras: %d:%02d
 CLEAR_QUIZ,Quiz: %d/%d before  →  %d/%d after,Pagsusulit: %d/%d bago  →  %d/%d pagkatapos
 CLEAR_SAVED,Your progress is saved.,Naka-save ang iyong progreso.
-CLEAR_SAVE_FAILED,Could not save. Please tell your teacher.,Hindi na-save. Pakisabi sa iyong guro.
+CLEAR_SAVE_FAILED,Could not save. Please press Retry or tell your teacher.,Hindi na-save. Pindutin ang I-save Muli o sabihin sa iyong guro.
+CLEAR_RETRY,Retry Save,I-save Muli
 CLEAR_GUEST,Guest mode: results were not saved.,Bisita: hindi na-save ang resulta.
 CLEAR_NEXT,Next Stage,Susunod na Yugto
 Q1_1,What do trees take in from the air?,Ano ang kinukuha ng mga puno mula sa hangin?

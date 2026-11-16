@@ -41,7 +41,7 @@ checked = 0
 for f in text_files:
     for m in path_re.finditer(open(f, encoding="utf-8", errors="replace").read()):
         p = m.group(1).split("::")[0].rstrip(".,;:")
-        if p == "local_settings.cfg":
+        if p in ("local_settings.cfg", "user://local_settings.cfg"):
             continue  # git-ignored on purpose; LocalSettings falls back to the sample
         if "%" in p or "{" in p or p.endswith("/") or "*" in p:
             continue  # format strings / folders / patterns

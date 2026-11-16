@@ -27,7 +27,7 @@ func _ready() -> void:
 	_open_folder.pressed.connect(_on_open_folder)
 	_close_teacher.pressed.connect(_close_teacher_panel)
 	_pin.text_submitted.connect(func(_t: String) -> void: _on_export())
-	_db_status.text = tr("DB_OK") if DatabaseManager.is_available() else tr("DB_FALLBACK")
+	_refresh_status_label()
 	_refresh_language_label()
 	_play.grab_focus()
 
@@ -42,8 +42,13 @@ func _on_play() -> void:
 func _on_language() -> void:
 	TranslationServer.set_locale("fil" if TranslationServer.get_locale().begins_with("en") else "en")
 	_refresh_language_label()
-	_db_status.text = tr("DB_OK") if DatabaseManager.is_available() else tr("DB_FALLBACK")
+	_refresh_status_label()
 	propagate_notification(NOTIFICATION_TRANSLATION_CHANGED)
+
+
+func _refresh_status_label() -> void:
+	var db_text: String = tr("DB_OK") if DatabaseManager.is_available() else tr("DB_FALLBACK")
+	_db_status.text = "v%s  •  %s" % [AppFlow.get_version(), db_text]
 
 
 func _refresh_language_label() -> void:
@@ -64,11 +69,11 @@ func _close_teacher_panel() -> void:
 
 
 func _on_export() -> void:
-	if not _pin_ok():
-		_teacher_status.text = tr("TEACHER_WRONG_PIN")
+	var path: String = DatabaseManager.export_eval_csv_for_teacher(_pin.text)
+	if path == "":
+		_teacher_status.text = tr("TEACHER_WRONG_PIN") if not _pin_ok() else tr("TEACHER_EXPORT_FAILED")
 		return
-	var path: String = DatabaseManager.export_eval_csv()
-	_teacher_status.text = (tr("TEACHER_EXPORTED") + "\n" + path) if path != "" else tr("TEACHER_EXPORT_FAILED")
+	_teacher_status.text = tr("TEACHER_EXPORTED") + "\n" + path
 
 
 func _on_open_folder() -> void:
@@ -79,8 +84,7 @@ func _on_open_folder() -> void:
 	OS.shell_open(ProjectSettings.globalize_path(DatabaseManager.EXPORT_DIR))
 
 
-## Compares with the PIN in res://local_settings.cfg. An empty/missing PIN
-## never unlocks the panel.
+## Compares with the PIN in res://local_settings.cfg via DatabaseManager
+## (which also enforces brute-force lockout). An empty/missing PIN never unlocks.
 func _pin_ok() -> bool:
-	var expected: String = LocalSettings.value("teacher_pin").strip_edges()
-	return expected != "" and _pin.text.strip_edges() == expected
+	return DatabaseManager.verify_teacher_pin(_pin.text)
