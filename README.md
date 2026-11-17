@@ -4,7 +4,7 @@
 IT 12 Capstone Project, BS Information Technology, University of Perpetual Help System Laguna
 
 - **Researchers:** John Matthew T. Alaban, Zhedderic Ahlen L. Cañeda, Karl Andrei F. Ofler, Franz Chester A. Pabalan
-- **Technical Adviser:** Mr. Jaime V. Yatco, MIT  •  **Instructor:** Grachel Greta
+- **Technical Adviser:** Dr. Michael M. Orozco, MIT  •  **Instructor:** Grachel Greta
 
 ## 1. What it is
 An offline, bilingual (English / Filipino) 2D platformer for Grade 3-4 learners, for **Android phones and tablets** and **Windows lab PCs**. The player is Eco-Ranger **Lunti**, who restores the burnt forest of Sierra Verde in four stages:
