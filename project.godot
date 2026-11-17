@@ -15,14 +15,11 @@ config/description="THE LAST FOREST is an educational reforestation platformer f
 config/version="1.0.0"
 config/tags=PackedStringArray("2d", "platformer", "education", "forest")
 run/main_scene="res://the_last_forest/scenes/main_menu.tscn"
+config/quit_on_go_back=false
 config/features=PackedStringArray("4.7")
-config/icon="res://icon.png"
 boot_splash/bg_color=Color(0.043, 0.11, 0.063, 1)
 boot_splash/image="res://the_last_forest/art/splash.png"
-boot_splash/fullsize=true
-boot_splash/stretch_mode=1
-boot_splash/use_filter=true
-config/quit_on_go_back=false
+config/icon="res://icon.png"
 
 [autoload]
 
@@ -42,8 +39,6 @@ gdscript/warnings/untyped_declaration=1
 
 [display]
 
-window/handheld/orientation=4
-
 window/size/viewport_width=800
 window/size/viewport_height=480
 window/size/window_width_override=1600
@@ -51,6 +46,7 @@ window/size/window_height_override=960
 window/stretch/mode="canvas_items"
 window/stretch/aspect="keep_height"
 window/stretch/scale_mode="integer"
+window/handheld/orientation=4
 
 [importer_defaults]
 
@@ -158,10 +154,6 @@ move_right_p2={
 ]
 }
 
-[input_devices]
-
-pointing/emulate_touch_from_mouse=false
-
 [internationalization]
 
 locale/translations=PackedStringArray("res://the_last_forest/data/translations/facts.en.translation", "res://the_last_forest/data/translations/facts.fil.translation", "res://the_last_forest/data/translations/ui.en.translation", "res://the_last_forest/data/translations/ui.fil.translation")
@@ -185,11 +177,10 @@ common/physics_interpolation=true
 
 [rendering]
 
-textures/vram_compression/import_etc2_astc=true
-
 textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
 
 [shader_globals]
 
