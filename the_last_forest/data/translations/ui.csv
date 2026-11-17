@@ -215,7 +215,8 @@ Franz Chester A. Pabalan
 
 Technical Adviser: Mr. Jaime V. Yatco, MIT
 Instructor: Grachel Greta
-Made with Godot Engine (MIT) and godot-sqlite (MIT).","THE LAST FOREST v%s
+Made with Godot Engine (MIT) and godot-sqlite (MIT).
+UI Pack - Pixel Adventure and Mini Square font by Kenney (CC0).","THE LAST FOREST v%s
 IT 12 Capstone Project, University of Perpetual Help System Laguna
 
 John Matthew T. Alaban
@@ -225,4 +226,16 @@ Franz Chester A. Pabalan
 
 Teknikal na Tagapayo: G. Jaime V. Yatco, MIT
 Guro: Grachel Greta
-Ginawa gamit ang Godot Engine (MIT) at godot-sqlite (MIT)."
+Ginawa gamit ang Godot Engine (MIT) at godot-sqlite (MIT).
+UI Pack - Pixel Adventure at Mini Square font ni Kenney (CC0)."
+QUIZ_STAGE_LABEL,Stage %d: %s,Yugto %d: %s
+QUIZ_PRE_INTRO,"3 quick questions before you play.
+It's okay to guess - this is not a grade!","3 mabilis na tanong bago maglaro.
+Puwedeng manghula - hindi ito marka!"
+QUIZ_POST_INTRO,"You restored the forest!
+Now answer the same 3 questions again.","Naibalik mo ang gubat!
+Sagutin muli ang parehong 3 tanong."
+QUIZ_START,Start,Simulan
+QUIZ_TAP_HINT,Tap your answer,Pindutin ang iyong sagot
+PAUSE_LEAVE_CONFIRM,Tap again to leave (not saved),Pindutin muli (hindi mase-save)
+HUD_STAGE_BANNER,Stage %d,Yugto %d

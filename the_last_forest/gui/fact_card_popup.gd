@@ -64,7 +64,9 @@ func present(fact: ClimateFact) -> void:
 	_listen_button.visible = fact.voice_over != null
 	_can_close = false
 	_armed = false
-	_close_button.disabled = true
+	# Not "disabled" (grey looks broken to a child): faded until it works.
+	_close_button.disabled = false
+	_close_button.modulate.a = 0.35
 	modulate.a = 0.0
 	show()
 	create_tween().tween_property(self, ^"modulate:a", 1.0, 0.25)
@@ -72,7 +74,7 @@ func present(fact: ClimateFact) -> void:
 		_play_voice()
 	await get_tree().create_timer(MIN_READ_SEC, true).timeout
 	_can_close = true
-	_close_button.disabled = false
+	create_tween().tween_property(_close_button, ^"modulate:a", 1.0, 0.2)
 	_close_button.grab_focus()
 
 

@@ -25,6 +25,10 @@ var _showing: StringName = &""
 var _opened_msec: int = 0
 var _last_closed_msec: int = -COOLDOWN_MSEC
 var _waiting_since: int = -1
+## No card opens before this time: gives the child a moment to SEE the
+## stage after a quiz instead of getting one pop-up straight after another.
+var _quiet_until_msec: int = 0
+const BREATHER_AFTER_QUIZ_MSEC: int = 3000
 
 
 func _ready() -> void:
@@ -72,6 +76,7 @@ func run_quiz(quiz: QuizSet, phase: StringName) -> int:
 	var score: int = await _quiz_popup.finished
 	GameState.release_pause(&"quiz")
 	_quiz_running = false
+	_quiet_until_msec = Time.get_ticks_msec() + BREATHER_AFTER_QUIZ_MSEC
 	EventBus.quiz_finished.emit(quiz.stage_index, phase, score, quiz.questions.size())
 	return score
 
@@ -146,6 +151,8 @@ func clear_queue() -> void:
 # ------------------------------------------------------------------ Scheduling
 func _process(_delta: float) -> void:
 	if _showing != &"" or _queue.is_empty() or _quiz_running:
+		return
+	if Time.get_ticks_msec() < _quiet_until_msec:
 		return
 	if _popup == null or not is_instance_valid(_popup):
 		return

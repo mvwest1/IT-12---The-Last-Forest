@@ -3,8 +3,7 @@
 
 Defense Guide and Technical Briefing - v1.0.0
 
-<img src="/tmp/claude-0/docbuild/mdmedia/media/image1.png"
-style="width:6in;height:1.80769in" />
+
 
 *The Last Forest: A 2D Platform Exploring Deforestation, Reforestation
 Mechanics, and Climate Literacy*
@@ -179,7 +178,35 @@ trees grown + 10 x fact cards read + speed bonus max(0, 150 - seconds /
   database). It contains only real learners who played on that device -
   no sample players are added.
 
-## 4.6 Mobile (Android)
+## 4.6 Quiz and stage flow (designed for 8-10 year olds)
+
+- Stage loads \> quiz INTRO page: stage name, "3 quick questions, it is
+  okay to guess - this is not a grade", Start button (the child is never
+  dropped into a question without warning).
+
+- Questions: the answer buttons fade in and are never shown greyed-out;
+  the tapped answer lights up at once. A 0.35 s lock stops one tap from
+  answering two questions.
+
+- Pre-test: the chosen answer turns gold and the game says "Thank
+  you!" - no right/wrong, no score (so the pre-test does not teach the
+  answers).
+
+- After the pre-test: a 3-second breather with a big "Stage 1 - Burnt
+  Grove" banner and the goal, so the child sees the world before the
+  first fact card.
+
+- Fact cards and sign hints: the "Got it!" button is faded for 1.5 s,
+  then lights up (no grey "broken" button).
+
+- Post-test: intro "You restored the forest! Same 3 questions again";
+  right answer green, wrong pick red, short message; result page with
+  1-3 stars and the score.
+
+- Pause \> Stage Select asks for a second tap, because leaving throws
+  away the current try.
+
+## 4.7 Mobile (Android)
 
 - Landscape lock (sensor landscape), immersive full screen, base view
   800 x 480 that widens on 18:9-20:9 phones.
@@ -196,6 +223,9 @@ trees grown + 10 x fact cards read + speed bonus max(0, 150 - seconds /
 
 - Prompts say "Hold the sprout button" instead of "Hold E" on touch
   screens.
+
+- User interface skin: Kenney "UI Pack - Pixel Adventure" (CC0) wooden
+  panels, parchment cards, red ribbons and bars.
 
 - SQLite runs natively on Android (arm64 library packaged in the APK).
 
@@ -257,15 +287,15 @@ Section 10.
 
 # 7. Testing evidence (run on the final build)
 
-| **Test**                      | **What it checks**                                                                                                                 | **Result**                |
-|-------------------------------|------------------------------------------------------------------------------------------------------------------------------------|---------------------------|
-| smoke_test.gd                 | Full playthrough of all 4 stages, saving, records, CSV export                                                                      | 74 / 74 passed            |
-| edge_test.gd                  | Defeat/respawn, water, PIN lockout, transactions/rollback, untranslated keys                                                       | 50 / 50 passed            |
-| production_test.gd            | Schema v2\>v3 migration, Forest Points, leaderboard, journal, nickname cleaning, hashed PIN, new screens, Back button, regressions | 53 / 53 passed            |
-| reach_test.gd                 | Every seed, planting zone and gate reachable on foot                                                                               | 34 / 34 targets reachable |
-| release_smoke_test.gd         | Launch, version, SQLite, login, save, retrieve                                                                                     | all true                  |
-| load_all.gd + static_check.py | Every scene/script loads; every path and translation key exists                                                                    | 0 failures                |
-| Android build                 | Signed with the release key (APK signature v2 + v3), SQLite library inside                                                         | verified with apksigner   |
+| **Test**                      | **What it checks**                                                                                                                                  | **Result**                |
+|-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------|
+| smoke_test.gd                 | Full playthrough of all 4 stages, saving, records, CSV export                                                                                       | 74 / 74 passed            |
+| edge_test.gd                  | Defeat/respawn, water, PIN lockout, transactions/rollback, untranslated keys                                                                        | 50 / 50 passed            |
+| production_test.gd            | Schema v2\>v3 migration, Forest Points, leaderboard, journal, nickname cleaning, hashed PIN, new screens, Back button, quiz/pause flow, regressions | 68 / 68 passed            |
+| reach_test.gd                 | Every seed, planting zone and gate reachable on foot                                                                                                | 34 / 34 targets reachable |
+| release_smoke_test.gd         | Launch, version, SQLite, login, save, retrieve                                                                                                      | all true                  |
+| load_all.gd + static_check.py | Every scene/script loads; every path and translation key exists                                                                                     | 0 failures                |
+| Android build                 | Signed with the release key (APK signature v2 + v3), SQLite library inside                                                                          | verified with apksigner   |
 
 # 8. Limitations - say these before the panel finds them
 
@@ -290,7 +320,8 @@ Section 10.
   science teacher.
 
 - Art is original scripted pixel art plus tiles from the MIT-licensed
-  Godot 2D platformer demo; credit the demo in the manuscript.
+  Godot 2D platformer demo and Kenney's CC0 UI Pack - Pixel Adventure;
+  credit both in the manuscript.
 
 - AI tools were used as coding/documentation assistants; this must be
   declared as required by the course (see README). The group must be
@@ -382,68 +413,79 @@ several devices.
 tests/production_shots.gd; the shipped game starts with an empty
 leaderboard.*
 
-<img src="/tmp/claude-0/docbuild/mdmedia/media/image2.png"
-style="width:5.6in;height:2.52158in" />
+
 
 *Main menu*
 
-<img src="/tmp/claude-0/docbuild/mdmedia/media/image3.png"
-style="width:5.6in;height:2.52158in" />
+
 
 *Story intro (bilingual)*
 
-<img src="/tmp/claude-0/docbuild/mdmedia/media/image4.png"
-style="width:5.6in;height:2.52158in" />
 
-*Pre-test*
 
-<img src="/tmp/claude-0/docbuild/mdmedia/media/image5.png"
-style="width:5.6in;height:2.52158in" />
+*LRN login*
+
+
+
+*Stage Select*
+
+
+
+*Quiz intro page*
+
+
+
+*Pre-test question*
+
+
+
+*Stage banner after the pre-test*
+
+
+
+*Post-test feedback (green right, red wrong pick)*
+
+
+
+*Post-test result with stars*
+
+
 
 *Bilingual fact card*
 
-<img src="/tmp/claude-0/docbuild/mdmedia/media/image6.png"
-style="width:5.6in;height:2.52158in" />
+
 
 *Stage 1 on a 20:9 phone with touch controls*
 
-<img src="/tmp/claude-0/docbuild/mdmedia/media/image7.png"
-style="width:5.6in;height:2.52158in" />
+
 
 *Stage 1 restored: green world, birds and butterflies*
 
-<img src="/tmp/claude-0/docbuild/mdmedia/media/image8.png"
-style="width:5.6in;height:2.52158in" />
+
 
 *Stage 2: tree guards, beetle and caterpillar*
 
-<img src="/tmp/claude-0/docbuild/mdmedia/media/image9.png"
-style="width:5.6in;height:2.52158in" />
+
 
 *Stage 3: lever and wooden sluice*
 
-<img src="/tmp/claude-0/docbuild/mdmedia/media/image10.png"
-style="width:5.6in;height:2.52158in" />
+
 
 *Stage Clear with Forest Points*
 
-<img src="/tmp/claude-0/docbuild/mdmedia/media/image11.png"
-style="width:5.6in;height:2.52158in" />
+
 
 *Leaderboard (test data)*
 
-<img src="/tmp/claude-0/docbuild/mdmedia/media/image12.png"
-style="width:5.6in;height:2.52158in" />
+
 
 *Teacher dashboard (test data)*
 
-<img src="/tmp/claude-0/docbuild/mdmedia/media/image13.png"
-style="width:5.6in;height:2.52158in" />
+
 
 *Leaf Journal page*
 
-<img src="/tmp/claude-0/docbuild/mdmedia/media/image14.png"
-style="width:5.6in;height:2.52158in" />
+
 
 *Settings*
 

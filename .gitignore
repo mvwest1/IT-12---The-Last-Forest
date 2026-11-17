@@ -23,3 +23,7 @@ _review/
 SegreGo_Reworked_Thesis.docx
 __pycache__/
 docs/course_deliverables/
+# Full Kenney UI pack (CC0) kept locally; the tiles we use are in the_last_forest/art/ui_kenney/
+kenney_ui-pack-pixel-adventure/
+# Files the Claude desktop app saves from chat attachments
+Claude outputs/

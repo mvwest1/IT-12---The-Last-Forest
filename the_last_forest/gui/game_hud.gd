@@ -61,6 +61,7 @@ func _ready() -> void:
 	EventBus.player_health_changed.connect(_on_health_changed)
 	EventBus.objective_updated.connect(_on_objective_updated)
 	EventBus.tip_requested.connect(show_tip)
+	EventBus.stage_started.connect(_on_stage_started)
 	EventBus.climate_tip_triggered.connect(show_climate_tip)
 	EventBus.interaction_started.connect(_on_interaction_started)
 	EventBus.interaction_progress.connect(_on_interaction_progress)
@@ -185,13 +186,14 @@ func show_climate_tip(tip_data: Variant) -> void:
 	_climate_label.text = message
 	_climate_can_close = false
 	_climate_armed = false
-	_climate_dismiss.disabled = true
+	_climate_dismiss.disabled = false
+	_climate_dismiss.modulate.a = 0.35  # faded until it can close (never grey "broken")
 	_climate_modal.show()
 	GameState.request_pause(CLIMATE_TIP_PAUSE_OWNER)
 	await get_tree().create_timer(CLIMATE_MIN_READ_SEC, true).timeout
 	if my_serial == _climate_tip_serial and _climate_modal.visible:
 		_climate_can_close = true
-		_climate_dismiss.disabled = false
+		create_tween().tween_property(_climate_dismiss, ^"modulate:a", 1.0, 0.2)
 		_climate_dismiss.grab_focus()
 
 
@@ -273,3 +275,35 @@ func _on_restoration_changed(ratio: float) -> void:
 	var pct: int = roundi(clampf(ratio, 0.0, 1.0) * 100.0)
 	create_tween().tween_property(_restore_bar, ^"value", float(pct), 0.6)
 	_restore_label.text = "%s %d%%" % [tr("HUD_RESTORED"), pct]
+
+
+# ------------------------------------------------------------------ Stage banner
+## Big "Stage 1 - Burnt Grove" + goal, shown for a moment when play begins
+## (non-blocking: the child can already move).
+func _on_stage_started(_id: StringName) -> void:
+	var data: StageData = GameState.current_stage
+	if data == null:
+		return
+	var box := VBoxContainer.new()
+	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.set_anchors_preset(Control.PRESET_CENTER)
+	box.alignment = BoxContainer.ALIGNMENT_CENTER
+	var idx: int = clampi(data.stage_index, 1, AppFlow.STAGE_COUNT)
+	var title := UiKit.banner(tr("HUD_STAGE_BANNER") % idx + "  -  " + tr(AppFlow.STAGE_TITLE_KEYS[idx - 1]), 26)
+	title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	box.add_child(title)
+	var goal := UiKit.label(tr(data.objective_key), 20)
+	goal.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	goal.add_theme_constant_override("outline_size", 6)
+	goal.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
+	goal.custom_minimum_size = Vector2(520, 0)
+	box.add_child(goal)
+	add_child(box)
+	move_child(box, 0)  # cards, quiz and pause menu always draw above it
+	box.position = Vector2(get_viewport_rect().size.x / 2.0 - 260.0, get_viewport_rect().size.y * 0.32)
+	box.modulate.a = 0.0
+	var tw := create_tween()
+	tw.tween_property(box, ^"modulate:a", 1.0, 0.3)
+	tw.tween_interval(2.2)
+	tw.tween_property(box, ^"modulate:a", 0.0, 0.5)
+	tw.tween_callback(box.queue_free)

@@ -196,7 +196,9 @@ func answer_quiz(sc: Node, right_choice: int) -> Dictionary:
 	if quiz == null or not quiz.visible:
 		return res
 	while is_instance_valid(quiz) and quiz.visible:
-		if quiz._awaiting_continue:
+		if quiz._awaiting_start:
+			quiz.start_questions()
+		elif quiz._awaiting_continue:
 			res.score_visible = quiz._score_tally.visible
 			quiz._finish_quiz()
 		elif not quiz._locked:

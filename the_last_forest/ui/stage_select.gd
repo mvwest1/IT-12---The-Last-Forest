@@ -41,7 +41,9 @@ func _ready() -> void:
 	var story := Button.new()
 	story.text = tr("SELECT_STORY")
 	story.custom_minimum_size = Vector2(0, _records_button.custom_minimum_size.y)
-	story.pressed.connect(AppFlow.goto.bind(AppFlow.STORY))
+	story.pressed.connect(func() -> void:
+		AppFlow.story_return = AppFlow.STAGE_SELECT
+		AppFlow.goto(AppFlow.STORY))
 	_records_button.add_sibling(story)
 	_records_close.pressed.connect(_close_records)
 	_logout.pressed.connect(AppFlow.logout)

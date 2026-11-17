@@ -43,6 +43,7 @@ var _velocity: Vector2 = Vector2.ZERO
 var _patrol_origin_x: float = 0.0
 var _patrol_direction: float = 1.0
 var _grounded: bool = false
+var _snap_tries: int = 0
 var _anim_t: float = 0.0
 
 @onready var _sprite: CanvasItem = get_node_or_null(^"Sprite2D") as CanvasItem
@@ -70,8 +71,16 @@ func _ready() -> void:
 func _snap_to_ground() -> void:
 	_grounded = true
 	var space := get_world_2d().direct_space_state
-	var q := PhysicsRayQueryParameters2D.create(global_position, global_position + Vector2(0, 600), GROUND_MASK)
+	# Start a little ABOVE the pest: a spawn point placed slightly inside the
+	# ground would otherwise start the ray inside a tile and miss it.
+	var q := PhysicsRayQueryParameters2D.create(global_position + Vector2(0, -48), global_position + Vector2(0, 600), GROUND_MASK)
 	var hit: Dictionary = space.intersect_ray(q)
+	if hit.is_empty() and _snap_tries < 15:
+		# The level's tile collisions may not be registered on the very first
+		# physics frame: try again on the next frames before giving up.
+		_snap_tries += 1
+		_grounded = false
+		return
 	if hit.is_empty():
 		crawler = false  # nothing to crawl on: behave like a beetle
 		var spr := _sprite as Sprite2D

@@ -5,7 +5,9 @@ extends RefCounted
 
 const THEME: Theme = preload("res://the_last_forest/ui/ui_theme.tres")
 const MENU_BG: Texture2D = preload("res://the_last_forest/art/menu_bg.png")
-const PARCHMENT: Texture2D = preload("res://the_last_forest/art/parchment.png")
+## Kenney "UI Pack - Pixel Adventure" (CC0) tiles, see art/ui_kenney/.
+const PARCHMENT: Texture2D = preload("res://the_last_forest/art/ui_kenney/panel_parchment.png")
+const RIBBON: Texture2D = preload("res://the_last_forest/art/ui_kenney/ribbon.png")
 const GOLD := Color(0.965, 0.788, 0.271)
 const INK := Color(0.23, 0.16, 0.09)
 const TRANSLATION_FILES: Dictionary = {
@@ -79,6 +81,29 @@ static func title(text: String, size: int = 34) -> Label:
 	return l
 
 
+## Screen title on a red ribbon banner.
+static func banner(text: String, size: int = 28) -> PanelContainer:
+	var p := PanelContainer.new()
+	var sb := StyleBoxTexture.new()
+	sb.texture = RIBBON
+	sb.texture_margin_left = 12
+	sb.texture_margin_right = 12
+	sb.texture_margin_top = 4
+	sb.texture_margin_bottom = 5
+	sb.content_margin_left = 40
+	sb.content_margin_right = 40
+	sb.content_margin_top = 6
+	sb.content_margin_bottom = 10
+	p.add_theme_stylebox_override("panel", sb)
+	p.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	var l := title(text, size)
+	l.add_theme_color_override("font_color", Color(1.0, 0.95, 0.85))
+	l.add_theme_color_override("font_outline_color", Color(0.45, 0.1, 0.1))
+	l.add_theme_constant_override("outline_size", 6)
+	p.add_child(l)
+	return p
+
+
 static func label(text: String, size: int = 18, variation: StringName = &"") -> Label:
 	var l := Label.new()
 	l.text = text
@@ -110,10 +135,10 @@ static func parchment_panel() -> PanelContainer:
 static func parchment_style() -> StyleBoxTexture:
 	var sb := StyleBoxTexture.new()
 	sb.texture = PARCHMENT
-	sb.texture_margin_left = 18
-	sb.texture_margin_right = 18
-	sb.texture_margin_top = 18
-	sb.texture_margin_bottom = 18
+	sb.texture_margin_left = 10
+	sb.texture_margin_right = 10
+	sb.texture_margin_top = 10
+	sb.texture_margin_bottom = 10
 	sb.content_margin_left = 22
 	sb.content_margin_right = 22
 	sb.content_margin_top = 18

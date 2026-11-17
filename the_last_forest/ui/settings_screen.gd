@@ -17,7 +17,7 @@ func _ready() -> void:
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 10)
 	card.add_child(v)
-	v.add_child(UiKit.title(tr("SET_TITLE"), 30))
+	v.add_child(UiKit.banner(tr("SET_TITLE"), 26))
 	# Language
 	var lang_row := _row(v, tr("SET_LANGUAGE"))
 	_lang_en = UiKit.button("English", _set_lang.bind("en"), Vector2(130, 40))
@@ -44,7 +44,9 @@ func _ready() -> void:
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 10)
 	v.add_child(row)
-	row.add_child(UiKit.button(tr("SET_STORY"), AppFlow.goto.bind(AppFlow.STORY), Vector2(0, 42)))
+	row.add_child(UiKit.button(tr("SET_STORY"), func() -> void:
+		AppFlow.story_return = AppFlow.SETTINGS
+		AppFlow.goto(AppFlow.STORY), Vector2(0, 42)))
 	row.add_child(UiKit.button(tr("SET_CREDITS"), _show_credits, Vector2(0, 42)))
 	var back := UiKit.button(tr("UI_BACK"), AppFlow.go_main_menu, Vector2(160, 44))
 	back.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -73,6 +75,7 @@ func _slider(row: HBoxContainer, value: float, on_change: Callable) -> void:
 	s.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	s.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	s.value_changed.connect(on_change)
+	s.drag_ended.connect(func(_changed: bool) -> void: Settings.save())
 	row.add_child(s)
 
 
@@ -105,3 +108,8 @@ func _show_credits() -> void:
 func handle_back() -> bool:
 	AppFlow.go_main_menu()
 	return true
+
+
+## Keyboard/gamepad slider changes have no "drag ended": save on leaving.
+func _exit_tree() -> void:
+	Settings.save()

@@ -46,6 +46,8 @@ var current_stage_index: int = 0
 var current_attempt_id: String = ""
 ## Result of the last cleared stage, read by the Stage Clear screen.
 var last_result: Dictionary = {}
+## Screen to return to after the story is replayed (Settings or Stage Select).
+var story_return: String = ""
 ## Retained stage result when a database save fails, so Retry can persist it.
 var pending_result: Dictionary = {}
 

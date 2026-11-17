@@ -30,6 +30,11 @@ func _process(_delta: float) -> void:
 	var show: bool = not get_tree().paused
 	if visible != show:
 		visible = show
+		if not show:
+			# A thumb still resting on a button when the game pauses must not
+			# leave the player walking by itself after Resume.
+			for action: StringName in [&"move_left", &"move_right", &"jump", &"interact"]:
+				Input.action_release(action)
 
 
 func _layout() -> void:

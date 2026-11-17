@@ -29,7 +29,7 @@ func _ready() -> void:
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	head.add_child(icon)
-	head.add_child(UiKit.title(tr("LB_TITLE"), 28))
+	head.add_child(UiKit.banner(tr("LB_TITLE"), 24))
 	var tabs := HBoxContainer.new()
 	tabs.add_theme_constant_override("separation", 8)
 	head.add_child(tabs)

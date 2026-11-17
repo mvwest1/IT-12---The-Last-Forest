@@ -112,16 +112,16 @@ func set_language(code: String) -> void:
 	save()
 
 
+## Volume setters apply at once; the file is written by save() when the
+## slider is released (not 20 times per second while dragging).
 func set_music_volume(v: float) -> void:
 	music_volume = clampf(v, 0.0, 1.0)
 	_set_bus("Music", music_volume)
-	save()
 
 
 func set_sfx_volume(v: float) -> void:
 	sfx_volume = clampf(v, 0.0, 1.0)
 	_set_bus("SFX", sfx_volume)
-	save()
 
 
 func mark_story_seen() -> void:

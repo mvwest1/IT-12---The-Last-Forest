@@ -66,6 +66,7 @@ func handle_back() -> void:
 
 
 func open() -> void:
+	_disarm_leave()
 	GameState.request_pause(OWNER)
 	var interactor := get_tree().get_first_node_in_group(&"player_interactor") as PlayerInteractor
 	if interactor != null:
@@ -81,9 +82,25 @@ func close() -> void:
 	GameState.release_pause(OWNER)
 
 
+## Leaving mid-stage throws the attempt away, so it needs a second tap.
+var _leave_armed: bool = false
+
+
 func _on_stage_select() -> void:
+	if not _leave_armed:
+		_leave_armed = true
+		_stage_select.text = tr("PAUSE_LEAVE_CONFIRM")
+		get_tree().create_timer(3.0, true).timeout.connect(_disarm_leave)
+		return
+	_leave_armed = false
 	hide()
 	AppFlow.go_stage_select()
+
+
+func _disarm_leave() -> void:
+	_leave_armed = false
+	if is_instance_valid(_stage_select):
+		_stage_select.text = tr("HUD_STAGE_SELECT")
 
 
 ## Accessibility: tap E to start/stop instead of holding it.

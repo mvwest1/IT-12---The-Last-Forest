@@ -6,6 +6,7 @@ extends SceneTree
 const OUT_THEME := "res://the_last_forest/ui/ui_theme.tres"
 const OUT_WORLD_LABEL := "res://the_last_forest/ui/world_label.tres"
 const HEADER_FONT := "res://gui/kenney_mini_square.ttf"
+const UI_DIR := "res://the_last_forest/art/ui_kenney/"
 
 # Forest palette
 const LEAF := Color8(63, 128, 58)
@@ -18,7 +19,7 @@ const CARD_BORDER := Color8(126, 196, 82)
 const GOLD := Color8(246, 201, 69)
 const CREAM := Color8(248, 244, 228)
 const TEXT := Color8(246, 246, 236)
-const TEXT_DIM := Color8(190, 200, 180)
+const TEXT_DIM := Color8(236, 222, 190)
 const DISABLED := Color8(78, 80, 72)
 
 
@@ -27,35 +28,30 @@ func _initialize() -> void:
 	t.default_font_size = 18
 
 	# ---------------- Panels / cards
-	var card := _box(CARD, CARD_BORDER, 3, 14)
-	card.shadow_color = Color(0, 0, 0, 0.35); card.shadow_size = 8; card.shadow_offset = Vector2(0, 4)
-	card.content_margin_left = 22; card.content_margin_right = 22
-	card.content_margin_top = 16; card.content_margin_bottom = 16
+	# Kenney "UI Pack - Pixel Adventure" (CC0): wooden panel with steel corners.
+	var card := _tex("panel_wood", 10, 22, 16)
 	t.set_stylebox("panel", "PanelContainer", card)
 	t.set_stylebox("panel", "Panel", card)
 	# HUD pill: translucent dark, used by theme_type_variation = "HudPanel"
-	var pill := _box(Color(0.06, 0.12, 0.08, 0.72), Color(1, 1, 1, 0.18), 2, 12)
-	pill.content_margin_left = 10; pill.content_margin_right = 10
-	pill.content_margin_top = 4; pill.content_margin_bottom = 4
+	var pill := _tex("panel_hud", 5, 10, 4)
 	t.set_type_variation("HudPanel", "PanelContainer")
 	t.set_stylebox("panel", "HudPanel", pill)
 
 	# ---------------- Buttons (3D leaf buttons, gold focus ring for keyboard/gamepad)
-	t.set_stylebox("normal", "Button", _button(LEAF, LEAF_DARK))
-	t.set_stylebox("hover", "Button", _button(LEAF_HOVER, LEAF_DARK))
-	t.set_stylebox("pressed", "Button", _button(LEAF_PRESSED, LEAF_DARK, true))
-	t.set_stylebox("disabled", "Button", _button(DISABLED, Color8(50, 52, 46)))
-	var focus := StyleBoxFlat.new()
+	t.set_stylebox("normal", "Button", _tex("button_normal", 5, 18, 8))
+	t.set_stylebox("hover", "Button", _tex("button_hover", 5, 18, 8))
+	t.set_stylebox("pressed", "Button", _tex("button_pressed", 5, 18, 9))
+	t.set_stylebox("disabled", "Button", _tex("button_disabled", 5, 18, 8))
+	var focus := _tex("focus_frame", 4, 0, 0)
 	focus.draw_center = false
-	focus.set_border_width_all(3); focus.border_color = GOLD
-	focus.set_corner_radius_all(12); focus.set_expand_margin_all(3)
+	focus.set_expand_margin_all(3)
 	t.set_stylebox("focus", "Button", focus)
 	t.set_color("font_color", "Button", TEXT)
 	t.set_color("font_hover_color", "Button", Color.WHITE)
 	t.set_color("font_pressed_color", "Button", CREAM)
 	t.set_color("font_focus_color", "Button", Color.WHITE)
 	t.set_color("font_disabled_color", "Button", Color8(170, 170, 160))
-	t.set_color("font_outline_color", "Button", Color8(20, 40, 20))
+	t.set_color("font_outline_color", "Button", Color8(60, 34, 14))
 	t.set_constant("outline_size", "Button", 2)
 	t.set_font_size("font_size", "Button", 20)
 	# Big menu buttons
@@ -84,11 +80,10 @@ func _initialize() -> void:
 	t.set_constant("outline_size", "HudLabel", 5)
 
 	# ---------------- Text input (light field, dark text: readable for kids)
-	var field := _box(CREAM, CARD_BORDER, 2, 8)
-	field.content_margin_left = 12; field.content_margin_right = 12
-	field.content_margin_top = 8; field.content_margin_bottom = 8
-	var field_focus := field.duplicate() as StyleBoxFlat
-	field_focus.border_color = GOLD; field_focus.set_border_width_all(3)
+	var field := _tex("field", 5, 12, 8)
+	var field_focus := _tex("focus_frame", 4, 12, 8)
+	field_focus.draw_center = false
+	field_focus.set_expand_margin_all(2)
 	t.set_stylebox("normal", "LineEdit", field)
 	t.set_stylebox("focus", "LineEdit", field_focus)
 	t.set_color("font_color", "LineEdit", Color8(36, 36, 32))
@@ -97,10 +92,18 @@ func _initialize() -> void:
 	t.set_font_size("font_size", "LineEdit", 20)
 
 	# ---------------- Progress bars (hold-to-plant, meters)
-	var bg := _box(Color(0.05, 0.1, 0.06, 0.8), Color(1, 1, 1, 0.25), 2, 7)
-	var fill := _box(LEAF_LIGHT, LEAF_LIGHT, 0, 7)
+	var bg := _tex("bar_back", 5, 0, 0)
+	var fill := _tex("bar_fill", 4, 0, 0)
 	t.set_stylebox("background", "ProgressBar", bg)
 	t.set_stylebox("fill", "ProgressBar", fill)
+
+	# ---------------- Sliders (settings volume)
+	t.set_stylebox("slider", "HSlider", _tex("bar_back", 5, 0, 6))
+	t.set_stylebox("grabber_area", "HSlider", _tex("bar_fill", 4, 0, 6))
+	t.set_stylebox("grabber_area_highlight", "HSlider", _tex("bar_fill", 4, 0, 6))
+	var grab: Texture2D = load(UI_DIR + "slider_grabber.png")
+	t.set_icon("grabber", "HSlider", grab)
+	t.set_icon("grabber_highlight", "HSlider", grab)
 
 	# ---------------- CheckButton text
 	t.set_color("font_color", "CheckButton", TEXT)
@@ -136,4 +139,16 @@ func _button(bg: Color, edge: Color, pressed: bool = false) -> StyleBoxFlat:
 	s.border_width_top = 4 if pressed else 2
 	s.content_margin_left = 18; s.content_margin_right = 18
 	s.content_margin_top = 8; s.content_margin_bottom = 8
+	return s
+
+
+## Nine-slice box from a Kenney UI tile (pixel art stays crisp: the project
+## uses nearest filtering). margin = border size in texture pixels.
+func _tex(name: String, margin: int, pad_x: int, pad_y: int) -> StyleBoxTexture:
+	var s := StyleBoxTexture.new()
+	s.texture = load(UI_DIR + name + ".png")
+	s.texture_margin_left = margin; s.texture_margin_right = margin
+	s.texture_margin_top = margin; s.texture_margin_bottom = margin
+	s.content_margin_left = pad_x; s.content_margin_right = pad_x
+	s.content_margin_top = pad_y; s.content_margin_bottom = pad_y
 	return s

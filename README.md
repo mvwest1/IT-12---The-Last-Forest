@@ -28,6 +28,7 @@ Every stage: 3-item pre-test > play with bilingual picture fact cards > same 3-i
 | Godot Engine 4.7 (GDScript, GL Compatibility) | Engine, Android + Windows export |
 | godot-sqlite 4.9 (GDExtension, 2shady4u, MIT) | SQLite on Windows, Linux and Android (arm64) |
 | Python 3 + Pillow | Scripts in `the_last_forest/tools/` that generate the pixel art, icons, sounds and document figures |
+| Kenney UI Pack - Pixel Adventure (CC0) | Wooden/parchment panels, buttons, ribbons and bars of the whole UI theme |
 | Git + GitHub | Version control |
 
 ## 4. Database (SQLite, schema v3)
@@ -49,7 +50,7 @@ Tables `students`, `quiz_results`, `session_records`, `journal_entries` - see `D
 ```
 godot --headless --path . -s res://tests/smoke_test.gd          # 4-stage playthrough, save, records, CSV      74/74
 godot --headless --path . -s res://tests/edge_test.gd           # edge cases, PIN lockout, rollback/retry       50/50
-godot --headless --path . -s res://tests/production_test.gd     # v3 migration, leaderboard, journal, PIN hash  53/53
+godot --headless --path . -s res://tests/production_test.gd     # v3 migration, leaderboard, journal, PIN hash  68/68
 godot --headless --path . -s res://tests/reach_test.gd          # every target reachable on foot
 godot --headless --path . -s res://tests/release_smoke_test.gd  # release smoke test
 python tests/static_check.py                                     # paths, translations, secrets
@@ -65,6 +66,7 @@ python tests/static_check.py                                     # paths, transl
 - Godot 2D Platformer Demo (MIT; base project, tiles, props, background, music): https://github.com/godotengine/godot-demo-projects/tree/master/2d/platformer
 - godot-sqlite (MIT): https://github.com/2shady4u/godot-sqlite
 - Kenney Mini Square font (CC0): https://kenney.nl/assets/kenney-fonts
+- Kenney "UI Pack - Pixel Adventure" (CC0; panels, buttons, ribbons, bars): https://kenney.nl/assets/ui-pack-pixel-adventure - tiles used are copied to `the_last_forest/art/ui_kenney/` by `tools/import_kenney_ui.py`; the full pack folder is ignored by Godot (`.gdignore`)
 - RA 10173 (Data Privacy Act of 2012), RA 9512 (Environmental Awareness and Education Act of 2008)
 - **AI assistance (declared as required by the course):** AI coding assistants (Claude by Anthropic, Ziva, and Google Antigravity) were used for parts of the code, tests, art scripts and documentation. The group reviewed, modified and tested the work and is responsible for it.
 

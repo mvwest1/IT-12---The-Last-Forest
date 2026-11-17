@@ -20,10 +20,10 @@ var _dots: Label
 func _ready() -> void:
 	UiKit.backdrop(self, 0.6)
 	var v: VBoxContainer = UiKit.page(self, 22)
-	v.add_child(UiKit.title(tr("STORY_TITLE"), 30))
+	v.add_child(UiKit.banner(tr("STORY_TITLE"), 26))
 	_image = TextureRect.new()
 	_image.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_image.custom_minimum_size = Vector2(0, 200)
+	_image.custom_minimum_size = Vector2(0, 110)
 	_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	v.add_child(_image)
@@ -85,6 +85,10 @@ func _finish() -> void:
 			AppFlow.go_stage_select()
 		else:
 			AppFlow.go_login()
+	elif AppFlow.story_return != "":
+		var back: String = AppFlow.story_return
+		AppFlow.story_return = ""
+		AppFlow.goto(back)
 	else:
 		AppFlow.go_main_menu()
 

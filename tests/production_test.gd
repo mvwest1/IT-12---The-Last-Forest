@@ -30,6 +30,8 @@ func _initialize() -> void:
 	hashed_pin()
 	await screens()
 	await regressions()
+	await bug_hunt()
+	await flow_checks()
 	print("\n==== PRODUCTION RESULT: %d passed, %d failed ====" % [passes, fails])
 	db._close()
 	quit(0 if fails == 0 else 1)
@@ -248,3 +250,105 @@ func regressions() -> void:
 	check("touch buttons back after unpause", ui.visible)
 	app.go_main_menu()
 	await frames(4)
+
+
+# ------------------------------------------------------------------ Bug hunt round (2026-11-17)
+func bug_hunt() -> void:
+	print("\n-- Bug hunt round")
+	fresh_db("user://bughunt_test.db")
+	var a: int = db.register_student("777777777771", "", "4-Sampaguita")
+	var b: int = db.register_student("777777777772", "", "4-sampaguita ")
+	db.set_nickname(a, "Mika"); db.set_nickname(b, "Mika")
+	save_attempt(a, 1, 3, 3, 2, 100.0)
+	save_attempt(b, 1, 2, 3, 2, 100.0)
+	var cls: Array = db.get_leaderboard(10, "4-SAMPAGUITA")
+	check("class filter ignores letter case and spaces", cls.size() == 2, str(cls.size()))
+	check("same nickname twice is told apart by code", str(cls[0]["display"]) != str(cls[1]["display"])
+			and str(cls[0]["display"]).begins_with("Mika #"), "%s / %s" % [cls[0]["display"], cls[1]["display"]])
+	# Caterpillar really walks on the ground (does not silently turn into a beetle)
+	app.login("777777777771", "", "4-Sampaguita")
+	await frames(3)
+	app.start_stage(2)
+	await frames(40)
+	root.get_node("GameState").clear_pauses()
+	var cat: Node2D = current_scene.get_node_or_null("Pest2")
+	var y0: float = cat.global_position.y if cat != null else 0.0
+	await frames(60)
+	check("Stage 2 caterpillar is a ground crawler", cat != null and bool(cat.get("crawler")))
+	check("caterpillar stays on the ground while moving", cat != null and absf(cat.global_position.y - y0) < 1.0,
+			"y0=%s y=%s" % [y0, cat.global_position.y if cat != null else -1.0])
+	# Story replayed from Stage Select returns to Stage Select
+	app.go_stage_select()
+	await frames(4)
+	app.story_return = app.STAGE_SELECT
+	app.goto(app.STORY)
+	await frames(4)
+	current_scene._finish()
+	await frames(4)
+	check("story replay returns to where it was opened", current_scene.name == "StageSelect", current_scene.name)
+	# Volume set on the Settings screen survives leaving it
+	var st: Node = root.get_node("Settings")
+	var old_v: float = st.music_volume
+	app.goto(app.SETTINGS)
+	await frames(4)
+	st.set_music_volume(0.35)
+	app.go_main_menu()
+	await frames(4)
+	var cfg := ConfigFile.new()
+	cfg.load(st.PATH)
+	check("music volume saved when leaving Settings", is_equal_approx(float(cfg.get_value("prefs", "music_volume", -1.0)), 0.35))
+	st.set_music_volume(old_v)
+	st.save()
+	app.logout()
+	await frames(3)
+
+
+# ------------------------------------------------------------------ Flow (quiz + pause)
+func flow_checks() -> void:
+	print("\n-- Quiz and stage flow")
+	fresh_db("user://flow_test.db")
+	app.login("888888888881", "", "4-A")
+	await frames(3)
+	app.start_stage(1)
+	var q: Node = null
+	for i in 120:
+		await process_frame
+		q = current_scene.find_child("QuizModal", true, false) if current_scene else null
+		if q != null and q.visible:
+			break
+	check("quiz opens on an intro page first", q != null and q._awaiting_start and not q._buttons[0].visible)
+	q._on_choice(0)
+	check("tapping before Start answers nothing", q._index == 0 and q._score == 0)
+	q.start_questions()
+	await create_timer(0.5, true).timeout
+	check("answer buttons are never shown disabled", not q._buttons[0].disabled and not q._buttons[2].disabled)
+	q._on_choice(0)
+	check("tapped pre-test answer is highlighted", q._buttons[0].modulate.is_equal_approx(q.PICKED))
+	check("pre-test shows no right/wrong", q._feedback.text == tr("QUIZ_THANKS"))
+	for k in 2:
+		await create_timer(1.2, true).timeout
+		q._on_choice(1)
+	await create_timer(1.0, true).timeout
+	check("pre-test ends on a thank-you page without a score", q._awaiting_continue and not q._score_tally.visible)
+	q._finish_quiz()
+	await create_timer(0.3, true).timeout
+	var ld: Node = root.get_node("LearningDirector")
+	check("no fact card straight after the quiz (breather)", not ld.is_showing())
+	var pause: Node = current_scene.find_child("PauseOverlay", true, false)
+	await create_timer(3.5, true).timeout
+	var card: Node = current_scene.find_child("FactCardPopup", true, false)
+	for i in 60:
+		if card.visible and card._can_close: break
+		await create_timer(0.05, true).timeout
+	if card.visible: card._close()
+	await create_timer(0.4, true).timeout
+	root.get_node("GameState").clear_pauses()
+	pause.open()
+	pause._on_stage_select()
+	await frames(3)
+	check("first tap on Stage Select only asks to confirm", current_scene.name != "StageSelect" and pause.visible)
+	pause._on_stage_select()
+	await frames(4)
+	check("second tap leaves to Stage Select", current_scene.name == "StageSelect")
+	app.logout()
+	await frames(3)

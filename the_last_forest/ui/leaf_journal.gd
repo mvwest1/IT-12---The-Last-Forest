@@ -15,7 +15,7 @@ func _ready() -> void:
 	_facts = LearningDirector.get_all_facts()
 	_unlocked = AppFlow.journal_fact_ids()
 	var v: VBoxContainer = UiKit.page(self)
-	v.add_child(UiKit.title(tr("JOURNAL_TITLE"), 32))
+	v.add_child(UiKit.banner(tr("JOURNAL_TITLE"), 28))
 	var found: int = 0
 	for f: ClimateFact in _facts:
 		if f.id in _unlocked:

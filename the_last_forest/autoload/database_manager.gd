@@ -600,7 +600,7 @@ SELECT s.student_id,
 FROM (SELECT student_id, stage_index, MAX(score) AS best
       FROM session_records GROUP BY student_id, stage_index) b
 JOIN students s ON s.student_id = b.student_id
-WHERE (? = '' OR s.grade_section = ?)
+WHERE (? = '' OR LOWER(TRIM(s.grade_section)) = LOWER(TRIM(?)))
 GROUP BY s.student_id
 ORDER BY total_points DESC, stages_cleared DESC, s.student_id ASC;
 """
@@ -714,6 +714,13 @@ func get_leaderboard(limit: int = 10, grade_filter: String = "") -> Array[Dictio
 		}
 		if i <= limit:
 			out.append(entry)
+	# Two learners who chose the same nickname are told apart by their code.
+	var seen: Dictionary = {}
+	for e: Dictionary in out:
+		seen[e["display"]] = int(seen.get(e["display"], 0)) + 1
+	for e: Dictionary in out:
+		if int(seen[e["display"]]) > 1 and not str(e["display"]).begins_with("Ranger "):
+			e["display"] = "%s %s" % [e["display"], e["code"]]
 	return out
 
 

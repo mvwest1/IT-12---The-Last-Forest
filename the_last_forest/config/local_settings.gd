@@ -127,6 +127,10 @@ static func _load() -> void:
 		if candidate != "" and FileAccess.file_exists(candidate) and _cfg.load(candidate) == OK:
 			_from_sample = false
 			_path = candidate
+			# A hand-made file without a salt would hash LRNs unsalted: add one.
+			if str(_cfg.get_value(SECTION, "lrn_salt", "")).strip_edges() == "":
+				_cfg.set_value(SECTION, "lrn_salt", Crypto.new().generate_random_bytes(32).hex_encode())
+				_cfg.save(candidate if not candidate.begins_with("res://") else USER_LOCAL_PATH)
 			return
 	# First launch on this device: create private settings with a fresh salt.
 	_cfg = ConfigFile.new()

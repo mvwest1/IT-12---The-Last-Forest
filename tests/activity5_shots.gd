@@ -90,7 +90,9 @@ func play_stage(idx: int, wrong_pre: Array, take_shots: bool) -> void:
 func answer(quiz: Node, wrong: Array, shot_score: bool = false) -> void:
 	var i := 0
 	while is_instance_valid(quiz) and quiz.visible:
-		if quiz._awaiting_continue:
+		if quiz._awaiting_start:
+			quiz.start_questions()
+		elif quiz._awaiting_continue:
 			if shot_score: await shot("08_post_quiz_score")
 			quiz._finish_quiz()
 		elif not quiz._locked:

@@ -23,6 +23,9 @@ func _initialize() -> void:
 	for f in [&"fact_forest_home", &"fact_trees_store_carbon", &"fact_roots_hold_soil", &"fact_burning_releases_co2"]:
 		gs.unlock_fact(f)
 	app.go_main_menu(); await wait(0.8); await shot("v1_01_main_menu")
+	app.go_login(); await wait(0.6); await shot("v1_00a_login")
+	app.go_stage_select(); await wait(0.6); await shot("v1_00b_stage_select")
+	app.go_main_menu(); await wait(0.6)
 	current_scene._on_teacher(); current_scene._pin.text = LocalSettings.value("teacher_pin")
 	current_scene._on_primary(); await wait(0.4); await shot("v1_02_teacher_dashboard")
 	app.goto(app.STORY); await wait(0.8); await shot("v1_03_story_1")
