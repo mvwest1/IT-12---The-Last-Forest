@@ -74,6 +74,9 @@ func _ready() -> void:
 	_guard_box.visible = show_guards
 	_water_box.visible = show_water
 	_auto_show_counters.call_deferred()
+	_build_restoration_meter()
+	EventBus.restoration_changed.connect(_on_restoration_changed)
+	_on_restoration_changed(GameState.restoration_ratio())
 	# Initial pull.
 	_on_seeds_changed(GameState.seeds)
 	_on_trees_changed(GameState.trees_matured, GameState.tree_goal)
@@ -237,3 +240,36 @@ func _pulse(item: Control) -> void:
 	var tween := create_tween()
 	tween.tween_property(item, ^"scale", Vector2(1.3, 1.3), 0.08)
 	tween.tween_property(item, ^"scale", Vector2.ONE, 0.12)
+
+
+# ------------------------------------------------------------------ Restoration meter
+var _restore_bar: ProgressBar = null
+var _restore_label: Label = null
+
+
+## "Trees Restored" meter next to the tree counter: how green the stage is.
+func _build_restoration_meter() -> void:
+	var row := get_node_or_null(^"TopRight/Row") as HBoxContainer
+	if row == null:
+		return
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 0)
+	_restore_label = Label.new()
+	_restore_label.theme_type_variation = &"HudLabel"
+	_restore_label.add_theme_font_size_override("font_size", 12)
+	_restore_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	box.add_child(_restore_label)
+	_restore_bar = ProgressBar.new()
+	_restore_bar.custom_minimum_size = Vector2(90, 10)
+	_restore_bar.show_percentage = false
+	_restore_bar.max_value = 100.0
+	box.add_child(_restore_bar)
+	row.add_child(box)
+
+
+func _on_restoration_changed(ratio: float) -> void:
+	if _restore_bar == null:
+		return
+	var pct: int = roundi(clampf(ratio, 0.0, 1.0) * 100.0)
+	create_tween().tween_property(_restore_bar, ^"value", float(pct), 0.6)
+	_restore_label.text = "%s %d%%" % [tr("HUD_RESTORED"), pct]

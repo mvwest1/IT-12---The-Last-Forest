@@ -34,6 +34,10 @@ func _ready() -> void:
 	monitoring = true
 	monitorable = false
 	add_to_group(&"player_interactor")
+	# Accessibility preference saved in Settings (tap once instead of holding).
+	var settings: Node = get_node_or_null(^"/root/Settings")
+	if settings != null and bool(settings.get(&"tap_to_plant")):
+		toggle_mode = true
 	if _player != null:
 		_player.add_to_group(&"player")
 	area_entered.connect(_on_area_entered)

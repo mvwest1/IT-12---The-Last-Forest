@@ -35,7 +35,7 @@ def exists_exact(path):
 text_files = []
 for ext in ("tscn", "tres", "gd", "cfg", "godot"):
     text_files += glob.glob(os.path.join(ROOT, "**", "*." + ext), recursive=True)
-text_files = [f for f in text_files if "/.godot/" not in f and "/addons/ziva_agent/" not in f]
+text_files = [f for f in text_files if "/.godot/" not in f and "\\.godot\\" not in f]
 path_re = re.compile(r'res://([^"\'\s\)\]]+)')
 checked = 0
 for f in text_files:
@@ -67,7 +67,7 @@ for f in glob.glob(os.path.join(ROOT, "the_last_forest/data/translations/*.csv")
                 problems.append("translation %s has no %s text (%s)" % (key, lang, rel(f)))
 
 # 3. keys used in code exist -----------------------------------------------------
-key_re = re.compile(r'"((?:SIGN|PROMPT|TIP|OBJ|STAGE|GATE|QUIZ|HUD|JOURNAL|UI|LOGIN|MENU|TEACHER|CLEAR|FACT|PAUSE)_[A-Z0-9_]+)"')
+key_re = re.compile(r'"((?:SIGN|PROMPT|TIP|OBJ|STAGE|GATE|QUIZ|HUD|JOURNAL|UI|LOGIN|MENU|TEACHER|CLEAR|FACT|PAUSE|LB|SET|STORY|SELECT|RECORDS|DB|CREDITS)_[A-Z0-9_]+)"')
 used = set()
 for f in text_files:
     if not f.endswith((".gd", ".tscn", ".tres")):

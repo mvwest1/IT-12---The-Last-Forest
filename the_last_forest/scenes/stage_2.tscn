@@ -1032,6 +1032,7 @@ patrol_range = 50.0
 [node name="Pest2" parent="." instance=ExtResource("pest")]
 position = Vector2(1568, 550)
 patrol_range = 50.0
+crawler = true
 
 [node name="Pest3" parent="." instance=ExtResource("pest")]
 position = Vector2(2400, 486)

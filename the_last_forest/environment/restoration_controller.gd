@@ -38,6 +38,11 @@ var _tween: Tween = null
 func _ready() -> void:
 	if auto_apply:
 		_apply_materials()
+	var stage_root: Node = owner if owner != null else get_parent()
+	if stage_root != null and stage_root.get_node_or_null(^"Wildlife") == null:
+		var wildlife := Wildlife.new()
+		wildlife.name = "Wildlife"
+		stage_root.add_child.call_deferred(wildlife)
 	EventBus.restoration_changed.connect(_on_restoration_changed)
 	EventBus.restoration_milestone_reached.connect(_on_milestone)
 	_set_value(GameState.restoration_ratio())

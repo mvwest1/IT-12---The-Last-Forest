@@ -1,88 +1,71 @@
-# THE LAST FOREST
+# THE LAST FOREST (v1.0.0)
 
-**A 2D Platformer Exploring Deforestation, Reforestation Mechanics, and Climate Literacy**
+**The Last Forest: A 2D Platform Exploring Deforestation, Reforestation Mechanics, and Climate Literacy**
+IT 12 Capstone Project, BS Information Technology, University of Perpetual Help System Laguna
 
-Activity 5: Game Database Connectivity Prototype (Systems Fundamentals Lab, 1stBIT4120L)
+- **Researchers:** John Matthew T. Alaban, Zhedderic Ahlen L. Cañeda, Karl Andrei F. Ofler, Franz Chester A. Pabalan
+- **Technical Adviser:** Mr. Jaime V. Yatco, MIT  •  **Instructor:** Grachel Greta
 
-## 1. Project title
-The Last Forest (Capstone-based prototype)
+## 1. What it is
+An offline, bilingual (English / Filipino) 2D platformer for Grade 3-4 learners, for **Android phones and tablets** and **Windows lab PCs**. The player is Eco-Ranger **Lunti**, who restores the burnt forest of Sierra Verde in four stages:
 
-## 2. Group number and members
-- Group number: **[GROUP NUMBER]**
-- Members: **[FULL NAME 1]**, **[FULL NAME 2]**, **[FULL NAME 3]**, **[FULL NAME 4]**
+1. **Burnt Grove** - collect native seeds (Narra, Lauan, Dao) and grow 3 trees.
+2. **Pest Control** - protect 6 saplings from leaf beetles and caterpillars with bamboo tree guards (pests are shooed, never hurt).
+3. **Water Management** - turn the lever so the wooden sluice sends rain to the dry gully.
+4. **Forest Sanctuary** - restore the last canopy; birds and butterflies return.
 
-## 3. Short description
-The Last Forest is a 2D platformer for Grade 4 learners (pilot school: Santa Rosa Elementary School Central 2). The player brings a burnt forest back to life over 4 stages:
+Every stage: 3-item pre-test > play with bilingual picture fact cards > same 3-item post-test > saved to SQLite.
 
-1. Burnt Grove: collect seeds and plant trees.
-2. Pest Control: protect young trees from pests.
-3. Water Management: turn a lever so rain reaches dry land.
-4. Forest Sanctuary: explore the restored forest.
+## 2. Features
+- Burnt-to-green restoration shader, returning wildlife, original pixel art and sound effects, story intro.
+- **Leaf Journal** (saved per learner), **Forest Rangers Leaderboard** (Forest Points, nicknames or "Ranger #A9F2" codes only), **My Records**.
+- **Teacher panel**: PIN created on first launch (stored as a salted hash, 5-try lockout), class dashboard (average before / after / gain / time per stage), CSV export (file on PC, clipboard on phones).
+- Mobile: landscape lock, touch controls that fit any phone shape, pause button, Android Back button, "tap once to plant" option, language and volume settings.
 
-Each stage starts with a 3-question pre-quiz and ends with the same post-quiz. Short climate fact cards appear while playing. All results are saved to a local SQLite database, which the game reads back to unlock stages and to show the player's **My Records** table.
-
-## 4. Tools and technologies
+## 3. Tools
 | Tool | Use |
 |---|---|
-| Godot Engine 4.7 (GDScript), GL Compatibility renderer | Game engine and code |
-| godot-sqlite 4.9 (GDExtension by 2shady4u) | SQLite connection from GDScript |
-| Git + GitHub | Version control and submission |
-| Python 3 + Pillow (optional) | Build tools in `the_last_forest/tools/`: art recolouring, level generation |
+| Godot Engine 4.7 (GDScript, GL Compatibility) | Engine, Android + Windows export |
+| godot-sqlite 4.9 (GDExtension, 2shady4u, MIT) | SQLite on Windows, Linux and Android (arm64) |
+| Python 3 + Pillow | Scripts in `the_last_forest/tools/` that generate the pixel art, icons, sounds and document figures |
+| Git + GitHub | Version control |
 
-## 5. Database / storage option
-**SQLite** (offline, a single file). It suits school computer labs that may not have internet.
-- File location: `user://the_last_forest_eval.db`. On Windows this is `%APPDATA%\Godot\app_userdata\<project name>\`.
-- Tables: `students`, `session_records`, `quiz_results` (schema in `the_last_forest/autoload/database_manager.gd`, constant `DDL`).
-- If the SQLite add-on is missing, the game writes to a backup file (`user://eval_fallback.jsonl`) instead, so no session is lost.
+## 4. Database (SQLite, schema v3)
+File: `user://the_last_forest_eval.db` (Windows: `%APPDATA%\Godot\app_userdata\THE LAST FOREST\`).
+Tables `students`, `quiz_results`, `session_records`, `journal_entries` - see `DDL` in `the_last_forest/autoload/database_manager.gd`. Older databases are upgraded automatically.
 
-## 6. How to run
-1. Install **Godot 4.7** (standard version, not .NET).
-2. Clone this repository and open the folder in Godot (Import → select `project.godot`).
-3. **Settings (required once):** copy `local_settings.sample.cfg` to `local_settings.cfg` in the same folder, then set your own `teacher_pin` and a long random `lrn_salt`. The real file is git-ignored. Without it, the game runs on the sample values and prints a warning.
-4. Press **F5** (Run Project).
-5. Play → enter a 12-digit LRN (test example: `123456789012`), first name and grade/section → choose Stage 1.
-6. Finish a stage (pre-quiz → grow the trees → walk through the green gate → post-quiz). The record is saved.
-7. On **Stage Select**, press **My Records** to see the saved data read back from the database.
-8. Teacher: Main Menu → Teacher → enter the PIN → **Export results (CSV)**.
+**Privacy (RA 10173):** names are never stored; the LRN is stored only as `"h:" + SHA-256(salt + LRN)`; the CSV has no names or LRNs; Android cloud backup of app data is off.
 
-Automated tests (optional):
+**Secrets:** `local_settings.cfg` (salt + teacher PIN) is git-ignored and never packed into the APK/EXE. On a new device the game creates it with a random salt and asks the teacher to create a PIN. For lab PCs that must share learner codes, put the same `local_settings.cfg` next to `TheLastForest.exe` on every PC (format: `local_settings.sample.cfg`).
+
+## 5. How to run
+1. Open `project.godot` in **Godot 4.7** and press **F5**, or install the exported build.
+2. Play > story (first time) > enter a 12-digit LRN, optional nickname, grade & section > Stage 1.
+3. Teacher: Main Menu > Teacher > create/enter the PIN > dashboard and export.
+
+**Export:** Project > Export > `Android (Phones & Tablets)` or `Windows Desktop (Lab PCs)`. The Android release key is NOT in this repository; set it in Editor Settings or with the `GODOT_ANDROID_KEYSTORE_RELEASE_*` environment variables.
+
+## 6. Tests
 ```
-godot --headless --path . -s res://tests/smoke_test.gd   # full play-through incl. save + retrieve: 74/74
-godot --headless --path . -s res://tests/edge_test.gd    # edge cases, security checks, attempt pairing, transaction rollback + retry: 50/50
-python tests/static_check.py                              # paths, translations, secrets
+godot --headless --path . -s res://tests/smoke_test.gd          # 4-stage playthrough, save, records, CSV      74/74
+godot --headless --path . -s res://tests/edge_test.gd           # edge cases, PIN lockout, rollback/retry       50/50
+godot --headless --path . -s res://tests/production_test.gd     # v3 migration, leaderboard, journal, PIN hash  53/53
+godot --headless --path . -s res://tests/reach_test.gd          # every target reachable on foot
+godot --headless --path . -s res://tests/release_smoke_test.gd  # release smoke test
+python tests/static_check.py                                     # paths, translations, secrets
 ```
 
-## 7. What data is saved and retrieved
-| When | What is SAVED | Function (file: `the_last_forest/autoload/database_manager.gd`) |
-|---|---|---|
-| Login | student code (salted SHA-256 hash of the LRN), grade/section, date | `register_student()` |
-| After the pre-quiz | unique `attempt_id`, stage, pre-quiz score, time | `save_pre_quiz()` (called from `AppFlow.record_pre_quiz`) |
-| After the post-quiz / stage finish | post-quiz score + gameplay record (`attempt_id`, `quiz_id`, seeds collected, trees grown, completion time, fact cards read, date) in one SQLite transaction; retains unsaved result for **Retry Save** if either write fails, and unlocks the next stage only after persistence succeeds | `begin_transaction()`, `save_post_quiz()`, `save_stage_record()`, `commit_transaction()` / `rollback_transaction()` (called from `AppFlow.finish_stage` and `AppFlow.retry_save`) |
+## 7. Known limitations
+- Must still be played on the school's real phones/tablets and lab PCs, and piloted with learners.
+- One database per device; a forgotten PIN on Android can only be reset by clearing app data (export the CSV regularly).
+- 3 test items per stage; Filipino text and fact sources need review by teachers.
 
-| When | What is RETRIEVED | Where it is DISPLAYED |
-|---|---|---|
-| Login and Stage Select | highest stage completed (`get_highest_completed_stage()`) | Stage Select: which stages are unlocked or "Restored!" |
-| My Records button | the player's last 8 attempts paired with their exact quiz record via `quiz_id` / `attempt_id` (`get_student_records()`, SQL `RECORDS_SQL`) | Stage Select → **My Records** table (stage, quiz before → after, trees, seeds, time, date) |
-| Teacher export | all attempts paired by explicit `quiz_id` / `attempt_id`, no names or LRNs (`export_eval_csv()`) | CSV file for the teacher/researchers |
-
-**Not stored on purpose:** the student's name and raw LRN. These are personal data of minors under the Data Privacy Act of 2012 (RA 10173). The LRN is stored only as a salted hash.
-
-## 8. Known limitations / unfinished parts
-- Not yet tested on the actual school lab PCs, and no playtest with Grade 4 learners yet.
-- Only jump and background-music sounds. Planting, quiz and stage-clear sounds are still to do.
-- Environment art is recoloured from the Godot demo assets, and other sprites are generated placeholders.
-- The Filipino translation still needs review by a teacher.
-- The pre-test and post-test use the same 3 questions per stage, which still needs to be validated with our adviser.
-- The Windows build must ship `local_settings.cfg` with the same salt on every PC.
-
-## 9. References / tutorials used
-- Godot Engine documentation: https://docs.godotengine.org/en/stable/
-- Godot 2D Platformer Demo (MIT License; base project, player, tiles, props, background): https://github.com/godotengine/godot-demo-projects/tree/master/2d/platformer
-- godot-sqlite by 2shady4u (MIT License): https://github.com/2shady4u/godot-sqlite
+## 8. References and credits
+- Godot Engine docs: https://docs.godotengine.org/en/stable/
+- Godot 2D Platformer Demo (MIT; base project, tiles, props, background, music): https://github.com/godotengine/godot-demo-projects/tree/master/2d/platformer
+- godot-sqlite (MIT): https://github.com/2shady4u/godot-sqlite
 - Kenney Mini Square font (CC0): https://kenney.nl/assets/kenney-fonts
-- SQLite documentation: https://www.sqlite.org/docs.html
-- Republic Act No. 10173 (Data Privacy Act of 2012)
-- AI assistance (cited as required): Claude (Anthropic) and Ziva (Godot AI agent) were used as coding assistants for parts of the code, tests and documentation. The group reviewed, modified and tested the work.
+- RA 10173 (Data Privacy Act of 2012), RA 9512 (Environmental Awareness and Education Act of 2008)
+- **AI assistance (declared as required by the course):** AI coding assistants (Claude by Anthropic, Ziva, and Google Antigravity) were used for parts of the code, tests, art scripts and documentation. The group reviewed, modified and tested the work and is responsible for it.
 
----
-The original Godot demo README is kept in `docs/DEMO_README.md`. License: `LICENSE.md` (MIT, © Godot Engine contributors).
+Documents: `Defense_Guide_The_Last_Forest.docx`, `Draft_of_IT12_The_Last_Forest_-_CHAPTER_1.docx`, `docs/figures/`. Original demo README: `docs/DEMO_README.md`. License: `LICENSE.md` (MIT).

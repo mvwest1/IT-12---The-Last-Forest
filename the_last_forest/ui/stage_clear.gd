@@ -40,6 +40,7 @@ func _ready() -> void:
 			var tw := create_tween()
 			tw.tween_interval(0.25 + 0.25 * i)
 			tw.tween_property(_stars[i], ^"scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_show_points(r)
 	_retry.pressed.connect(_on_retry_pressed)
 	_next.pressed.connect(func() -> void: AppFlow.start_stage(AppFlow.current_stage_index + 1))
 	_select.pressed.connect(AppFlow.go_stage_select)
@@ -68,3 +69,24 @@ func _refresh_save_state() -> void:
 		_next.grab_focus()
 	else:
 		_select.grab_focus()
+
+
+## Forest Points earned (and leaderboard rank once saved).
+func _show_points(r: Dictionary) -> void:
+	var pts: int = int(r.get("score", 0))
+	var line: String = tr("CLEAR_POINTS") % pts
+	if bool(r.get("saved", false)) and pts > int(r.get("previous_best", 0)):
+		line += "   ★ " + tr("CLEAR_NEW_BEST")
+	if bool(r.get("saved", false)) and AppFlow.is_logged_in():
+		var me: Dictionary = DatabaseManager.get_leaderboard_entry(AppFlow.student_id)
+		if not me.is_empty():
+			line += "\n" + tr("CLEAR_RANK") % int(me["rank"])
+	var l := Label.new()
+	l.name = "PointsLabel"
+	l.text = line
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.add_theme_font_size_override("font_size", 20)
+	l.add_theme_color_override("font_color", UiKit.GOLD)
+	_quiz.add_sibling(l)
+	l.scale = Vector2(0.6, 0.6)
+	create_tween().tween_property(l, ^"scale", Vector2.ONE, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)

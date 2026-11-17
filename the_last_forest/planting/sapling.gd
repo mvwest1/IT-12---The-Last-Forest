@@ -73,6 +73,7 @@ func _advance_stage() -> void:
 	_apply_stage_visual(true)
 	EventBus.sapling_stage_changed.emit(self, stage)
 	if stage == Stage.TREE:
+		set_highlighted(false)  # a grown tree is no longer interactable
 		var burst := get_node_or_null(^"LeafBurst") as CPUParticles2D
 		if burst != null:
 			burst.position = Vector2(0, -_sprite.texture.get_height() * 0.6) if _sprite.texture else burst.position

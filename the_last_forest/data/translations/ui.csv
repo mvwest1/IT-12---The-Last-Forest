@@ -18,7 +18,7 @@ DB_FALLBACK,Database: add-on missing (saving to backup file),Database: walang ad
 LOGIN_TITLE,Who is playing?,Sino ang maglalaro?
 LOGIN_HINT,Teacher: type the learner's 12-digit LRN.,Guro: i-type ang 12-digit na LRN ng mag-aaral.
 LOGIN_LRN,LRN (12 digits),LRN (12 numero)
-LOGIN_NAME,First name (optional),Pangalan (opsyonal)
+LOGIN_NAME,"Nickname for the leaderboard (optional, not your real name)","Palayaw para sa leaderboard (opsyonal, hindi tunay na pangalan)"
 LOGIN_GRADE,Grade & Section,Baitang at Seksyon
 LOGIN_CONTINUE,Continue,Magpatuloy
 UI_CANCEL,Cancel,Kanselahin
@@ -144,3 +144,85 @@ RECORDS_COL_TREES,Trees,Puno
 RECORDS_COL_SEEDS,Seeds,Binhi
 RECORDS_COL_TIME,Time,Oras
 RECORDS_COL_DATE,Date,Petsa
+MENU_JOURNAL,Leaf Journal,Talaan ng Dahon
+MENU_LEADERBOARD,Leaderboard,Mga Nangunguna
+MENU_SETTINGS,Settings,Mga Setting
+MENU_PLAYING_AS,Playing as %s,Naglalaro: %s
+MENU_NOT_SIGNED_IN,Press Play to sign in with your LRN.,Pindutin ang Maglaro para mag-log in gamit ang LRN.
+LB_TITLE,Forest Rangers Leaderboard,Mga Nangungunang Ranger ng Gubat
+LB_MY_CLASS,My class,Aking klase
+LB_EVERYONE,Everyone,Lahat
+LB_RANGER,Ranger,Ranger
+LB_CLASS,Class,Klase
+LB_STAGES,Stages,Yugto
+LB_POINTS,Points,Puntos
+LB_EMPTY,No scores yet. Finish a stage to get on the board!,Wala pang iskor. Tapusin ang isang yugto para mapasama rito!
+LB_YOU,Your rank: #%d of %d  •  %d points,Iyong ranggo: #%d sa %d  •  %d puntos
+LB_PRIVACY,"Only nicknames and Ranger codes are shown, never names or LRNs.","Palayaw at Ranger code lang ang ipinapakita, hindi ang pangalan o LRN."
+LB_NO_DB,The leaderboard needs the game database.,Kailangan ng database ng laro para sa leaderboard.
+LB_HOW,"Points: 100 per correct after-quiz answer, 25 per tree, 10 per fact card, plus a speed bonus.","Puntos: 100 bawat tamang sagot sa huling pagsusulit, 25 bawat puno, 10 bawat fact card, at bonus sa bilis."
+UI_SKIP,Skip,Laktawan
+UI_START,Start!,Simulan!
+JOURNAL_FOUND,%d of %d facts found,%d sa %d na kaalaman ang nahanap
+JOURNAL_LOCKED,Keep playing to find this fact!,Magpatuloy sa paglalaro para mahanap ito!
+JOURNAL_NOTES,Elder Narra's field notes,Mga tala ni Elder Narra
+JOURNAL_STAGE,Found in Stage %d,Nahanap sa Yugto %d
+SET_TITLE,Settings,Mga Setting
+SET_LANGUAGE,Language,Wika
+SET_MUSIC,Music,Musika
+SET_SFX,Sound effects,Mga tunog
+SET_TAP,Tap once to plant (no holding),Isang pindot para magtanim (hindi na kailangang diinan)
+SET_STORY,Watch the story again,Panoorin muli ang kuwento
+SET_CREDITS,Credits,Mga Gumawa
+STORY_TITLE,The Story of Sierra Verde,Ang Kuwento ng Sierra Verde
+STORY_1,"Sierra Verde was once a green forest full of Narra, Lauan and Dao trees, birds and butterflies.","Dati, luntiang gubat ang Sierra Verde, puno ng Narra, Lauan at Dao, mga ibon at paru-paro."
+STORY_2,"Then a big fire burned the hills. The animals left, and the rain began to wash the soil away.","Isang malaking sunog ang tumupok sa mga burol. Umalis ang mga hayop, at inanod ng ulan ang lupa."
+STORY_3,"Elder Narra, the old forest keeper, gave young Eco-Ranger Lunti a seed satchel and her field notes: the Leaf Journal.","Binigyan ni Elder Narra, ang matandang tagapag-alaga ng gubat, ang batang Eco-Ranger na si Lunti ng supot ng binhi at ng kanyang mga tala: ang Talaan ng Dahon."
+STORY_4,"Collect native seeds, plant and protect young trees, guide the water, and bring the last forest back to life!","Mangolekta ng katutubong binhi, magtanim at protektahan ang mga punla, gabayan ang tubig, at buhayin muli ang huling gubat!"
+CLEAR_POINTS,Forest Points: %d,Puntos ng Gubat: %d
+CLEAR_NEW_BEST,New best!,Bagong rekord!
+CLEAR_RANK,Leaderboard rank: #%d,Ranggo sa leaderboard: #%d
+TEACHER_SETUP,First time on this device: create a teacher PIN (4 to 8 digits).,Unang beses sa device na ito: gumawa ng PIN ng guro (4 hanggang 8 numero).
+TEACHER_CONFIRM,Type the same PIN again,I-type muli ang parehong PIN
+TEACHER_PIN_MISMATCH,The two PINs do not match.,Hindi magkatugma ang dalawang PIN.
+TEACHER_PIN_INVALID,The PIN must be 4 to 8 digits.,Dapat 4 hanggang 8 numero ang PIN.
+TEACHER_PIN_SAVED,PIN saved. Keep it secret!,Na-save ang PIN. Ilihim ito!
+TEACHER_PIN_SAVE_FAILED,Could not save the PIN.,Hindi ma-save ang PIN.
+TEACHER_SAVE_PIN,Save PIN,I-save ang PIN
+TEACHER_UNLOCK,Unlock,Buksan
+TEACHER_LOCKED_OUT,Too many wrong tries. Wait 30 seconds.,Masyadong maraming maling subok. Maghintay ng 30 segundo.
+TEACHER_DASH,Class Dashboard,Dashboard ng Klase
+TEACHER_SUMMARY,%d learners  •  %d saved attempts,%d mag-aaral  •  %d naitalang laro
+TEACHER_COL_N,Attempts,Laro
+TEACHER_COL_PRE,Avg before,Avg bago
+TEACHER_COL_POST,Avg after,Avg pagkatapos
+TEACHER_COL_GAIN,Avg gain,Avg dagdag
+TEACHER_COL_TIME,Avg time,Avg oras
+TEACHER_COPY,Copy CSV,Kopyahin ang CSV
+TEACHER_COPIED,"CSV copied. Paste it into Google Sheets, Excel or an email.","Nakopya ang CSV. I-paste sa Google Sheets, Excel o email."
+TEACHER_CHANGE_PIN,Change PIN,Palitan ang PIN
+TEACHER_NEW_PIN,New PIN (4 to 8 digits),Bagong PIN (4 hanggang 8 numero)
+TEACHER_NO_DATA,No saved attempts yet.,Wala pang naitalang laro.
+SELECT_STORY,Story,Kuwento
+HUD_RESTORED,Restored,Naibalik
+CREDITS_TEXT,"THE LAST FOREST v%s
+IT 12 Capstone Project, University of Perpetual Help System Laguna
+
+John Matthew T. Alaban
+Zhedderic Ahlen L. Cañeda
+Karl Andrei F. Ofler
+Franz Chester A. Pabalan
+
+Technical Adviser: Mr. Jaime V. Yatco, MIT
+Instructor: Grachel Greta
+Made with Godot Engine (MIT) and godot-sqlite (MIT).","THE LAST FOREST v%s
+IT 12 Capstone Project, University of Perpetual Help System Laguna
+
+John Matthew T. Alaban
+Zhedderic Ahlen L. Cañeda
+Karl Andrei F. Ofler
+Franz Chester A. Pabalan
+
+Teknikal na Tagapayo: G. Jaime V. Yatco, MIT
+Guro: Grachel Greta
+Ginawa gamit ang Godot Engine (MIT) at godot-sqlite (MIT)."

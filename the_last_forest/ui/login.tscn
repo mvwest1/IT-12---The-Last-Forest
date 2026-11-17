@@ -72,6 +72,7 @@ alignment = 1
 [node name="NameEdit" type="LineEdit" parent="Card/VBox"]
 unique_name_in_owner = true
 placeholder_text = "LOGIN_NAME"
+max_length = 12
 max_length = 30
 alignment = 1
 

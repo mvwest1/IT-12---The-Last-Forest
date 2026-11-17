@@ -11,7 +11,7 @@ extends Interactable
 ##   └─ Ramp (StaticBody2D)             layer 9 "water_guides": ONLY water hits it,
 ##                                      so the child walks straight through it
 ##      ├─ CollisionShape2D (SegmentShape2D / thin RectangleShape2D)
-##      └─ Polygon2D (visual)
+##      └─ Sluice (Sprite2D: wooden sluice channel)
 ## `angle_to_target` is the ramp angle that sends water to the AridZone.
 
 @export var angle_to_target: float = 22.0

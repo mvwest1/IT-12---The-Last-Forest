@@ -80,6 +80,17 @@ func get_fact(fact_id: StringName) -> ClimateFact:
 	return _facts.get(fact_id) as ClimateFact
 
 
+## Every fact in the game, in stage order (for the Leaf Journal screen).
+func get_all_facts() -> Array[ClimateFact]:
+	var result: Array[ClimateFact] = []
+	for f: ClimateFact in _facts.values():
+		if f.delivery == ClimateFact.Delivery.CARD:
+			result.append(f)
+	result.sort_custom(func(a: ClimateFact, b: ClimateFact) -> bool:
+		return a.stage < b.stage or (a.stage == b.stage and String(a.id) < String(b.id)))
+	return result
+
+
 ## For a "Leaf Journal" screen in the pause menu.
 func get_unlocked_facts() -> Array[ClimateFact]:
 	var result: Array[ClimateFact] = []

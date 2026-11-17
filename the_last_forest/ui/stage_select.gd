@@ -14,7 +14,7 @@ extends Control
 
 
 func _ready() -> void:
-	var who: String = AppFlow.student_display_name if AppFlow.student_display_name != "" else tr("STUDENT_GENERIC")
+	var who: String = AppFlow.display_name()
 	_student.text = "%s  •  %s" % [who, AppFlow.grade_section] if AppFlow.is_logged_in() else tr("GUEST_MODE")
 	var highest: int = GameState.highest_completed_stage
 	if AppFlow.is_logged_in():
@@ -38,6 +38,11 @@ func _ready() -> void:
 		btn.modulate = Color(1, 1, 1) if not btn.disabled else Color(0.75, 0.75, 0.75)
 		btn.pressed.connect(AppFlow.start_stage.bind(index))
 	_records_button.pressed.connect(_open_records)
+	var story := Button.new()
+	story.text = tr("SELECT_STORY")
+	story.custom_minimum_size = Vector2(0, _records_button.custom_minimum_size.y)
+	story.pressed.connect(AppFlow.goto.bind(AppFlow.STORY))
+	_records_button.add_sibling(story)
 	_records_close.pressed.connect(_close_records)
 	_logout.pressed.connect(AppFlow.logout)
 	_back.pressed.connect(AppFlow.go_main_menu)
@@ -115,3 +120,11 @@ static func _score(value: Variant) -> String:
 static func _clock(seconds: float) -> String:
 	var s: int = int(round(seconds))
 	return "%d:%02d" % [s / 60, s % 60]
+
+
+## Android Back: close My Records first, otherwise go to the main menu.
+func handle_back() -> bool:
+	if _records_panel.visible:
+		_close_records()
+		return true
+	return false

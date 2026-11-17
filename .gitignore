@@ -1,8 +1,5 @@
 .godot/
 *.tmp
-addons/ziva_agent/bin/
-addons/ziva_agent/bin-deps/
-addons/ziva_agent/zivacode/
 
 # Secrets: real teacher PIN and LRN salt (see local_settings.sample.cfg)
 local_settings.cfg
@@ -10,12 +7,19 @@ local_settings.cfg
 # Exports / OS clutter
 *.pck
 *.exe
+*.apk
+*.aab
+*.idsig
+*.keystore
+*.jks
 *.db
 *.db-wal
 *.db-shm
 build/
 export/
 releases/
-Claude outputs/
+submissions/
+_review/
 SegreGo_Reworked_Thesis.docx
 __pycache__/
+docs/course_deliverables/

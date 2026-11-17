@@ -26,6 +26,7 @@ var _journal_index: int = 0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	add_to_group(&"pause_overlay")
 	hide()
 	_journal.hide()
 	_resume.pressed.connect(close)
@@ -50,6 +51,18 @@ func _unhandled_input(event: InputEvent) -> void:
 	else:
 		open()
 	get_viewport().set_input_as_handled()
+
+
+## Android Back button: same as pressing Esc.
+func handle_back() -> void:
+	if LearningDirector.is_showing() or GameState.is_paused_by(&"quiz") or GameState.is_paused_by(&"climate_tip"):
+		return
+	if _journal.visible:
+		_close_journal()
+	elif visible:
+		close()
+	else:
+		open()
 
 
 func open() -> void:
@@ -78,11 +91,17 @@ func _on_hold_toggled(tap_mode: bool) -> void:
 	var interactor := get_tree().get_first_node_in_group(&"player_interactor") as PlayerInteractor
 	if interactor != null:
 		interactor.toggle_mode = tap_mode
+	Settings.tap_to_plant = tap_mode
+	Settings.save()
 
 
 # ------------------------------------------------------------------ Leaf Journal
 func _open_journal() -> void:
-	_journal_facts = LearningDirector.get_unlocked_facts()
+	_journal_facts.clear()
+	for fid: StringName in AppFlow.journal_fact_ids():
+		var f: ClimateFact = LearningDirector.get_fact(fid)
+		if f != null and f.delivery == ClimateFact.Delivery.CARD:
+			_journal_facts.append(f)
 	_journal_index = _journal_facts.size() - 1  # newest first
 	_card.hide()
 	_journal.show()

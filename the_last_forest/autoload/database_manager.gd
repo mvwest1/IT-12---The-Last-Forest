@@ -20,7 +20,7 @@ extends Node
 const DB_PATH: String = "user://the_last_forest_eval.db"
 const FALLBACK_PATH: String = "user://eval_fallback.jsonl"
 const EXPORT_DIR: String = "user://exports"
-const SCHEMA_VERSION: int = 2
+const SCHEMA_VERSION: int = 3
 
 const STORE_IDENTIFIERS_IN_CLEAR: bool = false
 ## The LRN salt is a secret: it lives in res://local_settings.cfg (git-ignored),
@@ -34,6 +34,7 @@ const DDL: Array[String] = [
 		lrn           TEXT UNIQUE NOT NULL,
 		name          TEXT,
 		grade_section TEXT,
+		nickname      TEXT,
 		registered_at TEXT NOT NULL
 	);""",
 	"""CREATE TABLE IF NOT EXISTS quiz_results (
@@ -55,7 +56,14 @@ const DDL: Array[String] = [
 		trees_matured   INTEGER NOT NULL DEFAULT 0 CHECK (trees_matured >= 0),
 		completion_time REAL    NOT NULL CHECK (completion_time >= 0),
 		tips_viewed     INTEGER NOT NULL DEFAULT 0 CHECK (tips_viewed >= 0),
+		score           INTEGER NOT NULL DEFAULT 0 CHECK (score >= 0),
 		completed_at    TEXT    NOT NULL
+	);""",
+	"""CREATE TABLE IF NOT EXISTS journal_entries (
+		student_id  INTEGER NOT NULL REFERENCES students(student_id) ON DELETE CASCADE,
+		fact_id     TEXT    NOT NULL,
+		unlocked_at TEXT    NOT NULL,
+		PRIMARY KEY (student_id, fact_id)
 	);""",
 	"CREATE INDEX IF NOT EXISTS idx_session_student_stage ON session_records(student_id, stage_index);",
 	"CREATE INDEX IF NOT EXISTS idx_quiz_student_stage ON quiz_results(student_id, stage_index, timestamp);",
@@ -65,6 +73,7 @@ const POST_MIGRATION_INDEXES: Array[String] = [
 	"CREATE INDEX IF NOT EXISTS idx_session_attempt ON session_records(attempt_id);",
 	"CREATE INDEX IF NOT EXISTS idx_session_quiz_id ON session_records(quiz_id);",
 	"CREATE INDEX IF NOT EXISTS idx_quiz_attempt ON quiz_results(attempt_id);",
+	"CREATE INDEX IF NOT EXISTS idx_session_score ON session_records(student_id, stage_index, score);",
 ]
 
 ## One row per completed stage attempt, paired with its exact quiz_results row
@@ -83,6 +92,7 @@ SELECT s.student_id,
        r.trees_matured,
        ROUND(r.completion_time, 1)   AS completion_time_sec,
        r.tips_viewed,
+       r.score                       AS forest_points,
        r.completed_at
 FROM session_records r
 JOIN students s ON s.student_id = r.student_id
@@ -96,7 +106,7 @@ ORDER BY s.student_id, r.stage_index, r.completed_at, r.session_id;
 const EXPORT_COLUMNS: Array[String] = [
 	"student_id", "grade_section", "session_id", "attempt_id", "stage_index", "pre_score",
 	"post_score", "score_gain", "seeds_collected", "trees_matured",
-	"completion_time_sec", "tips_viewed", "completed_at",
+	"completion_time_sec", "tips_viewed", "forest_points", "completed_at",
 ]
 
 ## Optional injection point for tests (an object with the godot-sqlite API).
@@ -167,16 +177,27 @@ func init_db_at(path: String) -> void:
 	for statement: String in DDL:
 		if not _exec(statement):
 			push_error("DatabaseManager: DDL failed — " + str(_db.error_message))
+			_abort_open()
 			return
 	if not _migrate_schema():
 		push_error("DatabaseManager: schema migration failed — " + str(_db.error_message))
+		_abort_open()
 		return
 	for idx_sql: String in POST_MIGRATION_INDEXES:
 		if not _exec(idx_sql):
 			push_error("DatabaseManager: index DDL failed — " + str(_db.error_message))
+			_abort_open()
 			return
 	_exec("PRAGMA user_version = %d;" % SCHEMA_VERSION)
 	_ready_ok = true
+
+
+## A half-initialised database is closed, so every write goes to the
+## backup journal instead of failing halfway through a lesson.
+func _abort_open() -> void:
+	if _db != null:
+		_db.close_db()
+	_db = null
 
 
 func is_available() -> bool:
@@ -272,7 +293,7 @@ func register_student(lrn: String, name: String, grade_section: String) -> int:
 
 
 func save_stage_record(student_id: int, stage_idx: int, seeds: int, trees: int,
-		duration: float, tips: int, attempt_id: String = "", quiz_id: int = -1) -> bool:
+		duration: float, tips: int, attempt_id: String = "", quiz_id: int = -1, score: int = -1) -> bool:
 	if simulate_stage_record_failure or student_id <= 0 or stage_idx < 1 or stage_idx > 4:
 		return false
 	var resolved_attempt: String = attempt_id.strip_edges()
@@ -293,6 +314,7 @@ func save_stage_record(student_id: int, stage_idx: int, seeds: int, trees: int,
 		"trees_matured": maxi(trees, 0),
 		"completion_time": maxf(duration, 0.0),
 		"tips_viewed": maxi(tips, 0),
+		"score": score if score >= 0 else 0,
 		"completed_at": _now(),
 	}
 	if not _ready_ok:
@@ -304,17 +326,18 @@ func save_stage_record(student_id: int, stage_idx: int, seeds: int, trees: int,
 		return fb_ok
 	var ok: bool = _exec_bind(
 		"INSERT INTO session_records (attempt_id, quiz_id, student_id, stage_index,"
-		+ " seeds_collected, trees_matured, completion_time, tips_viewed, completed_at)"
-		+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+		+ " seeds_collected, trees_matured, completion_time, tips_viewed, score, completed_at)"
+		+ " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 		+ " ON CONFLICT(attempt_id) DO UPDATE SET"
 		+ " quiz_id = COALESCE(excluded.quiz_id, session_records.quiz_id),"
 		+ " seeds_collected = excluded.seeds_collected,"
 		+ " trees_matured = excluded.trees_matured,"
 		+ " completion_time = excluded.completion_time,"
 		+ " tips_viewed = excluded.tips_viewed,"
+		+ " score = excluded.score,"
 		+ " completed_at = excluded.completed_at;",
 		[row.attempt_id, row.quiz_id, row.student_id, row.stage_index, row.seeds_collected,
-			row.trees_matured, row.completion_time, row.tips_viewed, row.completed_at])
+			row.trees_matured, row.completion_time, row.tips_viewed, row.score, row.completed_at])
 	if ok:
 		_highest_stage_cache[student_id] = maxi(int(_highest_stage_cache.get(student_id, 0)), stage_idx)
 	return ok
@@ -442,7 +465,8 @@ func save_stage_completion(student_id: int, stage_idx: int, quiz_id: int, post_s
 	var quiz_ok: bool = save_post_quiz(quiz_id, student_id, stage_idx, post_score, resolved_attempt, pre_score)
 	var linked_quiz_id: int = quiz_id if quiz_id > 0 else last_saved_quiz_id
 	var stage_ok: bool = quiz_ok and save_stage_record(
-			student_id, stage_idx, seeds, trees, duration, tips, resolved_attempt, linked_quiz_id)
+			student_id, stage_idx, seeds, trees, duration, tips, resolved_attempt, linked_quiz_id,
+			compute_score(post_score, trees, tips, duration))
 	if quiz_ok and stage_ok and commit_transaction():
 		return true
 	rollback_transaction()
@@ -541,6 +565,244 @@ func _fallback_student_records(student_id: int, limit: int) -> Array[Dictionary]
 	return records.slice(0, limit)
 
 
+# ================================================================== Forest Points & Leaderboard
+## Forest Points for one cleared stage (the leaderboard currency).
+##   100 x post-test score   (what the child LEARNED)
+## +  25 x trees grown
+## +  10 x fact cards read
+## + speed bonus  max(0, 150 - seconds / 2)
+## The PRE-test never counts, so no child gains anything by guessing badly
+## on purpose before playing (this keeps the research pre-test honest).
+const POINTS_PER_CORRECT: int = 100
+const POINTS_PER_TREE: int = 25
+const POINTS_PER_FACT: int = 10
+const SPEED_BONUS_MAX: int = 150
+const MAX_NICKNAME_LEN: int = 12
+
+const BACKFILL_SCORE_SQL: String = """
+UPDATE session_records SET score =
+    100 * COALESCE((SELECT q.post_score FROM quiz_results q
+                    WHERE (session_records.quiz_id IS NOT NULL AND q.quiz_id = session_records.quiz_id)
+                       OR (session_records.quiz_id IS NULL AND q.attempt_id = session_records.attempt_id)
+                    LIMIT 1), 0)
+  + 25 * trees_matured + 10 * tips_viewed
+  + MAX(0, 150 - CAST(completion_time / 2 AS INTEGER));
+"""
+
+## Best score per stage, summed per student. One row per student.
+const LEADERBOARD_SQL: String = """
+SELECT s.student_id,
+       s.lrn,
+       COALESCE(s.nickname, '') AS nickname,
+       COALESCE(s.grade_section, '') AS grade_section,
+       COUNT(*)    AS stages_cleared,
+       SUM(b.best) AS total_points
+FROM (SELECT student_id, stage_index, MAX(score) AS best
+      FROM session_records GROUP BY student_id, stage_index) b
+JOIN students s ON s.student_id = b.student_id
+WHERE (? = '' OR s.grade_section = ?)
+GROUP BY s.student_id
+ORDER BY total_points DESC, stages_cleared DESC, s.student_id ASC;
+"""
+
+## Per-stage class averages for the teacher dashboard.
+const CLASS_SUMMARY_SQL: String = """
+SELECT r.stage_index,
+       COUNT(*)                         AS attempts,
+       COUNT(DISTINCT r.student_id)     AS learners,
+       ROUND(AVG(q.pre_score), 2)       AS avg_pre,
+       ROUND(AVG(q.post_score), 2)      AS avg_post,
+       ROUND(AVG(q.post_score - q.pre_score), 2) AS avg_gain,
+       ROUND(AVG(r.completion_time), 0) AS avg_seconds
+FROM session_records r
+LEFT JOIN quiz_results q ON (
+    (r.quiz_id IS NOT NULL AND q.quiz_id = r.quiz_id)
+    OR (r.quiz_id IS NULL AND r.attempt_id IS NOT NULL AND r.attempt_id != '' AND q.attempt_id = r.attempt_id)
+)
+GROUP BY r.stage_index
+ORDER BY r.stage_index;
+"""
+
+
+static func compute_score(post_score: int, trees: int, tips: int, seconds: float) -> int:
+	var speed: int = maxi(0, SPEED_BONUS_MAX - int(maxf(seconds, 0.0) / 2.0))
+	return maxi(post_score, 0) * POINTS_PER_CORRECT + maxi(trees, 0) * POINTS_PER_TREE \
+			+ maxi(tips, 0) * POINTS_PER_FACT + speed
+
+
+## Short public code shown instead of a name: "#A9F2". Derived from the
+## salted LRN hash, so it reveals nothing about the LRN itself.
+static func learner_code_from_key(lrn_key: String) -> String:
+	var hex: String = lrn_key.trim_prefix("h:")
+	if hex.length() < 4 or STORE_IDENTIFIERS_IN_CLEAR:
+		hex = lrn_key.sha256_text()
+	return "#" + hex.left(4).to_upper()
+
+
+func get_learner_code(student_id: int) -> String:
+	if student_id <= 0:
+		return ""
+	if not _ready_ok:
+		return "#%04d" % (student_id % 10000)
+	if not _exec_bind("SELECT lrn FROM students WHERE student_id = ?;", [student_id]):
+		return ""
+	var rows: Array = _db.query_result
+	return learner_code_from_key(str(rows[0]["lrn"])) if rows.size() > 0 else ""
+
+
+## Letters, digits and spaces only, at most 12 characters. Children are
+## told to use a nickname, NOT their real name (shown on a shared screen).
+static func clean_nickname(raw: String) -> String:
+	var out: String = ""
+	for c: String in raw.strip_edges():
+		var code: int = c.unicode_at(0)
+		var ok: bool = (c >= "a" and c <= "z") or (c >= "A" and c <= "Z") or (c >= "0" and c <= "9") \
+				or c == " " or c == "ñ" or c == "Ñ"
+		if ok and code < 0x250:
+			out += c
+	while out.contains("  "):
+		out = out.replace("  ", " ")
+	return out.strip_edges().left(MAX_NICKNAME_LEN)
+
+
+func set_nickname(student_id: int, nickname: String) -> bool:
+	if student_id <= 0 or not _ready_ok:
+		return false
+	var clean: String = clean_nickname(nickname)
+	return _exec_bind("UPDATE students SET nickname = ? WHERE student_id = ?;",
+			[clean if clean != "" else null, student_id])
+
+
+func get_nickname(student_id: int) -> String:
+	if student_id <= 0 or not _ready_ok:
+		return ""
+	if not _exec_bind("SELECT COALESCE(nickname, '') AS n FROM students WHERE student_id = ?;", [student_id]):
+		return ""
+	var rows: Array = _db.query_result
+	return str(rows[0]["n"]) if rows.size() > 0 else ""
+
+
+## Leaderboard rows: rank, student_id, display ("Mika" or "Ranger #A9F2"),
+## code, grade_section, stages_cleared, total_points. grade_filter "" = all.
+## Ties share a rank (1, 2, 2, 4 ...).
+func get_leaderboard(limit: int = 10, grade_filter: String = "") -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	if not _ready_ok:
+		return out
+	var g: String = _sanitize_text(grade_filter).left(MAX_GRADE_LEN)
+	if not _exec_bind(LEADERBOARD_SQL, [g, g]):
+		return out
+	var rank: int = 0
+	var prev_points: int = -1
+	var i: int = 0
+	for row: Dictionary in _db.query_result:
+		i += 1
+		var pts: int = int(row["total_points"])
+		if pts != prev_points:
+			rank = i
+			prev_points = pts
+		var code: String = learner_code_from_key(str(row["lrn"]))
+		var nick: String = str(row["nickname"])
+		var entry: Dictionary = {
+			"rank": rank,
+			"student_id": int(row["student_id"]),
+			"code": code,
+			"display": nick if nick != "" else "Ranger " + code,
+			"grade_section": str(row["grade_section"]),
+			"stages_cleared": int(row["stages_cleared"]),
+			"total_points": pts,
+		}
+		if i <= limit:
+			out.append(entry)
+	return out
+
+
+## The student's own leaderboard row (even when outside the top N), or {}.
+func get_leaderboard_entry(student_id: int, grade_filter: String = "") -> Dictionary:
+	for row: Dictionary in get_leaderboard(100000, grade_filter):
+		if int(row["student_id"]) == student_id:
+			return row
+	return {}
+
+
+func get_best_stage_score(student_id: int, stage_idx: int) -> int:
+	if student_id <= 0 or not _ready_ok:
+		return 0
+	if not _exec_bind("SELECT COALESCE(MAX(score), 0) AS best FROM session_records WHERE student_id = ? AND stage_index = ?;",
+			[student_id, stage_idx]):
+		return 0
+	var rows: Array = _db.query_result
+	return int(rows[0]["best"]) if rows.size() > 0 else 0
+
+
+# ------------------------------------------------------------------ Leaf Journal (persistent)
+func save_journal_entry(student_id: int, fact_id: String) -> bool:
+	var fid: String = fact_id.strip_edges()
+	if student_id <= 0 or fid == "":
+		return false
+	if not _ready_ok:
+		return _fallback_write("journal_entries", {"student_id": student_id, "fact_id": fid, "unlocked_at": _now()})
+	return _exec_bind("INSERT OR IGNORE INTO journal_entries (student_id, fact_id, unlocked_at) VALUES (?, ?, ?);",
+			[student_id, fid, _now()])
+
+
+## Fact ids this student has ever unlocked, oldest first.
+func get_journal(student_id: int) -> PackedStringArray:
+	var out := PackedStringArray()
+	if student_id <= 0:
+		return out
+	if not _ready_ok:
+		if FileAccess.file_exists(FALLBACK_PATH):
+			var f := FileAccess.open(FALLBACK_PATH, FileAccess.READ)
+			while f != null and not f.eof_reached():
+				var e: Variant = JSON.parse_string(f.get_line())
+				if e is Dictionary and str((e as Dictionary).get("table", "")) == "journal_entries" \
+						and int((e as Dictionary).get("student_id", -1)) == student_id:
+					var fid: String = str((e as Dictionary).get("fact_id", ""))
+					if fid != "" and not out.has(fid):
+						out.append(fid)
+		return out
+	if not _exec_bind("SELECT fact_id FROM journal_entries WHERE student_id = ? ORDER BY unlocked_at, fact_id;", [student_id]):
+		return out
+	for row: Dictionary in _db.query_result:
+		out.append(str(row["fact_id"]))
+	return out
+
+
+# ------------------------------------------------------------------ Teacher dashboard
+func get_class_summary() -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	if not _ready_ok or not _exec(CLASS_SUMMARY_SQL):
+		return out
+	for row: Dictionary in _db.query_result:
+		out.append(row)
+	return out
+
+
+func count_students() -> int:
+	if not _ready_ok or not _exec("SELECT COUNT(*) AS n FROM students;"):
+		return 0
+	var rows: Array = _db.query_result
+	return int(rows[0]["n"]) if rows.size() > 0 else 0
+
+
+## The same CSV as export_eval_csv(), returned as text (for "Copy to
+## clipboard" on phones/tablets, where the app's folder is private).
+## PIN-checked like the file export.
+func export_eval_csv_text_for_teacher(pin: String) -> String:
+	if not verify_teacher_pin(pin):
+		return ""
+	var path: String = export_eval_csv()
+	if path == "":
+		return ""
+	var f := FileAccess.open(path, FileAccess.READ)
+	if f == null:
+		return ""
+	var text: String = f.get_as_text().trim_prefix("﻿")
+	f.close()
+	return text
+
+
 # ------------------------------------------------------------------ Teacher Authorization & Export
 func is_pin_locked_out() -> bool:
 	return Time.get_ticks_msec() < _pin_locked_until_msec
@@ -556,9 +818,7 @@ func reset_pin_lockout() -> void:
 func verify_teacher_pin(pin: String) -> bool:
 	if is_pin_locked_out():
 		return false
-	var expected: String = LocalSettings.value("teacher_pin").strip_edges()
-	var candidate: String = pin.strip_edges()
-	if expected != "" and candidate == expected:
+	if LocalSettings.check_pin(pin):
 		_failed_pin_attempts = 0
 		_pin_locked_until_msec = 0
 		return true
@@ -715,6 +975,16 @@ func _migrate_schema() -> bool:
 			return false
 	if not _has_column("session_records", "quiz_id"):
 		if not _exec("ALTER TABLE session_records ADD COLUMN quiz_id INTEGER REFERENCES quiz_results(quiz_id) ON DELETE SET NULL;"):
+			return false
+	# v3: nickname for the leaderboard, Forest Points per attempt.
+	if not _has_column("students", "nickname"):
+		if not _exec("ALTER TABLE students ADD COLUMN nickname TEXT;"):
+			return false
+	if not _has_column("session_records", "score"):
+		if not _exec("ALTER TABLE session_records ADD COLUMN score INTEGER NOT NULL DEFAULT 0;"):
+			return false
+		# Back-fill points for attempts saved by v0.1.x with the same formula.
+		if not _exec(BACKFILL_SCORE_SQL):
 			return false
 	return true
 

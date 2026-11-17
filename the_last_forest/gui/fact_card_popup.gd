@@ -36,6 +36,9 @@ var _fact: ClimateFact = null
 @onready var _close_button: Button = %CloseButton
 @onready var _listen_button: Button = %ListenButton
 @onready var _voice: AudioStreamPlayer = %Voice
+## The same fact in the OTHER language (English <-> Filipino), smaller,
+## so a child and a parent/teacher can read it together.
+@onready var _body_other: Label = get_node_or_null(^"%BodyOther") as Label
 
 
 func _ready() -> void:
@@ -43,6 +46,7 @@ func _ready() -> void:
 	hide()
 	_close_button.text = tr("UI_GOT_IT")
 	_listen_button.text = tr("UI_LISTEN")
+	_apply_parchment_style()
 	_close_button.pressed.connect(_close)
 	_listen_button.pressed.connect(_play_voice)
 	LearningDirector.register_popup(self)
@@ -52,6 +56,9 @@ func present(fact: ClimateFact) -> void:
 	_fact = fact
 	_title.text = tr(fact.title_key)
 	_body.text = tr(fact.body_key)
+	if _body_other != null:
+		var other: String = "fil" if TranslationServer.get_locale().begins_with("en") else "en"
+		_body_other.text = UiKit.tr_in(fact.body_key, other)
 	_image.texture = fact.image
 	_image.visible = fact.image != null
 	_listen_button.visible = fact.voice_over != null
@@ -95,3 +102,18 @@ func _close() -> void:
 	tween.tween_property(self, ^"modulate:a", 0.0, 0.15)
 	tween.tween_callback(hide)
 	tween.tween_callback(closed.emit)
+
+
+## Leaf-Journal look: parchment card with dark "ink" text.
+func _apply_parchment_style() -> void:
+	var card := get_node_or_null(^"Card") as PanelContainer
+	if card != null:
+		card.add_theme_stylebox_override("panel", UiKit.parchment_style())
+	_title.add_theme_color_override("font_color", Color(0.16, 0.33, 0.12))
+	_title.add_theme_constant_override("outline_size", 0)
+	for l: Label in [_body, _body_other]:
+		if l != null:
+			l.add_theme_color_override("font_color", UiKit.INK)
+			l.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0))
+	if _body_other != null:
+		_body_other.add_theme_color_override("font_color", Color(0.38, 0.29, 0.18))

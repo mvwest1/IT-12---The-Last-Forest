@@ -21,7 +21,11 @@ const STAGE_SCENES: Array[String] = [
 ]
 const STAGE_TITLE_KEYS: Array[String] = ["STAGE_1_TITLE", "STAGE_2_TITLE", "STAGE_3_TITLE", "STAGE_4_TITLE"]
 const STAGE_COUNT: int = 4
-const DEFAULT_VERSION: String = "0.1.1"
+const DEFAULT_VERSION: String = "1.0.0"
+const STORY: String = "res://the_last_forest/ui/story_intro.tscn"
+const LEADERBOARD: String = "res://the_last_forest/ui/leaderboard.tscn"
+const JOURNAL: String = "res://the_last_forest/ui/leaf_journal.tscn"
+const SETTINGS: String = "res://the_last_forest/ui/settings_screen.tscn"
 
 
 func get_version() -> String:
@@ -32,6 +36,10 @@ var student_id: int = -1
 ## Shown on screens/certificate; never written to the DB in pseudonymous mode.
 var student_display_name: String = ""
 var grade_section: String = ""
+## Public "#A9F2" code (from the salted LRN hash) and optional nickname,
+## shown on the leaderboard instead of any real name.
+var learner_code: String = ""
+var nickname: String = ""
 ## 1..4 while a stage is running.
 var current_stage_index: int = 0
 ## Explicit identifier linking the active attempt's pre/post quiz and gameplay record.
@@ -46,6 +54,60 @@ var _pre_quiz_id: int = -1
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	# Every fact a logged-in learner unlocks is kept in their Leaf Journal.
+	EventBus.climate_fact_unlocked.connect(_on_fact_unlocked)
+	get_tree().root.go_back_requested.connect(_on_go_back)
+
+
+## Android Back button / gesture: close an overlay or go up one screen,
+## never quit the app by accident in the middle of a lesson.
+func _on_go_back() -> void:
+	var scene: Node = get_tree().current_scene
+	if scene != null and scene.has_method("handle_back") and bool(scene.call("handle_back")):
+		return
+	var pause := get_tree().get_first_node_in_group(&"pause_overlay")
+	if pause != null and pause.has_method("handle_back"):
+		pause.call("handle_back")
+		return
+	if scene == null:
+		return
+	var path: String = scene.scene_file_path
+	if path == MAIN_MENU:
+		return  # the main menu has its own Quit button
+	if path == STAGE_CLEAR:
+		go_stage_select()
+	else:
+		go_main_menu()
+
+
+func _on_fact_unlocked(fact_id: StringName) -> void:
+	if is_logged_in():
+		DatabaseManager.save_journal_entry(student_id, String(fact_id))
+
+
+## Facts for the Leaf Journal: everything saved for this learner plus
+## anything unlocked this session (guest play).
+func journal_fact_ids() -> Array[StringName]:
+	var ids: Array[StringName] = []
+	if is_logged_in():
+		for f: String in DatabaseManager.get_journal(student_id):
+			ids.append(StringName(f))
+	for f: StringName in GameState.unlocked_facts:
+		if f not in ids:
+			ids.append(f)
+	return ids
+
+
+func display_name() -> String:
+	if nickname != "":
+		return nickname
+	return ("Ranger " + learner_code) if learner_code != "" else "Ranger"
+
+
+func set_nickname(nick: String) -> void:
+	nickname = DatabaseManager.clean_nickname(nick)
+	if is_logged_in():
+		DatabaseManager.set_nickname(student_id, nickname)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -94,6 +156,11 @@ func login(lrn: String, display_name: String, grade: String) -> String:
 	student_id = id
 	student_display_name = display_name.strip_edges()
 	grade_section = grade.strip_edges()
+	learner_code = DatabaseManager.get_learner_code(id)
+	nickname = DatabaseManager.get_nickname(id)
+	# The "name" box is now an optional leaderboard nickname.
+	if DatabaseManager.clean_nickname(display_name) != "":
+		set_nickname(display_name)
 	GameState.highest_completed_stage = DatabaseManager.get_highest_completed_stage(id)
 	go_stage_select()
 	return ""
@@ -103,6 +170,8 @@ func logout() -> void:
 	student_id = -1
 	student_display_name = ""
 	grade_section = ""
+	learner_code = ""
+	nickname = ""
 	current_attempt_id = ""
 	_pre_quiz_id = -1
 	pending_result = {}
@@ -164,8 +233,13 @@ func finish_stage(result: Dictionary) -> bool:
 		attempt_result["attempt_id"] = current_attempt_id
 	if int(attempt_result.get("quiz_id", -1)) <= 0 and _pre_quiz_id > 0:
 		attempt_result["quiz_id"] = _pre_quiz_id
+	attempt_result["score"] = DatabaseManager.compute_score(
+			int(attempt_result.get("post_score", 0)), int(attempt_result.get("trees_matured", 0)),
+			int(attempt_result.get("tips_viewed", 0)), float(attempt_result.get("duration", 0.0)))
+	var previous_best: int = DatabaseManager.get_best_stage_score(student_id, stage_idx) if is_logged_in() else 0
 	var saved: bool = _persist_stage_result(attempt_result)
 	attempt_result["saved"] = saved
+	attempt_result["previous_best"] = previous_best
 	attempt_result["guest"] = not is_logged_in()
 	last_result = attempt_result
 	if saved:
@@ -235,7 +309,7 @@ func _persist_stage_result(attempt_result: Dictionary) -> bool:
 			int(attempt_result.get("trees_matured", 0)),
 			float(attempt_result.get("duration", 0.0)),
 			int(attempt_result.get("tips_viewed", 0)),
-			attempt_id, quiz_id)
+			attempt_id, quiz_id, int(attempt_result.get("score", 0)))
 	if quiz_ok and stage_ok and DatabaseManager.commit_transaction():
 		return true
 	DatabaseManager.rollback_transaction()
